@@ -163,7 +163,7 @@ class Cars196(tfds.core.GeneratorBasedBuilder):
         'bbox': tfds.features.BBoxFeature(),
         'filename':tfds.features.Text(),
         'filepath':tfds.features.Text(),
-        "id":tfds.features.FeatureConnector,
+        "id":tfds.features.FeatureConnector(),
         # "data_annotations_path":tfds.features.Text(),
     }
     if self.version > '2.0.0':
