@@ -163,7 +163,6 @@ class Cars196(tfds.core.GeneratorBasedBuilder):
         'bbox': tfds.features.BBoxFeature(),
         'filename':tfds.features.Text(),
         'filepath':tfds.features.Text(),
-        "id":tfds.features.FeatureConnector(),
         # "data_annotations_path":tfds.features.Text(),
     }
     if self.version > '2.0.0':
@@ -223,9 +222,7 @@ class Cars196(tfds.core.GeneratorBasedBuilder):
     logging.critical(str(data_annotations_path))
     with tf.io.gfile.GFile(data_annotations_path, 'rb') as f:
       mat = tfds.core.lazy_imports.scipy.io.loadmat(f)
-    i=0
     for example in mat['annotations'][0]:
-      i+=1
       image_name = example[-1].item().split('.')[0]
       label = _NAMES[example[4].item() - 1]
       image = image_dict[image_name]
@@ -236,7 +233,6 @@ class Cars196(tfds.core.GeneratorBasedBuilder):
           'bbox': bbox,
           'filename':str(image_name),
           'filepath':str(filepath),
-          'id':i,
         # "data_annotations_path":data_annotations_path,
 
       }
