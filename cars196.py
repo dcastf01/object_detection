@@ -214,12 +214,12 @@ class Cars196(tfds.core.GeneratorBasedBuilder):
   def _generate_examples(self, split_name, data_dir_path,
                          data_annotations_path):
     """Generate training and testing samples."""
-
+    logging.warning("I add extra features from the original ds")
     image_dict = self.returnImageDict(data_dir_path)
     filepath = data_dir_path.replace("\\", "/")
     bbox_dict = self.returnBbox(data_annotations_path, image_dict)
-    logging.critical(str(data_dir_path))
-    logging.critical(str(data_annotations_path))
+    
+
     with tf.io.gfile.GFile(data_annotations_path, 'rb') as f:
       mat = tfds.core.lazy_imports.scipy.io.loadmat(f)
     for example in mat['annotations'][0]:
