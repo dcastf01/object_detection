@@ -1,13 +1,13 @@
 from object_detection.utils import dataset_util
 # @tf.function
 def tf_serialize_example(complete_tensor):
-'''
+  '''
   it's necessary a tensor with format dict that have the next keys
   bbox
   filepath
   label
   image
-'''
+  '''
 
   #se extrae los puntos de la caja
   box_tensor=complete_tensor["bbox"]
