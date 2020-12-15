@@ -1,6 +1,8 @@
 from object_detection.utils import dataset_util
+import os
+import tensorflow as tf
 # @tf.function
-def tf_serialize_example(complete_tensor):
+def tf_serialize_example(complete_tensor,classlabel):
   '''
   it's necessary a tensor with format dict that have the next keys
   bbox
@@ -64,7 +66,7 @@ def tf_serialize_example(complete_tensor):
 
 def write_TFrecord(ds,classlabel,path_annotation="/content/workspace/annotations/",subsetname="train"):
   for features in ds:
-    tf_example=tf_serialize_example(features)
+    tf_example=tf_serialize_example(features,classlabel)
     writer = tf.io.TFRecordWriter(path_annotation+"/"+subsetname+".tfrecord")
     writer.write(tf_example.SerializeToString())
   writer.close()
