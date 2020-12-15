@@ -62,7 +62,7 @@ def tf_serialize_example(complete_tensor):
   #   tf.string)      # the return type is `tf.string`.
   return tf_example
 
-def write_TFrecord(ds,path_annotation="/content/workspace/annotations/",subsetname="train"):
+def write_TFrecord(ds,classlabel,path_annotation="/content/workspace/annotations/",subsetname="train"):
   for features in ds:
     tf_example=tf_serialize_example(features)
     writer = tf.io.TFRecordWriter(path_annotation+"/"+subsetname+".tfrecord")
