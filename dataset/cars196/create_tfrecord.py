@@ -67,6 +67,6 @@ def tf_serialize_example(complete_tensor,classlabel):
 def write_TFrecord(ds,classlabel,path_annotation="/content/workspace/annotations/",subsetname="train"):
   for features in ds:
     tf_example=tf_serialize_example(features,classlabel)
-    writer = tf.io.TFRecordWriter(path_annotation+"/"+subsetname+".tfrecord")
+    writer = tf.io.TFRecordWriter(path_annotation+"/"+subsetname+".record")
     writer.write(tf_example.SerializeToString())
   writer.close()
