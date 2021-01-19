@@ -27,6 +27,7 @@ def copy_image_to_next_dataset(image,filename,label="",dst_base="/content/data/t
     tf.io.write_file(dst_path, image)
     # img.save(dst_path)
   except Exception as e:
+    print("error en crear imagen")
     print(e)
 def crop_image(image,bbox):
    #las cajas siguen esta convención ymin, xmin, ymax, xmax
