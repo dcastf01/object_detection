@@ -1,7 +1,7 @@
 import os
 import tensorflow as tf
 
-def create_folder(numclass,train=True,test=False,basepath="/data"):
+def create_folder(numclass,train=True,test=False,basepath="/data",debug=false):
   if train:
     folder="train"
   elif test:
@@ -13,8 +13,10 @@ def create_folder(numclass,train=True,test=False,basepath="/data"):
     try:
         os.makedirs(data_path)
     except OSError:
+      if debug:
         print ("Creation of the directory %s failed" % data_path)
     else:
+      if debug:
         print ("Successfully created the directory %s" % data_path)
 # @tf.function(experimental_relax_shapes=True)
 def copy_image_to_next_dataset(image,filename,label="",dst_base="/content/data/train",extension="jpg"):
