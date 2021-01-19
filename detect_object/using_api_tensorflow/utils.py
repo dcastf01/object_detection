@@ -40,6 +40,7 @@ def crop_image(image,bbox):
     xmax=int(xmax*width)
     result= tf.image.crop_to_bounding_box(image, xmin, ymin, 
                                         xmax-xmin, ymax-ymin)
+    return result
     # plt.imshow(result.numpy())
     # plt.show()
 def crop_image_and_copy_next_dataset(image,bbox,filename,label,dst_base="/content/data/train",extension="jpg"):
