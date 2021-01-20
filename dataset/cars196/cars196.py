@@ -159,7 +159,7 @@ class Cars196(tfds.core.GeneratorBasedBuilder):
     """Define the dataset info."""
     features_dict = {
         'image': tfds.features.Image(),
-        'cut_image':tfds.features.Image(),
+        # 'cut_image':tfds.features.Image(),
         'label': tfds.features.ClassLabel(names=_NAMES),
         'bbox': tfds.features.BBoxFeature(),
         'filename':tfds.features.Text(),
@@ -234,7 +234,7 @@ class Cars196(tfds.core.GeneratorBasedBuilder):
       
       features = {
           'label': label,
-          'cut_image':cut_image,
+          # 'cut_image':cut_image,
           'image': image,
           'bbox': bbox,
           'filename':str(image_name),
@@ -269,20 +269,22 @@ class Cars196(tfds.core.GeneratorBasedBuilder):
                                                  ymax / height, xmax / width)
     return bbox_dict
   
-  def returnBbox(self, image, bbox):
-    logging.warning(image)
-    logging.warning(type(image))
-    shape=image.get_shape()
-    width=shape[0]
-    height=shape[1]
-    logging.warning(shape)
+  # def returnBbox(self, img, bbox):
+  #   logging.warning(img)
+  #   logging.warning(type(img))
+  #   logging.warning(bbox)
+  #   logging.warning(type(bbox))
+  #   shape=img.get_shape()
+  #   width=shape[0]
+  #   height=shape[1]
+  #   logging.warning(shape)
     
-    ymin=tf.cast(tf.multiply(bbox[0],height),tf.int32)
-    ymax=tf.cast(tf.multiply(bbox[2],height),tf.int32)
-    xmin=tf.cast(tf.multiply(bbox[1],width),tf.int32)
-    xmax=tf.cast(tf.multiply(bbox[3],width),tf.int32)
+  #   ymin=tf.cast(tf.multiply(bbox[0],height),tf.int32)
+  #   ymax=tf.cast(tf.multiply(bbox[2],height),tf.int32)
+  #   xmin=tf.cast(tf.multiply(bbox[1],width),tf.int32)
+  #   xmax=tf.cast(tf.multiply(bbox[3],width),tf.int32)
     
-    cut_image= tf.image.crop_to_bounding_box(img, xmin, ymin, 
-                                        xmax-xmin, ymax-ymin)
+  #   cut_image= tf.image.crop_to_bounding_box(img, xmin, ymin, 
+  #                                       xmax-xmin, ymax-ymin)
     
-    return cut_image
+  #   return cut_image
