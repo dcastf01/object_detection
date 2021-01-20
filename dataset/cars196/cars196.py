@@ -230,7 +230,7 @@ class Cars196(tfds.core.GeneratorBasedBuilder):
       label = _NAMES[example[4].item() - 1]
       image = image_dict[image_name]
       bbox = bbox_dict[image_name]
-      cut_image=self.returnCutImage(image,bbox)
+      # cut_image=self.returnCutImage(image,bbox)
       
       features = {
           'label': label,
