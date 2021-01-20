@@ -271,9 +271,11 @@ class Cars196(tfds.core.GeneratorBasedBuilder):
   
   def returnBbox(self, image, bbox):
     logging.warning(image)
+    logging.warning(type(image))
     shape=image.get_shape()
     width=shape[0]
     height=shape[1]
+    logging.warning(shape)
     
     ymin=tf.cast(tf.multiply(bbox[0],height),tf.int32)
     ymax=tf.cast(tf.multiply(bbox[2],height),tf.int32)
