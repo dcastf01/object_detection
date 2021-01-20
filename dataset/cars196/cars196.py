@@ -159,6 +159,7 @@ class Cars196(tfds.core.GeneratorBasedBuilder):
     """Define the dataset info."""
     features_dict = {
         'image': tfds.features.Image(),
+        'cut_image':tfds.features.Image(),
         'label': tfds.features.ClassLabel(names=_NAMES),
         'bbox': tfds.features.BBoxFeature(),
         'filename':tfds.features.Text(),
@@ -214,7 +215,9 @@ class Cars196(tfds.core.GeneratorBasedBuilder):
   def _generate_examples(self, split_name, data_dir_path,
                          data_annotations_path):
     """Generate training and testing samples."""
-    logging.warning("I add extra features from the original ds")
+    
+    logging.warning("I had add extra features from the original ds")
+    
     image_dict = self.returnImageDict(data_dir_path)
     filepath = data_dir_path.replace("\\", "/")
     bbox_dict = self.returnBbox(data_annotations_path, image_dict)
@@ -227,8 +230,11 @@ class Cars196(tfds.core.GeneratorBasedBuilder):
       label = _NAMES[example[4].item() - 1]
       image = image_dict[image_name]
       bbox = bbox_dict[image_name]
+      cut_image=self.returnCutImage(image,bbox)
+      
       features = {
           'label': label,
+          'cut_image':cut_image,
           'image': image,
           'bbox': bbox,
           'filename':str(image_name),
@@ -262,3 +268,19 @@ class Cars196(tfds.core.GeneratorBasedBuilder):
       bbox_dict[image_name] = tfds.features.BBox(ymin / height, xmin / width,
                                                  ymax / height, xmax / width)
     return bbox_dict
+  
+  def returnBbox(self, image, bbox):
+    logging.warning(image)
+    shape=image.get_shape()
+    width=shape[0]
+    height=shape[1]
+    
+    ymin=tf.cast(tf.multiply(bbox[0],height),tf.int32)
+    ymax=tf.cast(tf.multiply(bbox[2],height),tf.int32)
+    xmin=tf.cast(tf.multiply(bbox[1],width),tf.int32)
+    xmax=tf.cast(tf.multiply(bbox[3],width),tf.int32)
+    
+    cut_image= tf.image.crop_to_bounding_box(img, xmin, ymin, 
+                                        xmax-xmin, ymax-ymin)
+    
+    return cut_image
