@@ -1,7 +1,7 @@
 import os
 import tensorflow as tf
 
-def create_folder(numclass,train=True,test=False,basepath="/data",debug=false):
+def create_folder(numclass,train=True,test=False,basepath="/data",debug=False):
   if train:
     folder="train"
   elif test:
@@ -34,11 +34,11 @@ def crop_image(image,bbox):
     width=image.shape[0]
     height=image.shape[1]
 
-    ymin, xmin, ymax, xmax=bbox
-    ymin=int(ymin*height)
-    ymax=int(ymax*height)
-    xmin=int(xmin*width)
-    xmax=int(xmax*width)
+    # ymin, xmin, ymax, xmax=bbox
+    ymin=int(bbox[0]*height)
+    ymax=int(bbox[2]*height)
+    xmin=int(bbox[1]*width)
+    xmax=int(bbox[3]*width)
     result= tf.image.crop_to_bounding_box(image, xmin, ymin, 
                                         xmax-xmin, ymax-ymin)
     return result
