@@ -172,7 +172,7 @@ class Cars196(tfds.core.GeneratorBasedBuilder):
         builder=self,
         description=(_DESCRIPTION),
         features=tfds.features.FeaturesDict(features_dict),
-        supervised_keys=('image', 'label'),
+        supervised_keys=('image', 'label','bbox'),
         homepage='https://ai.stanford.edu/~jkrause/cars/car_dataset.html',
         citation=_CITATION)
 
