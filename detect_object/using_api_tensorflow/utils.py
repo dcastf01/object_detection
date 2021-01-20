@@ -35,10 +35,10 @@ def crop_image(image,bbox):
     height=image.shape[1]
 
     # ymin, xmin, ymax, xmax=bbox
-    ymin=int(bbox[0]*height)
-    ymax=int(bbox[2]*height)
-    xmin=int(bbox[1]*width)
-    xmax=int(bbox[3]*width)
+    ymin=tf.cast(tf.multiply(bbox[0],height),tf.int32)
+    ymax=tf.cast(tf.multiply(bbox[2],height),tf.int32)
+    xmin=tf.cast(tf.multiply(bbox[1],height),tf.int32)
+    xmax=tf.cast(tf.multiply(bbox[3],height),tf.int32)
     result= tf.image.crop_to_bounding_box(image, xmin, ymin, 
                                         xmax-xmin, ymax-ymin)
     return result
