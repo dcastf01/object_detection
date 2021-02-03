@@ -45,15 +45,15 @@ def get_df_from_files(images_path="/content/data/image",label_path="/content/dat
 
 
         if level==3:
-        new_row=get_new_row_except_name_file(root)
+            new_row=get_new_row_except_name_file(root)
 
-        for f in files:
-            filename=f.split(".")[0]
-            extension=f.split(".")[1]
-            new_row["image_name"]=filename
-            new_row["extension"]=extension
-            
-            df=df.append(new_row, ignore_index=True)
+            for f in files:
+                filename=f.split(".")[0]
+                extension=f.split(".")[1]
+                new_row["image_name"]=filename
+                new_row["extension"]=extension
+                
+                df=df.append(new_row, ignore_index=True)
             
             
     df=df.apply(lambda row: get_type_image(row),axis=1)
