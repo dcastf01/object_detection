@@ -2,6 +2,19 @@ import os
 import pandas as pd
 from tqdm import tqdm
 
+def set_type_data_compcars(df):
+    return df.astype({'make_id': 'category',
+            "model_id":'category',
+            "released_year":"category",
+            "viewpoint":"category",
+            "nBoundingBox":"int32",
+            "x1":"int32",
+            "y1":"int32",
+            "x2":"int32",
+            "y2":"int32",
+                  })
+    
+
 def get_df_from_files(images_path="/content/data/image",label_path="/content/data/label"):
 
     def get_new_row_except_name_file(images_path):
@@ -58,17 +71,7 @@ def get_df_from_files(images_path="/content/data/image",label_path="/content/dat
             
     df=df.apply(lambda row: get_type_image(row),axis=1)
     
-    df=df.astype({'make_id': 'category',
-            "model_id":'category',
-            "released_year":"category",
-            "viewpoint":"category",
-            "nBoundingBox":"int32",
-            "x1":"int32",
-            "y1":"int32",
-            "x2":"int32",
-            "y2":"int32",
-
-            })
+    df=set_type_data_compcars(df)
     
     return df
 
