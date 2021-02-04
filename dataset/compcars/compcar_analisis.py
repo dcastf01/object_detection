@@ -54,6 +54,8 @@ def get_df_from_files(images_path="/content/data/image",label_path="/content/dat
     
     df=df.apply(lambda row: get_type_image(row),axis=1)
     
+    return df
+    
     
 
 
