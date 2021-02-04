@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 from tqdm import tqdm
-
+from ..create_dataset import create_dataframe_from_image_path
 def set_type_data_compcars(df):
     return df.astype({'make_id': 'category',
             "model_id":'category',
@@ -49,6 +49,12 @@ def get_df_from_files(images_path="/content/data/image",label_path="/content/dat
             row["y2"]=y2
 
         return row
+    
+    df=create_dataframe_from_image_path(images_path)
+    
+    df=df.apply(lambda row: get_type_image(row),axis=1)
+    
+    
 
 
 

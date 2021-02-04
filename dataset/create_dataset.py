@@ -17,7 +17,5 @@ def create_dataframe_from_image_path(images_path,level_image=3)
                 
                 df=df.append(new_row, ignore_index=True)
             
-            
-    df=df.apply(lambda row: get_type_image(row),axis=1)
     
     return df
