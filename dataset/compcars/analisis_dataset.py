@@ -1,6 +1,6 @@
 import os
 import pandas as pd
-import tqdm
+from tqdm import tqdm
 
 def get_df_from_files(images_path="/content/data/image",label_path="/content/data/label"):
 
@@ -40,7 +40,7 @@ def get_df_from_files(images_path="/content/data/image",label_path="/content/dat
     df=pd.DataFrame()
 
 
-    for root, dirs, files in os.walk(images_path):
+    for root, dirs, files in tqdm(os.walk(images_path)):
         level = root.replace(images_path, '').count(os.sep)
 
 
