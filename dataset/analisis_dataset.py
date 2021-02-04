@@ -8,6 +8,9 @@ from scipy import stats
 from scipy.stats import skew, norm
 from scipy.special import boxcox1p
 
+
+
+
 def create_pareto_diagram( df,category):
   data=df[category].value_counts()
   df = pd.DataFrame({category: data})
