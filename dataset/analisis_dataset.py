@@ -33,6 +33,8 @@ def create_pareto_diagram( df,category):
   ax2.tick_params(axis="y", colors="C1")
   ax2.set_ylim(ymin=0)
   ax.legend(loc="right")
+  plt.xlabel(f"class {category}")
+  plt.ylabel(f"unidades")
 
   plt.show()
 
