@@ -1,7 +1,6 @@
 import os
 import pandas as pd
 from tqdm import tqdm
-from ..create_dataset import create_dataframe_from_image_path
 
 def set_type_data_compcars(df):
     return df.astype({'make_id': 'category',
