@@ -14,6 +14,7 @@ from scipy.special import boxcox1p
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.ticker import PercentFormatter
+
 def create_pareto_diagram( df,category):
   data=df[category].value_counts()
  
@@ -23,12 +24,12 @@ def create_pareto_diagram( df,category):
   df["cumpercentage"] = df[category].cumsum()/df[category].sum()*100
 
   fig, ax = plt.subplots(figsize=(10,7))
-  bar=df.plot(kind='bar',y=category,ax=ax)
+  bar=df.plot(kind='bar',y=category,ax=ax,xlabel=category)
   
   ax2 = ax.twinx()
   line1=df.plot(kind='line',y="cumpercentage",ax=ax2,color="C1", marker="D", ms=7)
   ax2.yaxis.set_major_formatter(PercentFormatter())
-  print(df)
+  
   ax.tick_params(axis="y", colors="C0")
   ax2.tick_params(axis="y", colors="C1")
   ax2.set_ylim(ymin=0)
