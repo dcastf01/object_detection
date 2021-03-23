@@ -54,7 +54,7 @@ def get_df_from_files(images_path="/content/data/image",label_path="/content/dat
         df=pd.DataFrame()
 
 
-        for root, dirs, files in tqdm(os.walk(images_path)):
+        for root, dirs, files in tqdm(os.walk(images_path),miniters=100):
             level = root.replace(images_path, '').count(os.sep)
 
 
