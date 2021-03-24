@@ -6,7 +6,6 @@ import pandas as pd
 from dataset.class_data_analisis import ClassDataAnalisis
 from tqdm import tqdm
 
-
 class CompcarAnalisis(ClassDataAnalisis):
     def __init__(self,
                  images_path:Union[str,None]=None,label_path:Union[str,None]=None,

@@ -147,9 +147,9 @@ _CITATION = """\
 """
 
 
-class Cars196(tfds.core.GeneratorBasedBuilder):
+class Cars196v2(tfds.core.GeneratorBasedBuilder):
   """Car Images dataset."""
-
+  # SKIP_REGISTERING = False
   VERSION = tfds.core.Version('2.0.0')
   SUPPORTED_VERSIONS = [
       tfds.core.Version('2.1.0'),
