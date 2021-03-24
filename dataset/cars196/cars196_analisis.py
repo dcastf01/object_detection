@@ -2,8 +2,7 @@
 from typing import Union
 
 import pandas as pd
-import tensorflow as tf
-import tensorflow_datasets as tfds
+
 from dataset.cars196 import cars196
 from dataset.class_data_analisis import ClassDataAnalisis
 from tqdm import tqdm
@@ -28,7 +27,7 @@ class Cars196Analisis(ClassDataAnalisis):
         df_temp=self.get_df_total_train_and_test()
         
             
-        super().__init__(df_temp, self.critical_variables) 
+        super().__init__(df_temp, name_dataset="cars196",critical_variables=self.critical_variables) 
     def __len__(self):
         return self.data.shape[0]
     def create_dataframe_cars196_by_annotations(self,data_annotations):
@@ -54,6 +53,8 @@ class Cars196Analisis(ClassDataAnalisis):
         else:
             
             if self.images_path is not  None:
+                import tensorflow as tf
+                import tensorflow_datasets as tfds
                 cars196.Cars196v2()
                 cars_builder=tfds.builder("cars196v2")
                 cars_builder.download_and_prepare(download_dir=self.images_path)
@@ -68,7 +69,6 @@ class Cars196Analisis(ClassDataAnalisis):
         df["model_id"]=df.label.str.split(" ").str[1:-1].str.join(" ")
         df["released_year"]=df.label.str.split(" ").str[-1]
         
-        print(df.head())
         return df
         
 def test():
@@ -77,4 +77,4 @@ def test():
     # cars196_analisis=Cars196Analisis()
     print("len dataset", len(cars196_analisis))
     
-test()
+# test()

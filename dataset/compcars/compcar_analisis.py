@@ -5,12 +5,12 @@ from typing import Union
 import pandas as pd
 from dataset.class_data_analisis import ClassDataAnalisis
 from tqdm import tqdm
-
+from dataset.compcars.enum_viepoints import ViewPointEnum
 class CompcarAnalisis(ClassDataAnalisis):
     def __init__(self,
                  images_path:Union[str,None]=None,label_path:Union[str,None]=None,
                  path_csv:Union[str,None]=None) :         
-        self.critical_variables=["viewpoint","make_id","model_id","released_year"]
+        self.critical_variables=["viewpoint","viewpoint_name","make_id","model_id","released_year","model_id_and_released_year"]
         self.images_path=images_path
         self.label_path=label_path
         self.path_csv=path_csv
@@ -18,7 +18,7 @@ class CompcarAnalisis(ClassDataAnalisis):
         df_temp=self.get_df_from_files()
         
             
-        super().__init__(df_temp, self.critical_variables) 
+        super().__init__(df_temp,name_dataset="compcars",critical_variables= self.critical_variables) 
     def __len__(self):
         return self.data.shape[0]
     
@@ -90,9 +90,10 @@ class CompcarAnalisis(ClassDataAnalisis):
                     "x2":"int32",
                     "y2":"int32",
                     })
-        
+            
+        tqdm.pandas(miniters=100)
         if self.path_csv is None:
-            tqdm.pandas(miniters=100)
+            
             df=create_dataframe_from_image_path()
             df=df.progress_apply(lambda row: get_type_image(row),axis=1)
         else:
@@ -100,8 +101,8 @@ class CompcarAnalisis(ClassDataAnalisis):
             df=pd.read_csv(self.path_csv,index_col =[0],dtype ='str')
         
         df=set_type_data_compcars(df)
-        df["extra"]=df["model_id"].astype(str)+df["released_year"].astype(str)
-        
+        df["model_id_and_released_year"]=df["model_id"].astype(str)+df["released_year"].astype(str)
+        df["viewpoint_name"] = df["viewpoint"].progress_apply(lambda x: ViewPointEnum(int(x)).name)
         return df
         
         
@@ -112,7 +113,7 @@ def test():
                                      label_path=r"D:\programacion\Repositorios\object_detection_TFM\data\compcars\label")
     print("len dataset", len(compcar_analisis))
     
-test()
+# test()
 
 
 

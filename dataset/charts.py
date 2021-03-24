@@ -17,21 +17,47 @@ def create_pareto_diagram( df,category):
   
   df["cumpercentage"] = df[category].cumsum()/df[category].sum()*100
 
-  fig, ax = plt.subplots(figsize=(10,7))
-  bar=df.plot(kind='bar',y=category,ax=ax,xlabel=category)
+  fig, ax1 = plt.subplots(figsize=(10,7))
   
-  ax2 = ax.twinx()
-  line1=df.plot(kind='line',y="cumpercentage",ax=ax2,color="C1", marker="D", ms=7)
+  df.plot(kind='bar',y=category,ax=ax1,xlabel=category)
+  plt.ylabel(f"unidades")
+  plt.xlabel(f"{category}")
+  ax1.tick_params(axis="y", colors="C0")
+  
+  
+  ax2 = ax1.twinx()
+  df.plot(kind='line',y="cumpercentage",ax=ax2,color="C1", marker="D", ms=7)
   ax2.yaxis.set_major_formatter(PercentFormatter())
-  
-  ax.tick_params(axis="y", colors="C0")
   ax2.tick_params(axis="y", colors="C1")
   ax2.set_ylim(ymin=0)
-  ax.legend(loc="right")
-  plt.xlabel(f"class {category}")
-  plt.ylabel(f"unidades")
+  
+  
+  h1, l1 = ax1.get_legend_handles_labels()
+  h2, l2 = ax2.get_legend_handles_labels()
+  # ax2.lengend(None)
+  ax1.legend(h1+h2, l1+l2, loc='right')
+  ax2.get_legend().remove()
+  
+  plt.ylabel(f"porcentaje acumulado")
+  
+  # plots=[bar,line1]
+  if df.shape[0]>50:
+    ax1.xaxis.set_major_locator(plt.NullLocator())
+    # plt.tick_params(axis='x',labelbottom='off')
+ 
+  
+  
+  # labs=[l.get_label() for l in plots]
+  # ax.legend(plots, labs, loc=0)
+  # ax.legend(loc="right")
+  # ax2.legend(loc=0)
+  # plt.xlabel(f"class {category}")
+  
+  # fig.text(0.5, -0.04, f"class {category}" , ha='center')
+  
 
-  plt.show()
+  # plt.show()
+  return fig
 
 def plotting_3_chart(df, feature):
     ## Importing seaborn, matplotlab and scipy modules. 
@@ -69,6 +95,7 @@ def plotting_3_chart(df, feature):
   ax3.set_title('Box Plot')
   ## Plotting the box plot. 
   sns.boxplot(df.loc[:,feature], orient='v', ax = ax3 )
+  return fig
 
 
 
