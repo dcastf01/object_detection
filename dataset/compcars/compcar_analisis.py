@@ -1,16 +1,11 @@
 import os
-# os.chdir("D://programacion//Repositorios//object_detection_TFM//")
-# import os
 import sys
-# a=os.getcwd()
-# sys.path.append(os.getcwd())
-# ROOT_DIR = os.path.abspath(os.curdir)
-# ROOT_DIR = os.path.dirname(os.path.abspath(__file__)) # This is your Project Root
+from typing import Union
 
 import pandas as pd
-from tqdm import tqdm
 from dataset.class_data_analisis import ClassDataAnalisis
-from typing import Union
+from tqdm import tqdm
+
 
 class CompcarAnalisis(ClassDataAnalisis):
     def __init__(self,
