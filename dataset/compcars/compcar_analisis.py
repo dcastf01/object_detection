@@ -21,10 +21,11 @@ class CompcarAnalisis(ClassDataAnalisis):
         super().__init__(df_temp, self.critical_variables) 
     def __len__(self):
         return self.data.shape[0]
+    
     def get_df_from_files(self):
 
-        def get_new_row_except_name_file():
-            root_in_parts=self.images_path.split("/")
+        def get_new_row_except_name_file(root):
+            root_in_parts=root.split(os.sep)
             released_year=root_in_parts[-1]         
             model_id=root_in_parts[-2]
             make_id=root_in_parts[-3]
@@ -77,6 +78,7 @@ class CompcarAnalisis(ClassDataAnalisis):
                     
             
             return df
+        
         def set_type_data_compcars(df):
             return df.astype({'make_id': 'category',
                     "model_id":'category',
@@ -88,12 +90,14 @@ class CompcarAnalisis(ClassDataAnalisis):
                     "x2":"int32",
                     "y2":"int32",
                     })
+        
         if self.path_csv is None:
-            df=create_dataframe_from_image_path(self.images_path)
-            df=df.apply(lambda row: get_type_image(row),axis=1)
+            tqdm.pandas(miniters=100)
+            df=create_dataframe_from_image_path()
+            df=df.progress_apply(lambda row: get_type_image(row),axis=1)
         else:
             
-            df=pd.read_csv(self.path_csv,index_col =[0])
+            df=pd.read_csv(self.path_csv,index_col =[0],dtype ='str')
         
         df=set_type_data_compcars(df)
         df["extra"]=df["model_id"].astype(str)+df["released_year"].astype(str)
@@ -103,8 +107,12 @@ class CompcarAnalisis(ClassDataAnalisis):
         
 def test():
     path_csv=r"dataset\compcars\all_information_compcars.csv"
-    compcar_analisis=CompcarAnalisis(path_csv=r"dataset\compcars\all_information_compcars.csv")
+    # compcar_analisis=CompcarAnalisis(path_csv=r"dataset\compcars\all_information_compcars.csv")
+    compcar_analisis=CompcarAnalisis(images_path=r"D:\programacion\Repositorios\object_detection_TFM\data\compcars\image",
+                                     label_path=r"D:\programacion\Repositorios\object_detection_TFM\data\compcars\label")
     print("len dataset", len(compcar_analisis))
+    
+test()
 
 
 

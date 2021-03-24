@@ -17,14 +17,11 @@ class Cars196Analisis(ClassDataAnalisis):
                  path_csv:Union[str,None]=None) :     
         
             
-        cars196.Cars196v2()
-        if images_path is not  None:
-            cars_builder=tfds.builder("cars196v2")
-            cars_builder.download_and_prepare(download_dir=images_path)
+        
         self.data_annotations_path_train=data_annotations_path_train
         self.data_annotations_path_test=data_annotations_path_test
         self.critical_variables=["make_id","model_id","released_year"]
-        # self.images_path=images_path
+        self.images_path=images_path
         # self.label_path=label_path
         self.path_csv=path_csv
        
@@ -40,7 +37,7 @@ class Cars196Analisis(ClassDataAnalisis):
 
         with tf.io.gfile.GFile(data_annotations, 'rb') as f:
             mat = tfds.core.lazy_imports.scipy.io.loadmat(f)
-            for example in mat['annotations'][0]:
+            for example in tqdm(mat['annotations'][0],miniters=100):
                 image_name = example[-1].item().split('.')[0]
                 label = cars196._NAMES[example[4].item() - 1]
 
@@ -53,9 +50,15 @@ class Cars196Analisis(ClassDataAnalisis):
 
     def get_df_total_train_and_test(self):
         if self.path_csv is not None:
-            df=pd.read_csv( self.path_csv,index_col =[0])
+            df=pd.read_csv( self.path_csv,index_col =[0],dtype ='str')
         else:
+            
+            if self.images_path is not  None:
+                cars196.Cars196v2()
+                cars_builder=tfds.builder("cars196v2")
+                cars_builder.download_and_prepare(download_dir=self.images_path)
             df=self.create_dataframe_cars196_by_annotations(self.data_annotations_path_train)
+            # df.filename.astype(str)
             df.to_csv(r"dataset\cars196\all_information_cars196.csv")
             # df_test=self.create_dataframe_cars196_by_annotations(self.data_annotations_path_test)
             
@@ -70,7 +73,8 @@ class Cars196Analisis(ClassDataAnalisis):
         
 def test():
     # path_csv=r"dataset\compcars\all_information_compcars.csv"
-    cars196_analisis=Cars196Analisis()
+    cars196_analisis=Cars196Analisis(path_csv= r"dataset\cars196\all_information_cars196.csv")
+    # cars196_analisis=Cars196Analisis()
     print("len dataset", len(cars196_analisis))
     
 test()
