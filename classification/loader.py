@@ -1,18 +1,20 @@
 
 import os
 
+import numpy as np
 import pandas as pd
 import torch
 import torch.nn as nn
 import torchvision
 import torchvision.transforms as transforms
-from PIL import Image
-from torch.utils.data import DataLoader, Dataset
-
 from dataset import config
 from dataset.compcars.compcar_analisis import CompcarAnalisis
+from PIL import Image
+# from skimage.viewer import ImageViewer
+from torch.utils.data import DataLoader, Dataset
 
-from skimage.viewer import ImageViewer
+from classification.augmentation import get_transform_from_aladdinpersson
+from utils import plot_examples
 
 class Loader (Dataset):
     
@@ -62,28 +64,33 @@ class CompcarLoader(Loader):
     
         img_path=os.path.join(self.root_dir_images,get_relative_path_img(index))
         image_global=Image.open(img_path).convert("RGB")
-        image=cut_car(image_global,index)
+        image=np.array(cut_car(image_global,index))
       
         label=self.data.iloc[index][self.level_to_classifier]
         
         if self.transform:
             augmentations = self.transform(image=image)
             image = augmentations["image"]
-        
-        
-        
+
         return image,label
         
         
-    
-        # raise NotImplementedError
-        
+            
 def test():
     
     compcar_analisis=CompcarAnalisis(path_csv=config.PATH_COMPCAR_CSV)
     compcar_analisis.filter_dataset('viewpoint=="4" or viewpoint=="1"')
     print(compcar_analisis.data.head())
-    loader=CompcarLoader(compcar_analisis.data,root_dir_images=config.PATH_COMPCAR_IMAGES,condition_filter=compcar_analisis.filter)
-    a=loader[0]
-    print(a)
-test()
+    transform=get_transform_from_aladdinpersson()
+    loader=CompcarLoader(compcar_analisis.data,
+                         root_dir_images=config.PATH_COMPCAR_IMAGES,
+                         transform=transform,
+                         condition_filter=compcar_analisis.filter)
+    images=[]
+    for i in range(15):
+        image,label=loader[0]
+        images.append(image.permute(1, 2, 0))
+    
+    plot_examples(images)
+    
+# test()
