@@ -14,4 +14,4 @@ def test():
     #get front with number
     print(ViewPointEnum(-1).name)
     
-test()
+# test()

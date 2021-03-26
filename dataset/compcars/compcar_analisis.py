@@ -6,6 +6,7 @@ import pandas as pd
 from dataset.class_data_analisis import ClassDataAnalisis
 from tqdm import tqdm
 from dataset.compcars.enum_viepoints import ViewPointEnum
+
 class CompcarAnalisis(ClassDataAnalisis):
     def __init__(self,
                  images_path:Union[str,None]=None,label_path:Union[str,None]=None,
@@ -19,8 +20,6 @@ class CompcarAnalisis(ClassDataAnalisis):
         
             
         super().__init__(df_temp,name_dataset="compcars",critical_variables= self.critical_variables) 
-    def __len__(self):
-        return self.data.shape[0]
     
     def get_df_from_files(self):
 
@@ -105,12 +104,14 @@ class CompcarAnalisis(ClassDataAnalisis):
         df["viewpoint_name"] = df["viewpoint"].progress_apply(lambda x: ViewPointEnum(int(x)).name)
         return df
         
-        
+    
 def test():
     path_csv=r"dataset\compcars\all_information_compcars.csv"
-    # compcar_analisis=CompcarAnalisis(path_csv=r"dataset\compcars\all_information_compcars.csv")
-    compcar_analisis=CompcarAnalisis(images_path=r"D:\programacion\Repositorios\object_detection_TFM\data\compcars\image",
-                                     label_path=r"D:\programacion\Repositorios\object_detection_TFM\data\compcars\label")
+    compcar_analisis=CompcarAnalisis(path_csv=r"dataset\compcars\all_information_compcars.csv")
+    # compcar_analisis=CompcarAnalisis(images_path=r"D:\programacion\Repositorios\object_detection_TFM\data\compcars\image",
+    #                                  label_path=r"D:\programacion\Repositorios\object_detection_TFM\data\compcars\label")
+    print("len dataset", len(compcar_analisis))
+    compcar_analisis.filter_dataset('viewpoint=="4" or viewpoint=="1"')
     print("len dataset", len(compcar_analisis))
     
 # test()

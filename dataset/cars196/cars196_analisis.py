@@ -19,7 +19,7 @@ class Cars196Analisis(ClassDataAnalisis):
         
         self.data_annotations_path_train=data_annotations_path_train
         self.data_annotations_path_test=data_annotations_path_test
-        self.critical_variables=["make_id","model_id","released_year"]
+        self.critical_variables=["make_id","model_id","released_year","model_id_and_released_year"]
         self.images_path=images_path
         # self.label_path=label_path
         self.path_csv=path_csv
@@ -28,8 +28,8 @@ class Cars196Analisis(ClassDataAnalisis):
         
             
         super().__init__(df_temp, name_dataset="cars196",critical_variables=self.critical_variables) 
-    def __len__(self):
-        return self.data.shape[0]
+    # def __len__(self):
+    #     return self.data.shape[0]
     def create_dataframe_cars196_by_annotations(self,data_annotations):
         df=pd.DataFrame()
 
@@ -68,6 +68,7 @@ class Cars196Analisis(ClassDataAnalisis):
         df["make_id"]=df.label.str.split(" ").str[0]
         df["model_id"]=df.label.str.split(" ").str[1:-1].str.join(" ")
         df["released_year"]=df.label.str.split(" ").str[-1]
+        df["model_id_and_released_year"]=df["model_id"].astype(str)+df["released_year"].astype(str)
         
         return df
         
