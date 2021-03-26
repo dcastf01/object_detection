@@ -1,17 +1,18 @@
 
-import torch 
+import os
+
+import pandas as pd
+import torch
 import torch.nn as nn
 import torchvision
 import torchvision.transforms as transforms
-import os
-import pandas as pd
-from torch.utils.data import Dataset,DataLoader
-
-from skimage import io
+from PIL import Image
+from torch.utils.data import DataLoader, Dataset
 
 from dataset import config
-
 from dataset.compcars.compcar_analisis import CompcarAnalisis
+
+from skimage.viewer import ImageViewer
 
 class Loader (Dataset):
     
@@ -33,8 +34,8 @@ class Loader (Dataset):
 
 class CompcarLoader(Loader):
     def __init__(self, df:pd.DataFrame,root_dir_images:str,
-                  transform=None,condition_filter:str=None):
-        
+                  transform=None,condition_filter:str=None,level_to_classifier:str="model_id"):
+        self.level_to_classifier=level_to_classifier
         super().__init__(df=df,root_dir_images=root_dir_images,
                          transform=transform,condition_filter=condition_filter)
         
@@ -48,25 +49,41 @@ class CompcarLoader(Loader):
             extension=self.data.iloc[index]["extension"]
             
             return os.path.join(make_id,model_id,released_year,image_name+"."+extension)
+        
+        def cut_car(image,index):
+            x1=self.data.iloc[index]["x1"]
+            x2=self.data.iloc[index]["x2"]
+            y1=self.data.iloc[index]["y1"]
+            y2=self.data.iloc[index]["y2"]
+            w=x2-x1
+            h=y2-y1
+            
+            return transforms.functional.crop(image,y1,x1,h,w)
+    
         img_path=os.path.join(self.root_dir_images,get_relative_path_img(index))
-        image=io.imread(img_path)
-        label=self.data.iloc[index]["model_id"]
+        image_global=Image.open(img_path).convert("RGB")
+        image=cut_car(image_global,index)
+      
+        label=self.data.iloc[index][self.level_to_classifier]
         
         if self.transform:
-            image=self.transform(image)
+            augmentations = self.transform(image=image)
+            image = augmentations["image"]
         
         
         
-        return img_path,label
+        return image,label
         
         
-    def cut_car(image,x1,y1,x2,y2):
-        raise NotImplementedError
+    
+        # raise NotImplementedError
         
-        
-compcar_analisis=CompcarAnalisis(path_csv=config.PATH_COMPCAR_CSV)
-compcar_analisis.filter_dataset('viewpoint=="4" or viewpoint=="1"')
-print(compcar_analisis.data.head())
-loader=CompcarLoader(compcar_analisis.data,root_dir_images=config.PATH_COMPCAR_IMAGES,condition_filter=compcar_analisis.filter)
-a=loader[0]
-print(a)
+def test():
+    
+    compcar_analisis=CompcarAnalisis(path_csv=config.PATH_COMPCAR_CSV)
+    compcar_analisis.filter_dataset('viewpoint=="4" or viewpoint=="1"')
+    print(compcar_analisis.data.head())
+    loader=CompcarLoader(compcar_analisis.data,root_dir_images=config.PATH_COMPCAR_IMAGES,condition_filter=compcar_analisis.filter)
+    a=loader[0]
+    print(a)
+test()

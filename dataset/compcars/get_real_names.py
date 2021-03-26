@@ -22,7 +22,7 @@ class CompcarsRealNames:
     def get_real_model_name_with_index(self,index:int):
         return self.real_names_models[index]
 
-def test():
+def test_():
     realnames=CompcarsRealNames()
     car_make_name=realnames.get_real_make_name_with_index(1)
     
