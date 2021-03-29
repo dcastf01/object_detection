@@ -1,5 +1,5 @@
 from scipy.io import loadmat
-from dataset import config
+import config
 
 class CompcarsRealNames:
     def __init__(self):

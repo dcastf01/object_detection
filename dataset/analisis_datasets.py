@@ -1,4 +1,4 @@
-from dataset import config
+import config
 
 from dataset.cars196.cars196_analisis import Cars196Analisis
 from dataset.compcars.compcar_analisis import CompcarAnalisis

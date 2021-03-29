@@ -1,5 +1,5 @@
 import pandas as pd
-from dataset import config
+import config
 from dataset.charts import create_pareto_diagram,plotting_3_chart
 import os
 import matplotlib.pyplot as plt

@@ -24,11 +24,11 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 BATCH_SIZE = 16
 LEARNING_RATE = 1e-5
 # LAMBDA_IDENTITY = 0.0
-# NUM_WORKERS = 4
+NUM_WORKERS = 0
+SEED=1
+
 NUM_EPOCHS = 10
-LOAD_MODEL = True
+LOAD_MODEL = False
 SAVE_MODEL = True
-CHECKPOINT_GEN_H = "genh.pth.tar"
-CHECKPOINT_GEN_Z = "genz.pth.tar"
-CHECKPOINT_CRITIC_H = "critich.pth.tar"
-CHECKPOINT_CRITIC_Z = "criticz.pth.tar"
+
+CHECKPOINT_SQUEEZENET= "classification/model/SQUEEZENET.pth.tar"

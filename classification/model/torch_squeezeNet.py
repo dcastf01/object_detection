@@ -95,7 +95,7 @@ def fire_layer(inp, s, e):
     f = fire(inp, s, e)
     return f
 
-def squeezenet(pretrained=False):
+def get_squeezenet(pretrained=False):
     net = SqueezeNet()
     # inp = Variable(torch.randn(64,3,32,32))
     # out = net.forward(inp)
