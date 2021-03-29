@@ -42,13 +42,13 @@ class fire(nn.Module):
 
 
 class SqueezeNet(nn.Module):
-    def __init__(self):
+    def __init__(self,NUM_CLASS):
         super(SqueezeNet, self).__init__()
-        self.conv1 = nn.Conv2d(3, 96, kernel_size=3, stride=1, padding=1) # 32
-        self.bn1 = nn.BatchNorm2d(96)
+        self.conv1 = nn.Conv2d(3, 95, kernel_size=3, stride=1, padding=1) # 32
+        self.bn1 = nn.BatchNorm2d(95)
         self.relu = nn.ReLU(inplace=True)
         self.maxpool1 = nn.MaxPool2d(kernel_size=2, stride=2) # 16
-        self.fire2 = fire(96, 16, 64)
+        self.fire2 = fire(95, 16, 64)
         self.fire3 = fire(128, 16, 64)
         self.fire4 = fire(128, 32, 128)
         self.maxpool2 = nn.MaxPool2d(kernel_size=2, stride=2) # 8
@@ -56,11 +56,16 @@ class SqueezeNet(nn.Module):
         self.fire6 = fire(256, 48, 192)
         self.fire7 = fire(384, 48, 192)
         self.fire8 = fire(384, 64, 256)
-        self.maxpool3 = nn.MaxPool2d(kernel_size=2, stride=2) # 4
+        self.maxpool3 = nn.MaxPool2d(kernel_size=2, stride=2,) # 4
         self.fire9 = fire(512, 64, 256)
-        self.conv2 = nn.Conv2d(512, 10, kernel_size=1, stride=1)
-        self.avg_pool = nn.AvgPool2d(kernel_size=4, stride=4)
+        self.conv2 = nn.Conv2d(512, NUM_CLASS, kernel_size=3, stride=2)
+        # self.avg_pool = nn.AvgPool2d(kernel_size=4, stride=4)
+        # #se ha cambiado por la adaptative ya que si no hay que poner algún modulo más o
+        # aumentar los kernels o strides
+        self.avg_pool=nn.AdaptiveAvgPool2d(1)
         self.softmax = nn.LogSoftmax(dim=1)
+        
+        
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
                 n = m.kernel_size[0] * m.kernel_size[1] * m.in_channels
@@ -95,9 +100,18 @@ def fire_layer(inp, s, e):
     f = fire(inp, s, e)
     return f
 
-def get_squeezenet(pretrained=False):
-    net = SqueezeNet()
+def get_squeezenet(NUM_CLASS=10,pretrained=False):
+    net = SqueezeNet(NUM_CLASS)
     # inp = Variable(torch.randn(64,3,32,32))
     # out = net.forward(inp)
     # print(out.size())
     return net
+
+def test_architecture():
+    from torchinfo import summary
+    
+    model=get_squeezenet(NUM_CLASS=766)
+    
+    summary(model,input_size=(16,3,227,227))
+
+test_architecture()

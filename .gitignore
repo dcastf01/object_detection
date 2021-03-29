@@ -132,3 +132,5 @@ dmypy.json
 
 data/
 dataset/results/
+wandb/
+classification/model/*.pth.tar

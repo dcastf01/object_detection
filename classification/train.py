@@ -48,7 +48,8 @@ def main():
     logging.info("DEVICE",config.DEVICE)
     train_loader=dataloaders["train"]
     loss_fn = nn.CrossEntropyLoss()
-    model=get_squeezenet().to(config.DEVICE)
+    model=get_squeezenet(config.NUM_CLASS).to(config.DEVICE)
+    
     wandb.watch(model)
     optimizer= optim.Adam(model.parameters(), lr=config.LEARNING_RATE)
     scaler = torch.cuda.amp.GradScaler()
