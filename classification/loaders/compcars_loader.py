@@ -1,12 +1,15 @@
 import os
-
+import config
 import numpy as np
 import pandas as pd
 import torch
 import torchvision.transforms as transforms
-from classification.loader import Loader
+from classification.loaders.loader import Loader
 from PIL import Image
+from utils_visualize import plot_examples
 
+from dataset.compcars.compcar_analisis import CompcarAnalisis
+from classification.augmentation import get_transform_from_aladdinpersson
 
 class CompcarLoader(Loader):
     def __init__(self, df:pd.DataFrame,root_dir_images:str,
@@ -48,3 +51,23 @@ class CompcarLoader(Loader):
             image = augmentations["image"]
 
         return image,label
+
+
+def test_CompcarLoader():
+    
+    compcar_analisis=CompcarAnalisis(path_csv=config.PATH_COMPCAR_CSV)
+    # compcar_analisis.filter_dataset('viewpoint=="4" or viewpoint=="1"')
+    print(compcar_analisis.data.head())
+    transform_train=get_transform_from_aladdinpersson()["train"]
+    loader=CompcarLoader(compcar_analisis.data,
+                         root_dir_images=config.PATH_COMPCAR_IMAGES,
+                         transform=transform_train,
+                         condition_filter=compcar_analisis.filter)
+    images=[]
+    for i in range(15):
+        image,label=loader[0]
+        images.append(image.permute(1, 2, 0))
+    
+    plot_examples(images)
+    
+# test_CompcarLoader()

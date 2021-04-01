@@ -10,31 +10,10 @@ import config
 from dataset.compcars.compcar_analisis import CompcarAnalisis
 from PIL import Image
 # from skimage.viewer import ImageViewer
-from torch.utils.data import DataLoader, Dataset
+from torch.utils.data import DataLoader
 from classification.augmentation import get_transform_from_aladdinpersson
-from utils_visualize import plot_examples
-from classification.loaders.compcars_loader import C
-class Loader (Dataset):
-    
-    def __init__ (self, df:pd.DataFrame,root_dir_images:str,
-                  transform=None,condition_filter:str=None):
-        self.data=df
-        self.root_dir_images=root_dir_images
-        
-        self.transform=transform
-        if condition_filter is not None:
-            self.condition_filter=condition_filter
-            self.data=self.data.query(condition_filter)
-    def __len__(self):
-        return self.data.shape[0]
-    
-    def __getitem__(self,index):
-        
-        raise NotImplementedError
+from classification.loaders.compcars_loader import CompcarLoader
 
-
-        
-        
 
 def choice_loader_and_splits_dataset(name_dataset:str,BATCH_SIZE:int=16,NUM_WORKERS:int=1) -> dict:
     
@@ -48,13 +27,13 @@ def choice_loader_and_splits_dataset(name_dataset:str,BATCH_SIZE:int=16,NUM_WORK
         train_percent_set=0.7
         valid_percent_set=0.2
         test_percent_set=0.1
-        
+        train_ds = pd.read_csv(config.PATH_COMPCAR_TRAIN_REVISITED, delimiter = "\t")
         # print(compcar_analisis.data.describe())
         # print(compcar_analisis.data.apply(pd.Series.nunique))
-        train_ds, validate_ds, test_ds = \
-              np.split(compcar_analisis.data.sample(frac=1, random_state=42), 
-                       [int(train_percent_set*len(compcar_analisis.data)),
-                        int((train_percent_set+valid_percent_set)*len(compcar_analisis.data))])
+        # train_ds, validate_ds, test_ds = \
+        #       np.split(compcar_analisis.data.sample(frac=1, random_state=42), 
+        #                [int(train_percent_set*len(compcar_analisis.data)),
+        #                 int((train_percent_set+valid_percent_set)*len(compcar_analisis.data))])
               
               
         transforms=get_transform_from_aladdinpersson()
@@ -112,21 +91,4 @@ def choice_loader_and_splits_dataset(name_dataset:str,BATCH_SIZE:int=16,NUM_WORK
         "test": test_dataset_loader,
     }
     return dataloaders
-def test_CompcarLoader():
-    
-    compcar_analisis=CompcarAnalisis(path_csv=config.PATH_COMPCAR_CSV)
-    # compcar_analisis.filter_dataset('viewpoint=="4" or viewpoint=="1"')
-    print(compcar_analisis.data.head())
-    transform_train=get_transform_from_aladdinpersson()["train"]
-    loader=CompcarLoader(compcar_analisis.data,
-                         root_dir_images=config.PATH_COMPCAR_IMAGES,
-                         transform=transform_train,
-                         condition_filter=compcar_analisis.filter)
-    images=[]
-    for i in range(15):
-        image,label=loader[0]
-        images.append(image.permute(1, 2, 0))
-    
-    plot_examples(images)
-    
-test_CompcarLoader()
+
