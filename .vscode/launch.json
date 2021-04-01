@@ -11,8 +11,11 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
+            // "preLaunchTask": "launchenv",
             "cwd": "${workspaceFolder}",
-            "env": { "PYTHONPATH": "${workspaceRoot}"}
+            "env": { "PYTHONPATH": "${workspaceFolder}"},
+
+            
             
         }
     ]

@@ -63,6 +63,7 @@ class SqueezeNet(nn.Module):
         # #se ha cambiado por la adaptative ya que si no hay que poner algún modulo más o
         # aumentar los kernels o strides
         self.avg_pool=nn.AdaptiveAvgPool2d(1)
+        # self.fc = nn.Linear(512 * 4, NUM_CLASS)
         self.softmax = nn.LogSoftmax(dim=1)
         
         
@@ -93,6 +94,7 @@ class SqueezeNet(nn.Module):
         x = self.fire9(x)
         x = self.conv2(x)
         x = self.avg_pool(x)
+        x = x.reshape(x.shape[0], -1)
         x = self.softmax(x)
         return x
 
@@ -108,10 +110,11 @@ def get_squeezenet(NUM_CLASS=10,pretrained=False):
     return net
 
 def test_architecture():
-    from torchinfo import summary
+    # from torchinfo import summary
     
     model=get_squeezenet(NUM_CLASS=766)
-    
-    summary(model,input_size=(16,3,227,227))
+    y=model(torch.rand(16,3,224,224))
+    print(y.size())
+    # summary(model,input_size=(16,3,227,227))
 
 test_architecture()

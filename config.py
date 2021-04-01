@@ -5,6 +5,7 @@ PATH_COMPCAR_CSV=r"dataset\compcars\all_information_compcars.csv"
 PATH_COMPCAR_IMAGES=r"data\compcars\image"
 PATH_COMPCAR_LABELS=r"data\compcars\label"
 PATH_COMPCAR_MAKE_MODEL_NAME=r"data\compcars\misc\make_model_name.mat"
+PATH_COMPCAR_MAKE_MODEL_NAME_CLS=r"data\compcars\misc\make_model_names_cls.mat"
 COMPCAR_CONDITION_FILTER='viewpoint=="4" or viewpoint=="1"'
 
 #dataset cars196
@@ -22,7 +23,7 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 # TRAIN_DIR = "data/train"
 # VAL_DIR = "data/val"
 BATCH_SIZE = 16
-NUM_CLASS=1714
+NUM_CLASS=1716
 LEARNING_RATE = 1e-5
 # LAMBDA_IDENTITY = 0.0
 NUM_WORKERS = 0

@@ -1,0 +1,120 @@
+absl-py @ file:///C:/ci/absl-py_1600290345082/work
+aiohttp @ file:///C:/ci/aiohttp_1602530358780/work
+albumentations==0.5.2
+astor==0.8.1
+astunparse==1.6.3
+async-timeout==3.0.1
+attrs @ file:///tmp/build/80754af9/attrs_1600298409949/work
+backcall==0.2.0
+blinker==1.4
+brotlipy==0.7.0
+cachetools @ file:///tmp/build/80754af9/cachetools_1596822027882/work
+certifi==2020.12.5
+cffi @ file:///C:/ci/cffi_1600699250966/work
+chardet==3.0.4
+click==7.1.2
+colorama @ file:///tmp/build/80754af9/colorama_1603211150991/work
+configparser==5.0.2
+cryptography @ file:///C:/ci/cryptography_1601046913206/work
+cycler==0.10.0
+decorator==4.4.2
+dill @ file:///tmp/build/80754af9/dill_1593202311028/work
+docker-pycreds==0.4.0
+future==0.18.2
+gast==0.3.3
+gitdb==4.0.7
+GitPython==3.1.14
+google-auth @ file:///tmp/build/80754af9/google-auth_1601995530934/work
+google-auth-oauthlib==0.4.1
+google-pasta==0.2.0
+googleapis-common-protos @ file:///C:/ci/googleapis-common-protos-feedstock_1600455733359/work
+grpcio @ file:///C:/ci/grpcio_1597406403308/work
+h5py==2.10.0
+idna @ file:///tmp/build/80754af9/idna_1593446292537/work
+imageio==2.9.0
+imgaug==0.4.0
+importlib-metadata @ file:///tmp/build/80754af9/importlib-metadata_1602276842396/work
+importlib-resources==5.1.2
+ipykernel @ file:///C:/ci/ipykernel_1596208728219/work/dist/ipykernel-5.3.4-py3-none-any.whl
+ipython @ file:///C:/ci/ipython_1598883894321/work
+ipython-genutils==0.2.0
+jedi @ file:///C:/ci/jedi_1611315820849/work
+jupyter-client @ file:///tmp/build/80754af9/jupyter_client_1601311786391/work
+jupyter-core==4.6.3
+Keras-Applications @ file:///tmp/build/80754af9/keras-applications_1594366238411/work
+Keras-Preprocessing==1.1.0
+kiwisolver==1.3.1
+Markdown @ file:///C:/ci/markdown_1603216569530/work
+matplotlib==3.3.4
+mkl-fft==1.2.0
+mkl-random==1.1.0
+mkl-service==2.3.0
+multidict @ file:///C:/ci/multidict_1600456486794/work
+networkx==2.5
+numpy @ file:///C:/ci/numpy_and_numpy_base_1596233945180/work
+oauthlib==3.1.0
+olefile==0.46
+opencv-python==4.5.1.48
+opencv-python-headless==4.5.1.48
+opt-einsum==3.1.0
+pandas @ file:///C:/ci/pandas_1614711338358/work
+parso @ file:///tmp/build/80754af9/parso_1596826841367/work
+pathtools==0.1.2
+pickleshare @ file:///C:/ci/pickleshare_1594374056827/work
+Pillow @ file:///C:/ci/pillow_1615224334542/work
+promise @ file:///C:/ci/promise_1598031850537/work
+prompt-toolkit @ file:///tmp/build/80754af9/prompt-toolkit_1602688806899/work
+protobuf==3.13.0
+psutil @ file:///C:/ci/psutil_1598352273540/work
+pyasn1==0.4.8
+pyasn1-modules==0.2.8
+pycparser @ file:///tmp/build/80754af9/pycparser_1594388511720/work
+Pygments @ file:///tmp/build/80754af9/pygments_1600458456400/work
+PyJWT==1.7.1
+pyOpenSSL @ file:///tmp/build/80754af9/pyopenssl_1594392929924/work
+pyparsing==2.4.7
+pyreadline==2.1
+PySocks @ file:///C:/ci/pysocks_1594394709107/work
+python-dateutil==2.8.1
+pytz @ file:///tmp/build/80754af9/pytz_1612215392582/work
+PyWavelets==1.1.1
+pywin32==227
+PyYAML==5.4.1
+pyzmq==19.0.2
+requests @ file:///tmp/build/80754af9/requests_1592841827918/work
+requests-oauthlib==1.3.0
+rsa @ file:///tmp/build/80754af9/rsa_1596998415516/work
+scikit-image==0.18.1
+scipy @ file:///C:/ci/scipy_1597686737426/work
+seaborn==0.11.1
+sentry-sdk==1.0.0
+Shapely==1.7.1
+shortuuid==1.0.1
+six==1.15.0
+smmap==4.0.0
+subprocess32==3.5.4
+tensorboard @ file:///home/builder/ktietz/aggregate/tensorflow_recipes/ci_te/tensorboard_1614593728657/work/tmp_pip_dir
+tensorboard-plugin-wit==1.6.0
+tensorflow==2.3.0
+tensorflow-datasets==1.2.0
+tensorflow-estimator @ file:///tmp/build/80754af9/tensorflow-estimator_1599136169057/work/whl_temp/tensorflow_estimator-2.3.0-py2.py3-none-any.whl
+tensorflow-metadata==0.14.0
+termcolor==1.1.0
+tfds-nightly==4.2.0.dev202103230107
+tifffile==2021.3.17
+torch==1.8.0
+torchaudio==0.8.0
+torchinfo==0.0.8
+torchvision==0.9.0
+tornado==6.0.4
+tqdm @ file:///tmp/build/80754af9/tqdm_1602185206534/work
+traitlets @ file:///tmp/build/80754af9/traitlets_1602787416690/work
+typing-extensions @ file:///home/ktietz/src/ci_mi/typing_extensions_1612808209620/work
+urllib3 @ file:///tmp/build/80754af9/urllib3_1603305693037/work
+wandb==0.10.23
+wcwidth @ file:///tmp/build/80754af9/wcwidth_1593447189090/work
+Werkzeug==0.16.1
+win-inet-pton==1.1.0
+wincertstore==0.2
+wrapt==1.12.1
+zipp @ file:///tmp/build/80754af9/zipp_1603306325174/work

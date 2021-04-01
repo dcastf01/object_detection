@@ -1,7 +1,16 @@
-{
-    "jupyter.jupyterServerType": "local",
-    "workbench.colorTheme": "Visual Studio 2019 Dark",
-    "workbench.iconTheme": "vs-seti",
-    "editor.fontSize": 16,
+// {
+//     "workbench.preferredLightColorTheme": "Default Dark+",
+//     "terminal.integrated.shell.windows":"C:\\Windows\\System32\\cmd.exe",
+//     // "python.terminal.activateEnvironment": true,
+//     "python.condaPath": " C:\\Users\\dcast\\anaconda3\\Scripts\\conda.exe",
+//     // "terminal.integrated.shellArgs.windows": ["/K", "C:\\Users\\dcast\\anaconda3\\Scripts\\activate D:\\programacion\\Repositorios\\object_detection_TFM\\env"],
+//     "python.pythonPath": "D:\\programacion\\Repositorios\\object_detection_TFM\\env\\python.exe",
+//     "terminal.integrated.shellArgs.windows": [
+//         "/K",
+//         "C:\\Users\\dcast\\anaconda3\\Scripts\\activate D:\\programacion\\Repositorios\\object_detection_TFM\\env"
+//     ],
+//     "python.terminal.activateEnvironment": false,
+//     "python.venvPath": "~/env",
+//      "code-runner"
+// }
 
-}

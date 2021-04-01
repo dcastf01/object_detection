@@ -1,6 +1,5 @@
 
 import os
-
 import numpy as np
 import pandas as pd
 import torch
@@ -66,6 +65,7 @@ class CompcarLoader(Loader):
         image=np.array(cut_car(image_global,index))
     
         label=torch.tensor(int(self.data.iloc[index][self.level_to_classifier]))
+        label= torch.nn.functional.one_hot(label,num_classes=1716)
         
         if self.transform:
             augmentations = self.transform(image=image)
@@ -81,14 +81,15 @@ def choice_loader_and_splits_dataset(name_dataset:str,BATCH_SIZE:int=16,NUM_WORK
         raise NotImplementedError
     elif name_dataset.lower() =="compcars":
         compcar_analisis=CompcarAnalisis(path_csv=config.PATH_COMPCAR_CSV)
-        compcar_analisis.filter_dataset('viewpoint=="4" or viewpoint=="1"')
+        # compcar_analisis.filter_dataset('viewpoint=="4" or viewpoint=="1"')
         # total_count=compcar_analisis.data.shape[0]
        
         train_percent_set=0.7
         valid_percent_set=0.2
         test_percent_set=0.1
         
-        
+        # print(compcar_analisis.data.describe())
+        # print(compcar_analisis.data.apply(pd.Series.nunique))
         train_ds, validate_ds, test_ds = \
               np.split(compcar_analisis.data.sample(frac=1, random_state=42), 
                        [int(train_percent_set*len(compcar_analisis.data)),
@@ -103,17 +104,20 @@ def choice_loader_and_splits_dataset(name_dataset:str,BATCH_SIZE:int=16,NUM_WORK
         train_dataset=CompcarLoader(train_ds,
                          root_dir_images=config.PATH_COMPCAR_IMAGES,
                          transform=train_transform,
-                         condition_filter=compcar_analisis.filter)
+                        #  condition_filter=compcar_analisis.filter
+                         )
         
         valid_dataset=CompcarLoader(validate_ds,
                          root_dir_images=config.PATH_COMPCAR_IMAGES,
                          transform=val_transform,
-                         condition_filter=compcar_analisis.filter)
+                        #  condition_filter=compcar_analisis.filter
+                         )
         
         test_dataset=CompcarLoader(test_ds,
                          root_dir_images=config.PATH_COMPCAR_IMAGES,
                          transform=test_transform,
-                         condition_filter=compcar_analisis.filter)
+                        #  condition_filter=compcar_analisis.filter
+                         )
         
         # train_count = int(0.7 * total_count)
         # valid_count = int(0.2 * total_count)
@@ -152,10 +156,10 @@ def test_CompcarLoader():
     compcar_analisis=CompcarAnalisis(path_csv=config.PATH_COMPCAR_CSV)
     # compcar_analisis.filter_dataset('viewpoint=="4" or viewpoint=="1"')
     print(compcar_analisis.data.head())
-    transform=get_transform_from_aladdinpersson()
+    transform_train=get_transform_from_aladdinpersson()["train"]
     loader=CompcarLoader(compcar_analisis.data,
                          root_dir_images=config.PATH_COMPCAR_IMAGES,
-                         transform=transform,
+                         transform=transform_train,
                          condition_filter=compcar_analisis.filter)
     images=[]
     for i in range(15):
@@ -164,4 +168,4 @@ def test_CompcarLoader():
     
     plot_examples(images)
     
-# test()
+# test_CompcarLoader()

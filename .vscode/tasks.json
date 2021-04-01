@@ -1,0 +1,13 @@
+{
+    "version": "2.0.0",
+    "tasks": [{
+        "label": "launchenv",
+        "type": "shell",
+        "windows": {
+            "command": "C:\\Users\\dcast\\anaconda3\\Scripts\\activate D:\\programacion\\Repositorios\\object_detection_TFM\\env"
+        },
+        // "command": "C:\\Users\\dcast\\anaconda3\\Scripts\\activate D:\\programacion\\Repositorios\\object_detection_TFM\\env",
+                // "args": ["C:\\Users\\dcast\\anaconda3\\Scripts\\activate D:\\programacion\\Repositorios\\object_detection_TFM\\env"],
+        
+    }]
+}
