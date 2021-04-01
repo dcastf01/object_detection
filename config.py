@@ -1,9 +1,13 @@
 import torch
 
+
 #dataset compcar
+PATH_ROOT_COMPCAR=r"D:\programacion\Repositorios\object_detection_TFM\data\compcars"
 PATH_COMPCAR_CSV=r"dataset\compcars\all_information_compcars.csv"
 PATH_COMPCAR_IMAGES=r"data\compcars\image"
 PATH_COMPCAR_LABELS=r"data\compcars\label"
+PATH_COMPCAR_TRAIN_REVISITED=r"data\compcars\CompCars_revisited_v1.0\bbs_train.txt"
+PATH_COMPCAR_TEST_REVISITED=r"data\compcars\CompCars_revisited_v1.0\bbs_test.txt"
 PATH_COMPCAR_MAKE_MODEL_NAME=r"data\compcars\misc\make_model_name.mat"
 PATH_COMPCAR_MAKE_MODEL_NAME_CLS=r"data\compcars\misc\make_model_names_cls.mat"
 COMPCAR_CONDITION_FILTER='viewpoint=="4" or viewpoint=="1"'

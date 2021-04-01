@@ -117,4 +117,4 @@ def test_architecture():
     print(y.size())
     # summary(model,input_size=(16,3,227,227))
 
-test_architecture()
+# test_architecture()
