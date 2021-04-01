@@ -2,6 +2,7 @@ import torch
 
 
 def check_accuracy(loader, model, device="cuda"):
+    
     num_correct = 0
     num_samples = 0
     model.eval()
