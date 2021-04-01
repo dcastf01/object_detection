@@ -24,7 +24,7 @@ def train_fn(loader,model,optimizer,loss_fn,scaler,device):
         # forward
         with torch.cuda.amp.autocast():
             scores = model(data)
-            loss = loss_fn(scores, targets.float()) #pendiente pasar los target a one hot
+            loss = loss_fn(scores, targets) #pendiente pasar los target a one hot
             
 
         # backward
@@ -75,4 +75,6 @@ def main():
     raise NotImplementedError
 
 if __name__ == "__main__":
+    # input = torch.randn(3, 5, requires_grad=True)
+    # target = torch.randint(5, (3,), dtype=torch.int64)
     main()

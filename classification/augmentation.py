@@ -17,7 +17,7 @@ def get_transform_from_aladdinpersson()->dict:
                 A.Blur(blur_limit=3, p=0.5),
                 A.ColorJitter(p=0.5),
             ], p=1.0),
-            A.SmallestMaxSize(max_size=227),
+            A.Resize(227,227),
             A.Normalize(
                 mean=[0, 0, 0],
                 std=[1, 1, 1],
