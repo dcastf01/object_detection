@@ -9,7 +9,7 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 from utils import load_checkpoint, save_checkpoint
-from classification.loader import choice_loader_and_splits_dataset
+from classification.choice_loader import choice_loader_and_splits_dataset
 from classification.model.torch_squeezeNet import get_squeezenet
 
 
@@ -48,14 +48,13 @@ def main():
     logging.info("DEVICE",config.DEVICE)
     train_loader=dataloaders["train"]
     loss_fn = nn.CrossEntropyLoss()
-    model=get_squeezenet(config.NUM_CLASS).to(config.DEVICE)
+    model=get_squeezenet(config.NUM_CLASSES).to(config.DEVICE)
     
     wandb.watch(model)
     optimizer= optim.Adam(model.parameters(), lr=config.LEARNING_RATE)
     scaler = torch.cuda.amp.GradScaler()
     
-    checkpoint = {'state_dict': model.state_dict(), 'optimizer': optimizer.state_dict()}
-    save_checkpoint(  checkpoint,      filename=config.CHECKPOINT_SQUEEZENET)
+
     
     
     for epoch in range(config.NUM_EPOCHS):

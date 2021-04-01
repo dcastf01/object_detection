@@ -3,12 +3,10 @@ import config
 import numpy as np
 import os 
 import sys
-DATA_PATH=config.PATH_ROOT_COMPCAR
-TRAIN=config.PATH_COMPCAR_TRAIN
+
+
 class CompcarsRealNames:
     def __init__(self):
- 
-        # self.makes_models_names=self.load_make_models_CLS_names()["make_model_names"]
         self.real_names_makes=self.load_real_names_compcars()["make_names"]
         self.real_names_models=self.load_real_names_compcars()["model_names"]
     
@@ -44,4 +42,4 @@ def test():
     print(all_car_model_name.shape)
     print(all_car_model_name)
     print(len(all_car_model_name))
-# test()
+test()
