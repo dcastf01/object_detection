@@ -28,7 +28,7 @@ def get_transform_from_aladdinpersson()->dict:
     )
     val_transform = A.Compose(
         [
-            A.SmallestMaxSize(max_size=227),
+            A.Resize(227,227),
             # A.CenterCrop(height=128, width=128),
             A.Normalize(
                 mean=[0, 0, 0],

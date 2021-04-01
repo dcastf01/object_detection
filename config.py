@@ -34,7 +34,7 @@ NUM_WORKERS = 0
 SEED=1
 
 NUM_EPOCHS = 10
-LOAD_MODEL = False
+LOAD_MODEL = True
 SAVE_MODEL = True
 
 CHECKPOINT_SQUEEZENET= "classification/model/SQUEEZENET.pth.tar"

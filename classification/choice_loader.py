@@ -33,8 +33,10 @@ def choice_loader_and_splits_dataset(name_dataset:str,BATCH_SIZE:int=16,NUM_WORK
        
         train_ds = pd.read_csv(config.PATH_COMPCAR_TRAIN_REVISITED)
         train_ds=expand_information_useful_on_txt(train_ds)
+        train_ds=train_ds.head(1000)
         test_ds=pd.read_csv(config.PATH_COMPCAR_TEST_REVISITED,)
         test_ds=expand_information_useful_on_txt(test_ds)
+        test_ds=test_ds.head(100)
   
               
               
@@ -65,11 +67,12 @@ def choice_loader_and_splits_dataset(name_dataset:str,BATCH_SIZE:int=16,NUM_WORK
     else:
         raise NotImplementedError
 
-    
+ 
     train_dataset_loader = torch.utils.data.DataLoader(
                     train_dataset, batch_size=BATCH_SIZE,
                     shuffle=True, num_workers=NUM_WORKERS,
-                    pin_memory=True
+                    pin_memory=True,
+                    # sampler=
                                                     )
     # valid_dataset_loader = torch.utils.data.DataLoader(
     #                 valid_dataset, batch_size=BATCH_SIZE, 
