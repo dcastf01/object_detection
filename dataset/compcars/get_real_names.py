@@ -1,5 +1,5 @@
 from scipy.io import loadmat
-import config
+from config import CONFIG
 import numpy as np
 import os 
 import sys

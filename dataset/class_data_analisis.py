@@ -1,5 +1,5 @@
 import pandas as pd
-import config
+from config import CONFIG
 from dataset.charts import create_pareto_diagram,plotting_3_chart
 import os
 import matplotlib.pyplot as plt
@@ -9,7 +9,7 @@ class ClassDataAnalisis:
     def __init__(self,df:pd.DataFrame,
                  name_dataset:str,
                  critical_variables:list,
-                 output_result_plots:str=config.PATH_OUTPUT_PLOTS):
+                 output_result_plots:str=CONFIG.PATH_OUTPUT_PLOTS):
         self.data=df
         self.name_dataset=name_dataset
         self.critical_variables=critical_variables

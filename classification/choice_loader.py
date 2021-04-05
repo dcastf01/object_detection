@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 import torchvision
 import torchvision.transforms as transforms
-import config
+from config import CONFIG
 from dataset.compcars.compcar_analisis import CompcarAnalisis
 from PIL import Image
 # from skimage.viewer import ImageViewer
@@ -23,7 +23,7 @@ def choice_loader_and_splits_dataset(name_dataset:str,BATCH_SIZE:int=16,NUM_WORK
         def expand_information_useful_on_txt(df:pd.DataFrame)->pd.DataFrame:
             df[["make_id","model_id","released_year","filename"]]=df["Filepath"].str.split("/",expand=True)
             return df
-        # compcar_analisis=CompcarAnalisis(path_csv=config.PATH_COMPCAR_CSV)
+        # compcar_analisis=CompcarAnalisis(path_csv=CONFIG.PATH_COMPCAR_CSV)
         # compcar_analisis.filter_dataset('viewpoint=="4" or viewpoint=="1"')
         # total_count=compcar_analisis.data.shape[0]
        
@@ -31,10 +31,10 @@ def choice_loader_and_splits_dataset(name_dataset:str,BATCH_SIZE:int=16,NUM_WORK
         valid_percent_set=0.2
         test_percent_set=0.1
        
-        train_ds = pd.read_csv(config.PATH_COMPCAR_TRAIN_REVISITED)
+        train_ds = pd.read_csv(CONFIG.PATH_COMPCAR_TRAIN_REVISITED)
         train_ds=expand_information_useful_on_txt(train_ds)
         # train_ds=train_ds.head(1000)
-        test_ds=pd.read_csv(config.PATH_COMPCAR_TEST_REVISITED,)
+        test_ds=pd.read_csv(CONFIG.PATH_COMPCAR_TEST_REVISITED,)
         test_ds=expand_information_useful_on_txt(test_ds)
         # test_ds=test_ds.head(100)
   
@@ -46,19 +46,19 @@ def choice_loader_and_splits_dataset(name_dataset:str,BATCH_SIZE:int=16,NUM_WORK
         test_transform=transforms["test"]
         
         train_dataset=CompcarLoader(train_ds,
-                         root_dir_images=config.PATH_COMPCAR_IMAGES,
+                         root_dir_images=CONFIG.PATH_COMPCAR_IMAGES,
                          transform=train_transform,
                         #  condition_filter=compcar_analisis.filter
                          )
         
         # valid_dataset=CompcarLoader(validate_ds,
-        #                  root_dir_images=config.PATH_COMPCAR_IMAGES,
+        #                  root_dir_images=CONFIG.PATH_COMPCAR_IMAGES,
         #                  transform=val_transform,
         #                 #  condition_filter=compcar_analisis.filter
         #                  )
         
         test_dataset=CompcarLoader(test_ds,
-                         root_dir_images=config.PATH_COMPCAR_IMAGES,
+                         root_dir_images=CONFIG.PATH_COMPCAR_IMAGES,
                          transform=test_transform,
                         #  condition_filter=compcar_analisis.filter
                          )
@@ -93,7 +93,7 @@ def choice_loader_and_splits_dataset(name_dataset:str,BATCH_SIZE:int=16,NUM_WORK
 def test_choice_loader():
     
     dataloaders=choice_loader_and_splits_dataset("compcars",
-                                                BATCH_SIZE=config.BATCH_SIZE,
-                                                NUM_WORKERS=config.NUM_WORKERS)
+                                                BATCH_SIZE=CONFIG.BATCH_SIZE,
+                                                NUM_WORKERS=CONFIG.NUM_WORKERS)
     
 # test_choice_loader()

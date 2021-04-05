@@ -1,6 +1,6 @@
 import logging
 
-import config
+from config import CONFIG
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -37,8 +37,8 @@ def train_fn(loader,model,optimizer,loss_fn,scaler,device,epoch):
         scaler.step(optimizer)
         scaler.update()
         
-        loop.set_description(f"Epoch [{epoch}/{config.NUM_EPOCHS}]")
-        loop.set_postfix(loss=loss.item(), acc=torch.rand(1).item())
+        loop.set_description(f"Epoch [{epoch}/{CONFIG.NUM_EPOCHS}]")
+        loop.set_postfix(loss=loss.item())
     
     wandb.log({"epoch":epoch,
                "loss": loss})
@@ -50,39 +50,39 @@ def main():
     
     
     dataloaders=choice_loader_and_splits_dataset("compcars",
-                                                BATCH_SIZE=config.BATCH_SIZE,
-                                                NUM_WORKERS=config.NUM_WORKERS)
-    logging.info("DEVICE",config.DEVICE)
+                                                BATCH_SIZE=CONFIG.BATCH_SIZE,
+                                                NUM_WORKERS=CONFIG.NUM_WORKERS)
+    logging.info("DEVICE",CONFIG.DEVICE)
     train_loader=dataloaders["train"]
     test_loader=dataloaders["test"]
     loss_fn = nn.CrossEntropyLoss()
-    model=get_squeezenet(config.NUM_CLASSES).to(config.DEVICE)
+    model=get_squeezenet(CONFIG.NUM_CLASSES).to(CONFIG.DEVICE)
     
     wandb.watch(model)
-    optimizer= optim.Adam(model.parameters(), lr=config.LEARNING_RATE)
+    optimizer= optim.Adam(model.parameters(), lr=CONFIG.LEARNING_RATE)
     scaler = torch.cuda.amp.GradScaler()
     
-    if config.LOAD_MODEL:
-        load_checkpoint(torch.load(f=config.CHECKPOINT_SQUEEZENET), model, optimizer)
-    check_accuracy(test_loader, model, config.DEVICE)
+    if CONFIG.LOAD_MODEL:
+        load_checkpoint(torch.load(f=CONFIG.CHECKPOINT_SQUEEZENET), model, optimizer)
+        # check_accuracy(test_loader, model, CONFIG.DEVICE)
     
     
-    for epoch in range(config.NUM_EPOCHS):
+    for epoch in range(CONFIG.NUM_EPOCHS):
         train_fn(loader=train_loader,
                  model=model, 
                  optimizer=optimizer,
                  loss_fn=loss_fn,
                  scaler=scaler,
-                 device=config.DEVICE,
+                 device=CONFIG.DEVICE,
                  epoch=epoch)
         
-        check_accuracy(test_loader, model, config.DEVICE)
+        # check_accuracy(test_loader, model, CONFIG.DEVICE)
         
-        if config.SAVE_MODEL: 
+        if CONFIG.SAVE_MODEL: 
             checkpoint = {'state_dict': model.state_dict(), 'optimizer': optimizer.state_dict()}
             
             
-            save_checkpoint(checkpoint,filename=config.CHECKPOINT_SQUEEZENET)
+            save_checkpoint(checkpoint,filename=CONFIG.CHECKPOINT_SQUEEZENET)
         
         
         
