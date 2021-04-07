@@ -136,3 +136,4 @@ wandb/
 classification/model/*.pth.tar
 classification/model/SQUEEZENET.pth.tar
 *.tar
+lightning_logs/

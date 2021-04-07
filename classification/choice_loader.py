@@ -23,13 +23,7 @@ def choice_loader_and_splits_dataset(name_dataset:str,BATCH_SIZE:int=16,NUM_WORK
         def expand_information_useful_on_txt(df:pd.DataFrame)->pd.DataFrame:
             df[["make_id","model_id","released_year","filename"]]=df["Filepath"].str.split("/",expand=True)
             return df
-        # compcar_analisis=CompcarAnalisis(path_csv=CONFIG.PATH_COMPCAR_CSV)
-        # compcar_analisis.filter_dataset('viewpoint=="4" or viewpoint=="1"')
-        # total_count=compcar_analisis.data.shape[0]
        
-        train_percent_set=0.7
-        valid_percent_set=0.2
-        test_percent_set=0.1
        
         train_ds = pd.read_csv(CONFIG.PATH_COMPCAR_TRAIN_REVISITED)
         train_ds=expand_information_useful_on_txt(train_ds)

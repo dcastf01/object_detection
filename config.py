@@ -23,6 +23,8 @@ class CONFIG:
 
 
     #torch config
+    
+        
 
     DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
     # TRAIN_DIR = "data/train"
@@ -40,3 +42,5 @@ class CONFIG:
 
     CHECKPOINT_SQUEEZENET= os.path.join(ROOT_WORKSPACE,"classification/model/SQUEEZENET.pth.tar")
 
+    class ModelName:
+        torch_squeezenet="torch_squeezeNet"

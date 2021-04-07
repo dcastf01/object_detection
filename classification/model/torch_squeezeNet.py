@@ -64,7 +64,7 @@ class SqueezeNet(nn.Module):
         # aumentar los kernels o strides
         self.avg_pool=nn.AdaptiveAvgPool2d(1)
         # self.fc = nn.Linear(512 * 4, NUM_CLASS)
-        self.softmax = nn.LogSoftmax(dim=1)
+        self.softmax = nn.LogSoftmax(dim=0)
         
         
         for m in self.modules():
