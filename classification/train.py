@@ -75,9 +75,6 @@ def main():
     
     backbone=build_model(model_name=CONFIG.ModelName.torch_squeezenet)
     
-    # wandb.watch(model)
-    scaler = torch.cuda.amp.GradScaler()
-    
     
     model=LitSystem(backbone,loss_fn)
     trainer=pl.Trainer(logger=wandb_logger,
@@ -87,35 +84,10 @@ def main():
     trainer.fit(model,train_loader,test_loader)
     
     
-    # if CONFIG.LOAD_MODEL:
-    #     load_checkpoint(torch.load(f=CONFIG.CHECKPOINT_SQUEEZENET), model, optimizer)
-        # check_accuracy(test_loader, model, CONFIG.DEVICE)
-    
-    
-    # for epoch in range(CONFIG.NUM_EPOCHS):
-    #     train_fn(loader=train_loader,
-    #              model=model, 
-    #              optimizer=optimizer,
-    #              loss_fn=loss_fn,
-    #              metric_collection=metric_collection,
-    #              scaler=scaler,
-    #              device=CONFIG.DEVICE,
-    #              epoch=epoch)
-        
-    #     # check_accuracy(test_loader, model, CONFIG.DEVICE)
-        
-    #     if CONFIG.SAVE_MODEL: 
-    #         checkpoint = {'state_dict': model.state_dict(), 'optimizer': optimizer.state_dict()}
-            
-            
-    #         save_checkpoint(checkpoint,filename=CONFIG.CHECKPOINT_SQUEEZENET)
-        
-        
-        
+   
         
         
 
 if __name__ == "__main__":
-    # input = torch.randn(3, 5, requires_grad=True)
-    # target = torch.randint(5, (3,), dtype=torch.int64)
+
     main()

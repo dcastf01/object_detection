@@ -18,7 +18,7 @@ def build_model(model_name:str,loss_fn=None,metrics:Union[None,list]=None):
     
     
 class LitSystem(pl.LightningModule):
-    def __init__(self,model,loss_fn=nn.CrossEntropyLoss(),metrics=):
+    def __init__(self,model,loss_fn=nn.CrossEntropyLoss(),metrics=None):
         super().__init__()
         #puede que loss_fn no vaya aquí y aquí solo vaya modelo
         self.model=model
@@ -40,6 +40,20 @@ class LitSystem(pl.LightningModule):
         self.log('train_loss',loss)
         
         return loss
+    
+    def validation_step(self, batch, batch_idx):
+        '''used for logging metrics'''
+        x, y = batch
+        preds = self.model(x)
+        loss = self.loss_fn(preds, targets)
+
+        # Log validation loss (will be automatically averaged over an epoch)
+        self.log('valid_loss', loss)
+
+        # Log metrics
+        #self.log('valid_acc', self.accuracy(logits, y))
+        
+        
     def configure_optimizers(self):
         
         optimizer= torch.optim.Adam(self.parameters(), lr=CONFIG.LEARNING_RATE)
