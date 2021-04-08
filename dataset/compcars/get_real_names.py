@@ -11,11 +11,11 @@ class CompcarsRealNames:
         self.real_names_models=self.load_real_names_compcars()["model_names"]
     
     def load_make_models_CLS_names(self):
-        return loadmat(config.PATH_COMPCAR_MAKE_MODEL_NAME_CLS,)
+        return loadmat(CONFIG.PATH_COMPCAR_MAKE_MODEL_NAME_CLS,)
     
     def load_real_names_compcars(self):
 
-        return loadmat(config.PATH_COMPCAR_MAKE_MODEL_NAME,squeeze_me=True)
+        return loadmat(CONFIG.PATH_COMPCAR_MAKE_MODEL_NAME,squeeze_me=True)
         
 
     def real_make_names_compcars(self): 
@@ -42,4 +42,4 @@ def test():
     print(all_car_model_name.shape)
     print(all_car_model_name)
     print(len(all_car_model_name))
-test()
+# test()

@@ -6,6 +6,7 @@ from classification.model.torch_squeezeNet import get_squeezenet
 
 import torchmetrics
 import pytorch_lightning as pl
+import wandb
 
 def build_model(model_name:str,loss_fn=None,metrics:Union[None,list]=None):
     if model_name==CONFIG.ModelName.torch_squeezenet:
@@ -29,6 +30,9 @@ class LitSystem(pl.LightningModule):
         self.loss_fn=loss_fn
         self.train_metrics=metrics_collection.clone(prefix="train_metrics")
         self.valid_metrics=metrics_collection.clone(prefix="valid_metrics")
+        
+        # log hyperparameters
+        self.save_hyperparameters()
             
     def forward(self,x):
         
@@ -61,13 +65,25 @@ class LitSystem(pl.LightningModule):
         metric_value=self.valid_metrics(preds.softmax(dim=-1),targets)
 
         # Log validation loss (will be automatically averaged over an epoch)
-        self.log('val_loss', loss)
-        self.log('val_metrics',metric_value)
+        self.log('val_loss', loss, on_step=False, on_epoch=True)
+        self.log('val_metrics',metric_value, on_step=False, on_epoch=True)
 
         # Log metrics
         #self.log('valid_acc', self.accuracy(logits, y))
         
-        
+    
+    # def validation_epoch_end(self, valid_step_outputs):  # args are defined as part of pl API
+    #     dummy_input = torch.zeros((16,3,224,224), device=self.device)
+    #     # dummy_input = torch.zeros(self.hparams["model"], device=self.device)
+    #     model_filename = f"model_{str(self.global_step).zfill(5)}.onnx"
+    #     torch.onnx.export(self, dummy_input, model_filename)
+    #     wandb.save(model_filename)
+
+    #     flattened_logits = torch.flatten(torch.cat(validation_step_outputs))
+    #     self.logger.experiment.log(
+    #         {"valid/logits": wandb.Histogram(flattened_logits.to("cpu")),
+    #         "global_step": self.global_step})
+            
     def configure_optimizers(self):
         
         optimizer= torch.optim.Adam(self.parameters(), lr=CONFIG.LEARNING_RATE)

@@ -52,14 +52,14 @@ def choice_loader_and_splits_dataset(name_dataset:str,BATCH_SIZE:int=16,NUM_WORK
     train_dataset_loader = torch.utils.data.DataLoader(
                     train_dataset, batch_size=BATCH_SIZE,
                     shuffle=True, num_workers=NUM_WORKERS,
-                    pin_memory=True,prefetch_factor=3,
+                    pin_memory=True
                     # sampler=
                                                     )
 
     test_dataset_loader = torch.utils.data.DataLoader(
                     test_dataset, batch_size=BATCH_SIZE,
                     shuffle=False, num_workers=NUM_WORKERS,
-                    pin_memory=True,prefetch_factor=3,
+                    pin_memory=True
                 )
     dataloaders = {
         "train": train_dataset_loader,
