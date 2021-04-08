@@ -27,8 +27,8 @@ class LitSystem(pl.LightningModule):
         #puede que loss_fn no vaya aquí y aquí solo vaya modelo
         self.model=model
         self.loss_fn=loss_fn
-        self.train_metrics=metrics_collection
-        self.valid_metrics=metrics_collection
+        self.train_metrics=metrics_collection.clone(prefix="train_metrics")
+        self.valid_metrics=metrics_collection.clone(prefix="valid_metrics")
             
     def forward(self,x):
         
@@ -45,8 +45,8 @@ class LitSystem(pl.LightningModule):
         
         metric_value=self.train_metrics(preds.softmax(dim=-1),targets)
         
-        self.log('train_loss',loss)
-        self.log('train_metrics',metric_value)
+        self.log('train_loss',loss,on_epoch=True)
+        self.log('train_metrics',metric_value,on_epoch=True)
         
         return loss
     
@@ -61,8 +61,8 @@ class LitSystem(pl.LightningModule):
         metric_value=self.valid_metrics(preds.softmax(dim=-1),targets)
 
         # Log validation loss (will be automatically averaged over an epoch)
-        self.log('val_loss', loss)
-        self.log('val_metrics',metric_value)
+        self.log('val_loss', loss,on_epoch=True)
+        self.log('val_metrics',metric_value,on_epoch=True)
 
         # Log metrics
         #self.log('valid_acc', self.accuracy(logits, y))

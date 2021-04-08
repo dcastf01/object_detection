@@ -40,7 +40,7 @@ class CONFIG:
     LOAD_MODEL = True
     SAVE_MODEL = True
 
-    CHECKPOINT_SQUEEZENET= os.path.join(ROOT_WORKSPACE,"classification/model/SQUEEZENET.pth.tar")
+    PATH_CHECKPOINT= os.path.join(ROOT_WORKSPACE,"classification/model/checkpoint")
 
     class ModelName:
         torch_squeezenet="torch_squeezeNet"

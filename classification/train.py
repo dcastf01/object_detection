@@ -66,7 +66,11 @@ def train_fn(loader,model,optimizer,loss_fn,metric_collection,scaler,device,epoc
 def main():
     
     
-    wandb_logger = WandbLogger(project='TFM-classification',entity='dcastf01')
+    wandb_logger = WandbLogger(project='TFM-classification',
+                               entity='dcastf01',
+                               offline=True, #to debug
+                               
+                               )
     dataloaders=choice_loader_and_splits_dataset("compcars",
                                                 BATCH_SIZE=CONFIG.BATCH_SIZE,
                                                 NUM_WORKERS=CONFIG.NUM_WORKERS)
@@ -83,8 +87,12 @@ def main():
     early_stopping=EarlyStopping(monitor='val_loss')
     checkpoint_callback = ModelCheckpoint(
         monitor='val_loss',
-        dirpath=CONFIG.CHECKPOINT_SQUEEZENET,
-        filename='sample-mnist-{epoch:02d}-{val_loss:.2f}'
+        dirpath=CONFIG.PATH_CHECKPOINT,
+        filename='SQUEEZENET-{epoch:02d}-{val_loss:.2f}',
+        mode="min",
+        save_last=True,
+        save_top_k=3,
+        
                         )
     
     
@@ -94,8 +102,8 @@ def main():
                        gpus=-1,
                        max_epochs=CONFIG.NUM_EPOCHS,
                        precision=16,
-                       limit_train_batches=0.01, #only to debug
-                       limit_val_batches=0.01, #only to debug
+                       limit_train_batches=0.005, #only to debug
+                       limit_val_batches=0.005, #only to debug
                     #    val_check_interval=1,
                        log_gpu_memory=True,
                        callbacks=[

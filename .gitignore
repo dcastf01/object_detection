@@ -135,5 +135,6 @@ dataset/results/
 wandb/
 classification/model/*.pth.tar
 classification/model/SQUEEZENET.pth.tar
+classification/model/checkpoint/
 *.tar
 lightning_logs/
