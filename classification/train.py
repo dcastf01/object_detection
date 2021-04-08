@@ -25,8 +25,8 @@ def main():
     
     wandb_logger = WandbLogger(project='TFM-classification',
                                entity='dcastf01',
-                               name=str(datetime.datetime.now())
-                            #    offline=True, #to debug
+                               name=str(datetime.datetime.now()),
+                               offline=True, #to debug
                                
                                )
     dataloaders=choice_loader_and_splits_dataset("compcars",
@@ -52,7 +52,7 @@ def main():
         save_top_k=3,
                         )
     
-    ConfusionMatrix_Wandb(range(CONFIG.NUM_CLASSES))
+    # confusion_matrix_wandb=ConfusionMatrix_Wandb(list(range(CONFIG.NUM_CLASSES)))
     
     
     
@@ -68,7 +68,7 @@ def main():
                        callbacks=[
                             early_stopping ,
                             checkpoint_callback,
-                            ConfusionMatrix_Wandb
+                            # confusion_matrix_wandb
                                   ]
                        )
     trainer.fit(model,train_loader,test_loader)

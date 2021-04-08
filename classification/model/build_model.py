@@ -70,19 +70,7 @@ class LitSystem(pl.LightningModule):
 
         # Log metrics
         #self.log('valid_acc', self.accuracy(logits, y))
-        
-    
-    # def validation_epoch_end(self, valid_step_outputs):  # args are defined as part of pl API
-    #     dummy_input = torch.zeros((16,3,224,224), device=self.device)
-    #     # dummy_input = torch.zeros(self.hparams["model"], device=self.device)
-    #     model_filename = f"model_{str(self.global_step).zfill(5)}.onnx"
-    #     torch.onnx.export(self, dummy_input, model_filename)
-    #     wandb.save(model_filename)
-
-    #     flattened_logits = torch.flatten(torch.cat(validation_step_outputs))
-    #     self.logger.experiment.log(
-    #         {"valid/logits": wandb.Histogram(flattened_logits.to("cpu")),
-    #         "global_step": self.global_step})
+   
             
     def configure_optimizers(self):
         
