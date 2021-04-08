@@ -23,17 +23,13 @@ def choice_loader_and_splits_dataset(name_dataset:str,BATCH_SIZE:int=16,NUM_WORK
         def expand_information_useful_on_txt(df:pd.DataFrame)->pd.DataFrame:
             df[["make_id","model_id","released_year","filename"]]=df["Filepath"].str.split("/",expand=True)
             return df
-       
-       
+              
         train_ds = pd.read_csv(CONFIG.PATH_COMPCAR_TRAIN_REVISITED)
         train_ds=expand_information_useful_on_txt(train_ds)
-        # train_ds=train_ds.head(1000)
+
         test_ds=pd.read_csv(CONFIG.PATH_COMPCAR_TEST_REVISITED,)
         test_ds=expand_information_useful_on_txt(test_ds)
-        # test_ds=test_ds.head(100)
-  
-              
-              
+
         transforms=get_transform_from_aladdinpersson()
         train_transform=transforms["train"]
         val_transform=transforms["val"]
@@ -42,43 +38,31 @@ def choice_loader_and_splits_dataset(name_dataset:str,BATCH_SIZE:int=16,NUM_WORK
         train_dataset=CompcarLoader(train_ds,
                          root_dir_images=CONFIG.PATH_COMPCAR_IMAGES,
                          transform=train_transform,
-                        #  condition_filter=compcar_analisis.filter
+                       
                          )
-        
-        # valid_dataset=CompcarLoader(validate_ds,
-        #                  root_dir_images=CONFIG.PATH_COMPCAR_IMAGES,
-        #                  transform=val_transform,
-        #                 #  condition_filter=compcar_analisis.filter
-        #                  )
         
         test_dataset=CompcarLoader(test_ds,
                          root_dir_images=CONFIG.PATH_COMPCAR_IMAGES,
                          transform=test_transform,
-                        #  condition_filter=compcar_analisis.filter
                          )
-
-        
+   
     else:
         raise NotImplementedError
-
  
     train_dataset_loader = torch.utils.data.DataLoader(
                     train_dataset, batch_size=BATCH_SIZE,
                     shuffle=True, num_workers=NUM_WORKERS,
-                    pin_memory=True,
+                    pin_memory=True,prefetch_factor=3,
                     # sampler=
                                                     )
-    # valid_dataset_loader = torch.utils.data.DataLoader(
-    #                 valid_dataset, batch_size=BATCH_SIZE, 
-    #                 shuffle=True, num_workers=NUM_WORKERS
-    #                                                 )
+
     test_dataset_loader = torch.utils.data.DataLoader(
                     test_dataset, batch_size=BATCH_SIZE,
-                    shuffle=False, num_workers=NUM_WORKERS
+                    shuffle=False, num_workers=NUM_WORKERS,
+                    pin_memory=True,prefetch_factor=3,
                 )
     dataloaders = {
         "train": train_dataset_loader,
-        # "val": valid_dataset_loader,
         "test": test_dataset_loader,
     }
     return dataloaders

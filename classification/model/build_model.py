@@ -45,8 +45,8 @@ class LitSystem(pl.LightningModule):
         
         metric_value=self.train_metrics(preds.softmax(dim=-1),targets)
         
-        self.log('train_loss',loss,on_epoch=True)
-        self.log('train_metrics',metric_value,on_epoch=True)
+        self.log('train_loss',loss)
+        self.log('train_metrics',metric_value)
         
         return loss
     
@@ -61,8 +61,8 @@ class LitSystem(pl.LightningModule):
         metric_value=self.valid_metrics(preds.softmax(dim=-1),targets)
 
         # Log validation loss (will be automatically averaged over an epoch)
-        self.log('val_loss', loss,on_epoch=True)
-        self.log('val_metrics',metric_value,on_epoch=True)
+        self.log('val_loss', loss)
+        self.log('val_metrics',metric_value)
 
         # Log metrics
         #self.log('valid_acc', self.accuracy(logits, y))
