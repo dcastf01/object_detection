@@ -83,15 +83,15 @@ class SqueezeNet(nn.Module):
         x = self.maxpool1(x)
         x = self.fire2(x)
         #pendiente añadir fire3 con bypas y el 5 el 7 y el 9
-        x = self.fire3(x)
+        x = self.fire3(x)+x
         x = self.fire4(x)
         x = self.maxpool2(x)
-        x = self.fire5(x)
+        x = self.fire5(x)+x
         x = self.fire6(x)
-        x = self.fire7(x)
+        x = self.fire7(x)+x
         x = self.fire8(x)
         x = self.maxpool3(x)
-        x = self.fire9(x)
+        x = self.fire9(x)+x
         x = self.conv2(x)
         x = self.avg_pool(x)
         x = x.reshape(x.shape[0], -1)
@@ -112,7 +112,7 @@ def get_squeezenet(NUM_CLASS=10,pretrained=False):
 def test_architecture():
     # from torchinfo import summary
     
-    model=get_squeezenet(NUM_CLASS=766)
+    model=get_squeezenet(NUM_CLASS=4455)
     y=model(torch.rand(16,3,224,224))
     print(y.size())
     # summary(model,input_size=(16,3,227,227))
