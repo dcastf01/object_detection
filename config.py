@@ -3,14 +3,14 @@ import os
 class CONFIG:
     ROOT_WORKSPACE=r"D:\programacion\Repositorios\object_detection_TFM"
     #dataset compcar
-    PATH_ROOT_COMPCAR=os.path.join(ROOT_WORKSPACE,r"\data\compcars")
-    PATH_COMPCAR_CSV=os.path.join(ROOT_WORKSPACE,r"dataset\compcars\all_information_compcars.csv")
-    PATH_COMPCAR_IMAGES=os.path.join(ROOT_WORKSPACE,r"data\compcars\image")
-    PATH_COMPCAR_LABELS=os.path.join(ROOT_WORKSPACE,r"data\compcars\label")
-    PATH_COMPCAR_TRAIN_REVISITED=os.path.join(ROOT_WORKSPACE,r"data\compcars\CompCars_revisited_v1.0\bbs_train.txt")
-    PATH_COMPCAR_TEST_REVISITED=os.path.join(ROOT_WORKSPACE,r"data\compcars\CompCars_revisited_v1.0\bbs_test.txt")
-    PATH_COMPCAR_MAKE_MODEL_NAME=os.path.join(ROOT_WORKSPACE,r"data\compcars\misc\make_model_name.mat")
-    PATH_COMPCAR_MAKE_MODEL_NAME_CLS=os.path.join(ROOT_WORKSPACE,r"data\compcars\misc\make_model_names_cls.mat")
+    PATH_ROOT_COMPCAR=os.path.join(ROOT_WORKSPACE,"data","compcars")
+    PATH_COMPCAR_CSV=os.path.join(PATH_ROOT_COMPCAR,"all_information_compcars.csv")
+    PATH_COMPCAR_IMAGES=os.path.join(PATH_ROOT_COMPCAR,"image")
+    PATH_COMPCAR_LABELS=os.path.join(PATH_ROOT_COMPCAR,"label")
+    PATH_COMPCAR_TRAIN_REVISITED=os.path.join(PATH_ROOT_COMPCAR,"CompCars_revisited_v1.0","bbs_train.txt")
+    PATH_COMPCAR_TEST_REVISITED=os.path.join(PATH_ROOT_COMPCAR,"CompCars_revisited_v1.0","bbs_test.txt")
+    PATH_COMPCAR_MAKE_MODEL_NAME=os.path.join(PATH_ROOT_COMPCAR,"misc","make_model_name.mat")
+    PATH_COMPCAR_MAKE_MODEL_NAME_CLS=os.path.join(PATH_ROOT_COMPCAR,"misc","make_model_names_cls.mat")
     COMPCAR_CONDITION_FILTER='viewpoint=="4" or viewpoint=="1"'
 
     #dataset cars196
