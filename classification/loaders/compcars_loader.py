@@ -106,7 +106,7 @@ class CompcarLoaderTripletLoss(CompcarLoaderBasic):
             
             
             
-            return anchor_img, positive_img, negative_img, anchor_label
+            return (anchor_img, positive_img, negative_img),(anchor_label,positive_label,negative_label)
         else:
             return anchor_img,anchor_label
 

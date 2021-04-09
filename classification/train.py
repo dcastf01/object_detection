@@ -60,7 +60,7 @@ def main():
     
     # confusion_matrix_wandb=ConfusionMatrix_Wandb(list(range(CONFIG.NUM_CLASSES)))
         
-    backbone=build_model(model_name=CONFIG.ARCHITECTURES_AVAILABLE.torch_transFG,
+    backbone=build_model(model_name=CONFIG.ARCHITECTURES_AVAILABLE.torch_squeezenet,
                          loss_fn=loss_fn)
     model=LitSystem(backbone,
                     metrics_collection=metric_collection,
@@ -82,11 +82,7 @@ def main():
                                   ]
                        )
     trainer.fit(model,train_loader,test_loader)
-    
-    
-   
-        
-        
+         
 
 if __name__ == "__main__":
 
