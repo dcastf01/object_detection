@@ -49,18 +49,18 @@ class CONFIG:
 
 class config_model(CONFIG):
     
-    def __init__(self,name_model:Union[str,Enum],is_triplet_model=False):
+    def __init__(self,architecture_name:Union[str,Enum],is_triplet_model=False):
         super(config_model,self).__init__()
-        self.name_model=self.check_name_model_on_list_and_return_name_model(name_model)
+        self.architecture_name=self.check_architecture_name_on_list_and_return_architecture_name(architecture_name)
         self.is_triplet_model=is_triplet_model
         
-    def check_name_model_on_list_and_return_name_model(self,name_model):
-        if name_model in self.ARCHITECTURES_AVAILABLE.__members__:
-            name_model=self.ARCHITECTURES_AVAILABLE[name_model]
-            return name_model
-        elif  name_model in self.ARCHITECTURES_AVAILABLE:
+    def check_architecture_name_on_list_and_return_architecture_name(self,architecture_name):
+        if architecture_name in self.ARCHITECTURES_AVAILABLE.__members__:
+            architecture_name=self.ARCHITECTURES_AVAILABLE[architecture_name]
+            return architecture_name
+        elif  architecture_name in self.ARCHITECTURES_AVAILABLE:
             
-            return name_model      
+            return architecture_name      
         else:
             print( "you should pick a available model, here you have a list")
             print(self.ARCHITECTURES_AVAILABLE.__members__.keys())
