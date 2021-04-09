@@ -37,6 +37,8 @@ def main():
     logging.info("DEVICE",CONFIG.DEVICE)
     train_loader=dataloaders["train"]
     test_loader=dataloaders["test"]
+    
+    
     loss_fn = nn.CrossEntropyLoss()
     metric_collection=get_metrics_collections(CONFIG.NUM_CLASSES, CONFIG.DEVICE)
     
@@ -57,8 +59,13 @@ def main():
     # confusion_matrix_wandb=ConfusionMatrix_Wandb(list(range(CONFIG.NUM_CLASSES)))
     
     
-    backbone=build_model(model_name=CONFIG.ModelName.torch_squeezenet)
-    model=LitSystem(backbone,metrics_collection=metric_collection,loss_fn=loss_fn)
+    backbone=build_model(model_name=CONFIG.ModelName.torch_squeezenet,
+                         loss_fn=loss_fn)
+    model=LitSystem(backbone,
+                    metrics_collection=metric_collection,
+                    # loss_fn=loss_fn,
+                    lr=CONFIG.LEARNING_RATE,
+                    )
     trainer=pl.Trainer(logger=wandb_logger,
                        gpus=-1,
                        max_epochs=CONFIG.NUM_EPOCHS,

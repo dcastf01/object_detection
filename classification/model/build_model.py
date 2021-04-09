@@ -7,7 +7,7 @@ from classification.model.vision_transformers.torch_transFG import VisionTransfo
 
 def build_model(model_name:str,loss_fn=None,metrics:Union[None,list]=None):
     if model_name==CONFIG.ModelName.torch_squeezenet:
-        backbone=get_squeezenet(CONFIG.NUM_CLASSES).to(CONFIG.DEVICE)
+        backbone=get_squeezenet(CONFIG.NUM_CLASSES,loss_fn).to(CONFIG.DEVICE)
         
     elif model_name== CONFIG.ModelName.torch_transFG:
         pass

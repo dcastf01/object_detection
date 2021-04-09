@@ -10,13 +10,13 @@ class LitSystem(pl.LightningModule):
     def __init__(self,
                  model,
                  metrics_collection:torchmetrics.MetricCollection,
-                  loss_fn=nn.CrossEntropyLoss(),
+                #   loss_fn=nn.CrossEntropyLoss(),
                   lr=CONFIG.LEARNING_RATE):
         
         super().__init__()
         #puede que loss_fn no vaya aquí y aquí solo vaya modelo
         self.model=model
-        self.loss_fn=loss_fn
+        # self.loss_fn=loss_fn
         self.train_metrics=metrics_collection.clone(prefix="train_metrics")
         self.valid_metrics=metrics_collection.clone(prefix="valid_metrics")
         
@@ -34,11 +34,11 @@ class LitSystem(pl.LightningModule):
     def training_step(self,batch,batch_idx):
         x,targets=batch
         
-        preds=self.model(x)
+        loss,preds=self.model(x,targets)
         
         #lo ideal sería hacer algo tipo loss,preds=self.model(x) de esta manera al modelo se le 
         #incluiria el loss fn y así podremos hacer la tripleta
-        loss=self.loss_fn(preds,targets)
+        # loss=self.loss_fn(preds,targets)
         
         metric_value=self.train_metrics(preds.softmax(dim=-1),targets)
         
@@ -51,9 +51,9 @@ class LitSystem(pl.LightningModule):
         '''used for logging metrics'''
         x, targets = batch
         
-        preds = self.model(x)
+        loss,preds=self.model(x,targets)
         
-        loss = self.loss_fn(preds, targets)
+        # loss = self.loss_fn(preds, targets)
 
         metric_value=self.valid_metrics(preds.softmax(dim=-1),targets)
 
