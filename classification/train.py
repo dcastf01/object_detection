@@ -17,7 +17,9 @@ from utils import check_accuracy, load_checkpoint, save_checkpoint
 from classification.callback import ConfusionMatrix_Wandb
 from classification.choice_loader import choice_loader_and_splits_dataset
 from classification.metrics import get_metrics_collections
-from classification.model.build_model import LitSystem, build_model
+from classification.model.build_model import build_model
+
+from classification.lit_system import LitSystem
 
 
 def main():
@@ -39,7 +41,7 @@ def main():
     metric_collection=get_metrics_collections(CONFIG.NUM_CLASSES, CONFIG.DEVICE)
     
     
-    backbone=build_model(model_name=CONFIG.ModelName.torch_squeezenet)
+    
     
     ##callbacks
     early_stopping=EarlyStopping(monitor='val_loss')
@@ -55,7 +57,7 @@ def main():
     # confusion_matrix_wandb=ConfusionMatrix_Wandb(list(range(CONFIG.NUM_CLASSES)))
     
     
-    
+    backbone=build_model(model_name=CONFIG.ModelName.torch_squeezenet)
     model=LitSystem(backbone,metrics_collection=metric_collection,loss_fn=loss_fn)
     trainer=pl.Trainer(logger=wandb_logger,
                        gpus=-1,

@@ -44,3 +44,4 @@ class CONFIG:
 
     class ModelName:
         torch_squeezenet="torch_squeezeNet"
+        torch_transFG="torch_transFG"
