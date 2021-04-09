@@ -95,7 +95,7 @@ class SqueezeNet(nn.Module):
         x = self.conv2(x)
         x = self.avg_pool(x)
         x = x.reshape(x.shape[0], -1)
-        x = self.softmax(x)
+        #no usar softmax porque crossentropy  usa softmax
         return x
 
 

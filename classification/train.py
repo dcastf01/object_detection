@@ -29,8 +29,8 @@ def main():
                                entity='dcastf01',
                                name=str(datetime.datetime.now()),
                                offline=True, #to debug
-                               
                                )
+    
     dataloaders=choice_loader_and_splits_dataset("compcars",
                                                 BATCH_SIZE=CONFIG.BATCH_SIZE,
                                                 NUM_WORKERS=CONFIG.NUM_WORKERS)
@@ -57,9 +57,8 @@ def main():
                         )
     
     # confusion_matrix_wandb=ConfusionMatrix_Wandb(list(range(CONFIG.NUM_CLASSES)))
-    
-    
-    backbone=build_model(model_name=CONFIG.ModelName.torch_squeezenet,
+        
+    backbone=build_model(model_name=CONFIG.MODELS_AVAILABLE.torch_transFG,
                          loss_fn=loss_fn)
     model=LitSystem(backbone,
                     metrics_collection=metric_collection,

@@ -1,26 +1,23 @@
 #https://github.com/TACJu/TransFG
 
 # coding=utf-8
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
+from __future__ import absolute_import, division, print_function
 
 import copy
 import logging
 import math
-
 from os.path import join as pjoin
 
+import classification.model.vision_transformers.configs as configs
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import numpy as np
-
-from torch.nn import CrossEntropyLoss, Dropout, Softmax, Linear, Conv2d, LayerNorm
-from torch.nn.modules.utils import _pair
+from config import CONFIG
 from scipy import ndimage
-
-import classification.model.vision_transformers.configs as configs
+from torch.nn import (Conv2d, CrossEntropyLoss, Dropout, LayerNorm, Linear,
+                      Softmax)
+from torch.nn.modules.utils import _pair
 
 logger = logging.getLogger(__name__)
 
@@ -375,11 +372,15 @@ def con_loss(features, labels):
     return loss
 
 
-def get_transFG(NUM_CLASS=10):
+def get_transFG(NUM_CLASS=10,img_size=CONFIG.IMG_SIZE):
     
+    config=CONFIGS['ViT-B_16']
+    #imgsize en el paper era de 448
+    model=VisionTransformer(config,img_size , zero_head=True,
+                            num_classes=NUM_CLASS,smoothing_value=0)
+
     
-    
-    pass
+    return model
 
 
 CONFIGS = {
@@ -390,3 +391,15 @@ CONFIGS = {
     'ViT-H_14': configs.get_h14_config(),
     'testing': configs.get_testing(),
 }
+
+def test_architecture():
+    # from torchinfo import summary
+    config=CONFIGS['testing']
+    #imgsize en el paper era de 448
+    model=VisionTransformer(config,224 , zero_head=True,
+                            num_classes=4455,smoothing_value=0)
+    y=model(torch.rand(16,3,224,224))
+    print(y.size())
+    # summary(model,input_size=(16,3,227,227))
+
+# test_architecture()

@@ -1,9 +1,14 @@
 import torch
 import os
+from enum import Enum
+from classification.model.models_available import  ModelsAvailable
+
 class CONFIG:
+    
     ROOT_WORKSPACE=r"D:\programacion\Repositorios\object_detection_TFM"
     ROOT_WORKSPACE=""
     #dataset compcar
+    PASSWORD_COMPCAR="d89551fd190e38"
     PATH_ROOT_COMPCAR=os.path.join(ROOT_WORKSPACE,"data","compcars")
     PATH_COMPCAR_CSV=os.path.join(PATH_ROOT_COMPCAR,"all_information_compcars.csv")
     PATH_COMPCAR_IMAGES=os.path.join(PATH_ROOT_COMPCAR,"image")
@@ -24,25 +29,26 @@ class CONFIG:
 
 
     #torch config
-    
-        
 
     DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
     # TRAIN_DIR = "data/train"
     # VAL_DIR = "data/val"
-    BATCH_SIZE = 16
+    BATCH_SIZE = 4
     NUM_CLASSES=4455
     LEARNING_RATE = 1e-5
     # LAMBDA_IDENTITY = 0.0
     NUM_WORKERS = 0
     SEED=1
-
+    IMG_SIZE=224
     NUM_EPOCHS = 10
     LOAD_MODEL = True
     SAVE_MODEL = True
 
     PATH_CHECKPOINT= os.path.join(ROOT_WORKSPACE,"classification/model/checkpoint")
+    MODELS_AVAILABLE=ModelsAvailable
 
-    class ModelName:
-        torch_squeezenet="torch_squeezeNet"
-        torch_transFG="torch_transFG"
+class config_model(CONFIG):
+    
+    def __init__(self):
+        super(config_model,self).__init__()
+        
