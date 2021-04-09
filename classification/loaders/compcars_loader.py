@@ -1,22 +1,25 @@
 import os
-from config import CONFIG
+import random
+
 import numpy as np
 import pandas as pd
 import torch
 import torchvision.transforms as transforms
+from classification.augmentation import get_transform_from_aladdinpersson
 from classification.loaders.loader import Loader
+from config import CONFIG
+from dataset.compcars.compcar_analisis import CompcarAnalisis
 from PIL import Image
 from utils_visualize import plot_examples
 
-from dataset.compcars.compcar_analisis import CompcarAnalisis
-from classification.augmentation import get_transform_from_aladdinpersson
 
 class CompcarLoaderBasic(Loader):
     def __init__(self, df:pd.DataFrame,root_dir_images:str,
-                  transform=None,condition_filter:str=None):
+                  transform=None,condition_filter:str=None,is_train:bool=False):
         df=self.generate_label_id_on_df(df)
         super().__init__(df=df,root_dir_images=root_dir_images,
-                         transform=transform,condition_filter=condition_filter)
+                         transform=transform,condition_filter=condition_filter,
+                         is_train=is_train)
         
     def generate_label_id_on_df(self,df:pd.DataFrame)->dict:
             df['id'] = df.groupby(["make_id",'model_id','released_year']).ngroup()
@@ -54,13 +57,36 @@ class CompcarLoaderBasic(Loader):
         
 class CompcarLoader(CompcarLoaderBasic):
     def __init__(self, df:pd.DataFrame,root_dir_images:str,
-                  transform=None,condition_filter:str=None):
+                  transform=None,condition_filter:str=None,is_train:bool=False):
         super(CompcarLoader,self).__init__(df,root_dir_images,
-                                            transform,condition_filter)
+                                            transform,condition_filter,
+                                            is_train=is_train)
     
     def __getitem__ (self,index):
         image,label=self._get_image_and_label(index)
         return image,label
+    
+class CompcarLoaderTripletLoss(CompcarLoaderBasic):
+    def __init__(self, df:pd.DataFrame,root_dir_images:str,
+                  transform=None,condition_filter:str=None,is_train:bool=False):
+        
+        super(CompcarLoaderTripletLoss,self).__init__(df,root_dir_images,
+                                            transform,condition_filter,
+                                            is_train=is_train)
+        self.is_train=is_train
+        
+        self.labels=list(self.data.id)
+        self.index=list(self.data.index.values)
+        
+    def __getitem__(self,index):
+        
+        anchor_img,anchor_label=self._get_image_and_label(index)
+        
+        if self.is_train:
+            
+            return anchor_img, positive_img, negative_img, anchor_label
+        else:
+            return anchor_img,anchor_label
 
 def test_CompcarLoader():
     

@@ -49,10 +49,10 @@ class CONFIG:
 
 class config_model(CONFIG):
     
-    def __init__(self,architecture_name:Union[str,Enum],is_triplet_model=False):
+    def __init__(self,architecture_name:Union[str,Enum],use_tripletLoss=False):
         super(config_model,self).__init__()
         self.architecture_name=self.check_architecture_name_on_list_and_return_architecture_name(architecture_name)
-        self.is_triplet_model=is_triplet_model
+        self.use_tripletLoss=use_tripletLoss
         
     def check_architecture_name_on_list_and_return_architecture_name(self,architecture_name):
         if architecture_name in self.ARCHITECTURES_AVAILABLE.__members__:

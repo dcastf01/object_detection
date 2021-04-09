@@ -33,7 +33,9 @@ def main():
     
     dataloaders=choice_loader_and_splits_dataset("compcars",
                                                 BATCH_SIZE=CONFIG.BATCH_SIZE,
-                                                NUM_WORKERS=CONFIG.NUM_WORKERS)
+                                                NUM_WORKERS=CONFIG.NUM_WORKERS,
+                                                use_tripletLoss=True
+                                                )
     logging.info("DEVICE",CONFIG.DEVICE)
     train_loader=dataloaders["train"]
     test_loader=dataloaders["test"]

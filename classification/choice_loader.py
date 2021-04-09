@@ -12,10 +12,13 @@ from PIL import Image
 # from skimage.viewer import ImageViewer
 from torch.utils.data import DataLoader
 from classification.augmentation import get_transform_from_aladdinpersson
-from classification.loaders.compcars_loader import CompcarLoader
+from classification.loaders.compcars_loader import CompcarLoader,CompcarLoaderTripletLoss
+import logging
 
-
-def choice_loader_and_splits_dataset(name_dataset:str,BATCH_SIZE:int=16,NUM_WORKERS:int=1) -> dict:
+def choice_loader_and_splits_dataset(name_dataset:str,
+                                     BATCH_SIZE:int=16,
+                                     NUM_WORKERS:int=1,
+                                     use_tripletLoss:bool=False) -> dict:
     
     if name_dataset.lower()=="cars196":
         raise NotImplementedError
@@ -34,17 +37,23 @@ def choice_loader_and_splits_dataset(name_dataset:str,BATCH_SIZE:int=16,NUM_WORK
         train_transform=transforms["train"]
         val_transform=transforms["val"]
         test_transform=transforms["test"]
+        if use_tripletLoss:
+            logging.info("loading compcar triplet loss")
+            loader=CompcarLoaderTripletLoss
+        else:
+            loader=CompcarLoader
+        train_dataset=loader(train_ds,
+                        root_dir_images=CONFIG.PATH_COMPCAR_IMAGES,
+                        transform=train_transform,
+                        is_train=True
+                        )
         
-        train_dataset=CompcarLoader(train_ds,
-                         root_dir_images=CONFIG.PATH_COMPCAR_IMAGES,
-                         transform=train_transform,
-                       
-                         )
-        
-        test_dataset=CompcarLoader(test_ds,
-                         root_dir_images=CONFIG.PATH_COMPCAR_IMAGES,
-                         transform=test_transform,
-                         )
+        test_dataset=loader(test_ds,
+                        root_dir_images=CONFIG.PATH_COMPCAR_IMAGES,
+                        transform=test_transform,
+                        is_train=False
+                        
+                        )
    
     else:
         raise NotImplementedError

@@ -15,8 +15,7 @@ def build_model(model_name:str,loss_fn=None,metrics:Union[None,list]=None):
     elif model_name== CONFIG.ARCHITECTURES_AVAILABLE.torch_transFG:
         
         model=get_transFG(NUM_CLASS=CONFIG.NUM_CLASSES)
-        
-        
+                
     return model
     
     
