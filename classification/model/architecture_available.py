@@ -1,5 +1,5 @@
 from enum import Enum
 
-class ModelsAvailable(Enum):
+class ArchitectureAvailable(Enum):
         torch_squeezenet=1
         torch_transFG=2

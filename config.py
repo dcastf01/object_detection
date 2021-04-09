@@ -1,8 +1,8 @@
 import torch
 import os
 from enum import Enum
-from classification.model.models_available import  ModelsAvailable
-
+from classification.model.architecture_available import  ArchitectureAvailable
+from typing import Union
 class CONFIG:
     
     ROOT_WORKSPACE=r"D:\programacion\Repositorios\object_detection_TFM"
@@ -45,10 +45,25 @@ class CONFIG:
     SAVE_MODEL = True
 
     PATH_CHECKPOINT= os.path.join(ROOT_WORKSPACE,"classification/model/checkpoint")
-    MODELS_AVAILABLE=ModelsAvailable
+    ARCHITECTURES_AVAILABLE=Architecture_Available
 
 class config_model(CONFIG):
     
-    def __init__(self):
+    def __init__(self,name_model:Union[str,Enum],is_triplet_model=False):
         super(config_model,self).__init__()
+        self.name_model=self.check_name_model_on_list_and_return_name_model(name_model)
+        self.is_triplet_model=is_triplet_model
         
+    def check_name_model_on_list_and_return_name_model(self,name_model):
+        if name_model in self.ARCHITECTURES_AVAILABLE.__members__:
+            name_model=self.ARCHITECTURES_AVAILABLE[name_model]
+            return name_model
+        elif  name_model in self.ARCHITECTURES_AVAILABLE:
+            
+            return name_model      
+        else:
+            print( "you should pick a available model, here you have a list")
+            print(self.ARCHITECTURES_AVAILABLE.__members__.keys())
+            raise
+
+    
