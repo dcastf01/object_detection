@@ -11,7 +11,7 @@ from utils_visualize import plot_examples
 from dataset.compcars.compcar_analisis import CompcarAnalisis
 from classification.augmentation import get_transform_from_aladdinpersson
 
-class CompcarLoader(Loader):
+class CompcarLoaderBasic(Loader):
     def __init__(self, df:pd.DataFrame,root_dir_images:str,
                   transform=None,condition_filter:str=None):
         df=self.generate_label_id_on_df(df)
@@ -22,17 +22,10 @@ class CompcarLoader(Loader):
             df['id'] = df.groupby(["make_id",'model_id','released_year']).ngroup()
         
             return df
-        
-    def __getitem__ (self,index):
+    def _get_image_and_label(self,index):    
+    
         def get_relative_path_img(index):
-            
-            # image_name=self.data.iloc[index]["image_name"]
-            # make_id=self.data.iloc[index]["make_id"]
-            # model_id=self.data.iloc[index]["model_id"]
-            # released_year=self.data.iloc[index]["released_year"]
-            # extension=self.data.iloc[index]["extension"]
-            
-            # return os.path.join(make_id,model_id,released_year,image_name+"."+extension)
+
             return self.data.iloc[index]["Filepath"]
         def cut_car(image,index):
             X=self.data.iloc[index]["X"]
@@ -56,6 +49,18 @@ class CompcarLoader(Loader):
 
         return image,label
 
+    def __getitem__ (self,index):
+        NotImplementedError
+        
+class CompcarLoader(CompcarLoaderBasic):
+    def __init__(self, df:pd.DataFrame,root_dir_images:str,
+                  transform=None,condition_filter:str=None):
+        super(CompcarLoader,self).__init__(df,root_dir_images,
+                                            transform,condition_filter)
+    
+    def __getitem__ (self,index):
+        image,label=self._get_image_and_label(index)
+        return image,label
 
 def test_CompcarLoader():
     

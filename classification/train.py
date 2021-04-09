@@ -58,7 +58,7 @@ def main():
     
     # confusion_matrix_wandb=ConfusionMatrix_Wandb(list(range(CONFIG.NUM_CLASSES)))
         
-    backbone=build_model(model_name=CONFIG.MODELS_AVAILABLE.torch_transFG,
+    backbone=build_model(model_name=CONFIG.ARCHITECTURES_AVAILABLE.torch_transFG,
                          loss_fn=loss_fn)
     model=LitSystem(backbone,
                     metrics_collection=metric_collection,

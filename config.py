@@ -45,7 +45,7 @@ class CONFIG:
     SAVE_MODEL = True
 
     PATH_CHECKPOINT= os.path.join(ROOT_WORKSPACE,"classification/model/checkpoint")
-    ARCHITECTURES_AVAILABLE=Architecture_Available
+    ARCHITECTURES_AVAILABLE=ArchitectureAvailable
 
 class config_model(CONFIG):
     
