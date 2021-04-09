@@ -374,6 +374,14 @@ def con_loss(features, labels):
     loss /= B
     return loss
 
+
+def get_transFG(NUM_CLASS=10):
+    
+    
+    
+    pass
+
+
 CONFIGS = {
     'ViT-B_16': configs.get_b16_config(),
     'ViT-B_32': configs.get_b32_config(),

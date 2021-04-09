@@ -99,37 +99,19 @@ class SqueezeNet(nn.Module):
         return x
 
 
-class SqueezeModel(nn.Module):
-    
-    def __init__(self,NUM_CLASS,loss_fn=nn.CrossEntropyLoss()):
-        super(SqueezeModel,self).__init__()
-        self.net=SqueezeNet(NUM_CLASS)
-        self.loss_fn=loss_fn
-        
-    def forward(self,x,labels=None):
-        
-        preds=self.net(x)
-        
-        if labels is not None:
-            
-            loss=self.loss_fn(preds,labels)
-            
-            return loss,preds
-        else:
- 
-            return preds
+
 
     
 def fire_layer(inp, s, e):
     f = fire(inp, s, e)
     return f
 
-def get_squeezenet(NUM_CLASS=10,loss_fn=nn.CrossEntropyLoss(),pretrained=False):
-    net = SqueezeModel(NUM_CLASS,loss_fn)
+def get_squeezenet(NUM_CLASS=10,pretrained=False):
+    model = SqueezeNet(NUM_CLASS)
     # inp = Variable(torch.randn(64,3,32,32))
     # out = net.forward(inp)
     # print(out.size())
-    return net
+    return model
 
 def test_architecture():
     # from torchinfo import summary

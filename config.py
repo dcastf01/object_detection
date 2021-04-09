@@ -2,6 +2,7 @@ import torch
 import os
 class CONFIG:
     ROOT_WORKSPACE=r"D:\programacion\Repositorios\object_detection_TFM"
+    ROOT_WORKSPACE=""
     #dataset compcar
     PATH_ROOT_COMPCAR=os.path.join(ROOT_WORKSPACE,"data","compcars")
     PATH_COMPCAR_CSV=os.path.join(PATH_ROOT_COMPCAR,"all_information_compcars.csv")
