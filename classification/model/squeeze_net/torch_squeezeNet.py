@@ -118,7 +118,7 @@ def test_architecture():
     
     model=get_squeezenet(NUM_CLASS=4455)
     y=model(torch.rand(16,3,224,224))
-    print(y.size())
+    print("squeezenet",y.size())
     # summary(model,input_size=(16,3,227,227))
 
-test_architecture()
+# test_architecture()
