@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import wandb
-from config import CONFIG,ConfigModel
+from config import CONFIG
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 from pytorch_lightning.callbacks.model_checkpoint import ModelCheckpoint
 from pytorch_lightning.loggers import WandbLogger
@@ -18,12 +18,12 @@ from classification.callback import ConfusionMatrix_Wandb
 from classification.choice_loader import choice_loader_and_splits_dataset
 from classification.metrics import get_metrics_collections
 from classification.model.build_model import build_model
-
+from classification.configs_experiments import get_config,ExperimentNames
 from classification.lit_system import LitSystem
 
-
 def main():
-    
+    experiment=ExperimentNames.TorchSqueezeNetTripletLoss
+    config_experiment=get_config(experiment)
     
     wandb_logger = WandbLogger(project='TFM-classification',
                                entity='dcastf01',
@@ -34,16 +34,16 @@ def main():
     dataloaders=choice_loader_and_splits_dataset("compcars",
                                                 BATCH_SIZE=CONFIG.BATCH_SIZE,
                                                 NUM_WORKERS=CONFIG.NUM_WORKERS,
-                                                use_tripletLoss=True
+                                                use_tripletLoss=config_experiment.use_tripletLoss
                                                 )
     
     logging.info("DEVICE",CONFIG.DEVICE)
     train_loader=dataloaders["train"]
     test_loader=dataloaders["test"]
     
-    config_model=ConfigModel()
     
-    loss_fn = nn.CrossEntropyLoss()
+    
+    # loss_fn = nn.CrossEntropyLoss()
     metric_collection=get_metrics_collections(CONFIG.NUM_CLASSES, CONFIG.DEVICE)
     
     
@@ -60,8 +60,10 @@ def main():
     
     # confusion_matrix_wandb=ConfusionMatrix_Wandb(list(range(CONFIG.NUM_CLASSES)))
         
-    backbone=build_model(model_name=CONFIG.ARCHITECTURES_AVAILABLE.torch_transFG,
-                         loss_fn=loss_fn)
+    backbone=build_model(   architecture_name=config_experiment.architecture_name,
+                            use_defaultLoss=config_experiment.use_defaultLoss,
+                            use_tripletLoss=config_experiment.use_tripletLoss,
+                        )
     model=LitSystem(backbone,
                     metrics_collection=metric_collection,
                     # loss_fn=loss_fn,

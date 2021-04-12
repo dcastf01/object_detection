@@ -296,13 +296,13 @@ class VisionTransformer(nn.Module):
         self.classifier = config.classifier
         self.transformer = Transformer(config, img_size)
         self.part_head = Linear(config.hidden_size, num_classes)
-        self.run_loss_transFG=
+        self.run_loss_transFG=run_loss_transFG
 
     def forward(self, x, labels=None):
         part_tokens = self.transformer(x)
         part_logits = self.part_head(part_tokens[:, 0])
 
-        if labels is not None:
+        if labels is not None and self.run_loss_transFG:
             if self.smoothing_value == 0:
                 loss_fct = CrossEntropyLoss()
             else:
@@ -315,7 +315,7 @@ class VisionTransformer(nn.Module):
                     "contrast_loss":contrast_loss,
                     "preds":part_logits,}
         else:
-            return part_logits
+            return{"preds":part_logits,}
 
     def load_from(self, weights):
         with torch.no_grad():
