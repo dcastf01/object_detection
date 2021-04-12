@@ -6,12 +6,12 @@ class Loader (Dataset):
     
     def __init__ (self, df:pd.DataFrame,root_dir_images:str,
                   transform=None,condition_filter:str=None,
-                  is_train:bool=False):
+                  ):
         self.data=df
         self.root_dir_images=root_dir_images
         
         self.transform=transform
-        self.is_train=is_train
+
         if condition_filter is not None:
             self.condition_filter=condition_filter
             self.data=self.data.query(condition_filter)

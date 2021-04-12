@@ -22,7 +22,7 @@ from classification.configs_experiments import get_config,ExperimentNames
 from classification.lit_system import LitSystem
 
 def main():
-    experiment=ExperimentNames.TorchSqueezeNetTripletLoss
+    experiment=ExperimentNames.TorchSqueezeNetDefaultLossAndTripletLoss
     config_experiment=get_config(experiment)
     
     wandb_logger = WandbLogger(project='TFM-classification',

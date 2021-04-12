@@ -15,11 +15,11 @@ from utils_visualize import plot_examples
 
 class CompcarLoaderBasic(Loader):
     def __init__(self, df:pd.DataFrame,root_dir_images:str,
-                  transform=None,condition_filter:str=None,is_train:bool=False):
+                  transform=None,condition_filter:str=None):
         df=self.generate_label_id_on_df(df)
         super().__init__(df=df,root_dir_images=root_dir_images,
                          transform=transform,condition_filter=condition_filter,
-                         is_train=is_train)
+                         )
         
     def generate_label_id_on_df(self,df:pd.DataFrame)->dict:
             df['id'] = df.groupby(["make_id",'model_id','released_year']).ngroup()
@@ -57,10 +57,11 @@ class CompcarLoaderBasic(Loader):
         
 class CompcarLoader(CompcarLoaderBasic):
     def __init__(self, df:pd.DataFrame,root_dir_images:str,
-                  transform=None,condition_filter:str=None,is_train:bool=False):
+                  transform=None,condition_filter:str=None,
+                  ):
         super(CompcarLoader,self).__init__(df,root_dir_images,
                                             transform,condition_filter,
-                                            is_train=is_train)
+                                          )
     
     def __getitem__ (self,index):
         image,label=self._get_image_and_label(index)
@@ -68,12 +69,11 @@ class CompcarLoader(CompcarLoaderBasic):
     
 class CompcarLoaderTripletLoss(CompcarLoaderBasic):
     def __init__(self, df:pd.DataFrame,root_dir_images:str,
-                  transform=None,condition_filter:str=None,is_train:bool=False):
+                  transform=None,condition_filter:str=None,):
         
         super(CompcarLoaderTripletLoss,self).__init__(df,root_dir_images,
                                             transform,condition_filter,
-                                            is_train=is_train)
-        self.is_train=is_train
+                                            )
                 
         self.labels=(self.data.id.to_numpy())
         self.labels_set = set(self.data.id.to_numpy())
@@ -87,23 +87,22 @@ class CompcarLoaderTripletLoss(CompcarLoaderBasic):
         #https://www.kaggle.com/hirotaka0122/triplet-loss-with-pytorch
         #https://github.com/adambielski/siamese-triplet/blob/master/datasets.py
         
-        if self.is_train:
-            positive_index=index
-            while positive_index == index:
-                # positive_list=self.index[self.index!=index][self.labels[self.index!=index]==anchor_label]
-                positive_index = np.random.choice(self.label_to_indices[anchor_label.item()])
-            
-            negative_label=np.random.choice(list(self.labels_set-set([anchor_label.item()])))
-            negative_index=np.random.choice(self.label_to_indices[negative_label])            
-            # 
-            # positive_index = random.choice(positive_list)
-            
-            positive_img,positive_label=self._get_image_and_label(positive_index)
-            negative_img,negative_label=self._get_image_and_label(negative_index)
-            
-            return (anchor_img, positive_img, negative_img),(anchor_label,positive_label,negative_label)
-        else:
-            return anchor_img,anchor_label
+
+        positive_index=index
+        while positive_index == index:
+            # positive_list=self.index[self.index!=index][self.labels[self.index!=index]==anchor_label]
+            positive_index = np.random.choice(self.label_to_indices[anchor_label.item()])
+        
+        negative_label=np.random.choice(list(self.labels_set-set([anchor_label.item()])))
+        negative_index=np.random.choice(self.label_to_indices[negative_label])            
+        # 
+        # positive_index = random.choice(positive_list)
+        
+        positive_img,positive_label=self._get_image_and_label(positive_index)
+        negative_img,negative_label=self._get_image_and_label(negative_index)
+        
+        return (anchor_img, positive_img, negative_img),(anchor_label,positive_label,negative_label)
+        
 
 def test_CompcarLoader():
     

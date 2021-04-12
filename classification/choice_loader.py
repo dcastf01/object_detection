@@ -45,14 +45,11 @@ def choice_loader_and_splits_dataset(name_dataset:str,
         train_dataset=loader(train_ds,
                         root_dir_images=CONFIG.PATH_COMPCAR_IMAGES,
                         transform=train_transform,
-                        is_train=True
                         )
         
         test_dataset=loader(test_ds,
                         root_dir_images=CONFIG.PATH_COMPCAR_IMAGES,
-                        transform=test_transform,
-                        is_train=False
-                        
+                        transform=test_transform,                        
                         )
    
     else:
