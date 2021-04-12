@@ -61,6 +61,7 @@ class ConfigModel(CONFIG):
         self.architecture_name=self.check_architecture_name_on_list_and_return_architecture_name(architecture_name)
         self.use_tripletLoss=self.use_tripletLoss
         self.default_Loss=self.default_Loss
+        
     def check_architecture_name_on_list_and_return_architecture_name(self,architecture_name):
         if architecture_name in self.ARCHITECTURES_AVAILABLE.__members__:
             architecture_name=self.ARCHITECTURES_AVAILABLE[architecture_name]
