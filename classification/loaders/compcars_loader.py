@@ -74,8 +74,7 @@ class CompcarLoaderTripletLoss(CompcarLoaderBasic):
                                             transform,condition_filter,
                                             is_train=is_train)
         self.is_train=is_train
-        
-        
+                
         self.labels=(self.data.id.to_numpy())
         self.labels_set = set(self.data.id.to_numpy())
         self.label_to_indices = {label: np.where(np.array(self.labels) == label)[0]
@@ -97,14 +96,10 @@ class CompcarLoaderTripletLoss(CompcarLoaderBasic):
             negative_label=np.random.choice(list(self.labels_set-set([anchor_label.item()])))
             negative_index=np.random.choice(self.label_to_indices[negative_label])            
             # 
-            
             # positive_index = random.choice(positive_list)
             
             positive_img,positive_label=self._get_image_and_label(positive_index)
             negative_img,negative_label=self._get_image_and_label(negative_index)
-
-            
-            
             
             return (anchor_img, positive_img, negative_img),(anchor_label,positive_label,negative_label)
         else:

@@ -51,13 +51,16 @@ class CONFIG:
     PATH_CHECKPOINT: str= os.path.join(ROOT_WORKSPACE,"classification/model/checkpoint")
     ARCHITECTURES_AVAILABLE:Enum=ArchitectureAvailable
 
-class config_model(CONFIG):
+class ConfigModel(CONFIG):
     
-    def __init__(self,architecture_name:Union[str,Enum],use_tripletLoss=False):
-        super(config_model,self).__init__()
+    use_tripletLoss=False
+    default_Loss=False
+    
+    def __init__(self,architecture_name:Union[str,Enum]):#,use_tripletLoss=False,default_Loss=False):
+        super(ConfigModel,self).__init__()
         self.architecture_name=self.check_architecture_name_on_list_and_return_architecture_name(architecture_name)
-        self.use_tripletLoss=use_tripletLoss
-        
+        self.use_tripletLoss=self.use_tripletLoss
+        self.default_Loss=self.default_Loss
     def check_architecture_name_on_list_and_return_architecture_name(self,architecture_name):
         if architecture_name in self.ARCHITECTURES_AVAILABLE.__members__:
             architecture_name=self.ARCHITECTURES_AVAILABLE[architecture_name]
@@ -70,4 +73,33 @@ class config_model(CONFIG):
             print(self.ARCHITECTURES_AVAILABLE.__members__.keys())
             raise
 
+class ConfigModelTripletLoss(ConfigModel):
     
+    def __init__(self,architecture_name:Union[str,Enum]):
+        self.use_tripletLoss=True
+        
+        ConfigModel.__init__(self,architecture_name=architecture_name,)
+                                                    # use_tripletLoss=use_tripletLoss)
+        
+class ConfigModelDefaultLoss(ConfigModel):
+    
+    def __init__(self,architecture_name:Union[str,Enum]):
+        self.default_Loss=True
+        ConfigModel.__init__(self,architecture_name=architecture_name,)
+                                                    # default_Loss=default_Loss)
+    
+class ConfigModelTripletAndDefaultLoss(ConfigModelTripletLoss,ConfigModelDefaultLoss):
+    def __init__(self,architecture_name:Union[str,Enum]):
+        ConfigModelTripletLoss.__init__(self,architecture_name=architecture_name)
+        ConfigModelDefaultLoss.__init__(self,architecture_name=architecture_name)
+        # super(ConfigModelTripletAndDefaultLoss,self).__init__(architecture_name=architecture_name)
+    
+a=ConfigModelTripletAndDefaultLoss(architecture_name=ArchitectureAvailable.torch_squeezenet,
+                                 
+                                    )
+print(a)
+def get_torch_squeezeNet_tripletloss():
+    
+    config=ConfigModelTripletLoss(architecture_name=ArchitectureAvailable.torch_squeezenet,
+                                 
+                                    )

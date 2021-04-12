@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import wandb
-from config import CONFIG
+from config import CONFIG,ConfigModel
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 from pytorch_lightning.callbacks.model_checkpoint import ModelCheckpoint
 from pytorch_lightning.loggers import WandbLogger
@@ -36,15 +36,15 @@ def main():
                                                 NUM_WORKERS=CONFIG.NUM_WORKERS,
                                                 use_tripletLoss=True
                                                 )
+    
     logging.info("DEVICE",CONFIG.DEVICE)
     train_loader=dataloaders["train"]
     test_loader=dataloaders["test"]
     
+    config_model=ConfigModel()
     
     loss_fn = nn.CrossEntropyLoss()
     metric_collection=get_metrics_collections(CONFIG.NUM_CLASSES, CONFIG.DEVICE)
-    
-    
     
     
     ##callbacks

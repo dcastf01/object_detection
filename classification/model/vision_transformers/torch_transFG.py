@@ -286,7 +286,9 @@ class Transformer(nn.Module):
         return part_encoded
 
 class VisionTransformer(nn.Module):
-    def __init__(self, config, img_size=224, num_classes=21843, smoothing_value=0, zero_head=False):
+    def __init__(self, config, img_size=224, num_classes=21843,
+                 smoothing_value=0, zero_head=False,
+                 run_loss_transFG=True):
         super(VisionTransformer, self).__init__()
         self.num_classes = num_classes
         self.smoothing_value = smoothing_value
@@ -294,6 +296,7 @@ class VisionTransformer(nn.Module):
         self.classifier = config.classifier
         self.transformer = Transformer(config, img_size)
         self.part_head = Linear(config.hidden_size, num_classes)
+        self.run_loss_transFG=
 
     def forward(self, x, labels=None):
         part_tokens = self.transformer(x)
