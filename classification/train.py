@@ -28,7 +28,7 @@ def main():
     wandb_logger = WandbLogger(project='TFM-classification',
                                entity='dcastf01',
                                name=str(datetime.datetime.now()),
-                               offline=True, #to debug
+                            #    offline=True, #to debug
                                )
     
     dataloaders=choice_loader_and_splits_dataset("compcars",
@@ -60,7 +60,7 @@ def main():
     
     # confusion_matrix_wandb=ConfusionMatrix_Wandb(list(range(CONFIG.NUM_CLASSES)))
         
-    backbone=build_model(model_name=CONFIG.ARCHITECTURES_AVAILABLE.torch_squeezenet,
+    backbone=build_model(model_name=CONFIG.ARCHITECTURES_AVAILABLE.torch_transFG,
                          loss_fn=loss_fn)
     model=LitSystem(backbone,
                     metrics_collection=metric_collection,
@@ -71,13 +71,13 @@ def main():
                        gpus=-1,
                        max_epochs=CONFIG.NUM_EPOCHS,
                        precision=16,
-                       limit_train_batches=0.005, #only to debug
+                       limit_train_batches=0.00005, #only to debug
                        limit_val_batches=0.005, #only to debug
                     #    val_check_interval=1,
                        log_gpu_memory=True,
                        callbacks=[
-                            early_stopping ,
-                            checkpoint_callback,
+                            # early_stopping ,
+                            # checkpoint_callback,
                             # confusion_matrix_wandb
                                   ]
                        )

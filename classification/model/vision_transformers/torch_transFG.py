@@ -307,7 +307,10 @@ class VisionTransformer(nn.Module):
             part_loss = loss_fct(part_logits.view(-1, self.num_classes), labels.view(-1))
             contrast_loss = con_loss(part_tokens[:, 0], labels.view(-1))
             loss = part_loss + contrast_loss
-            return loss, part_logits
+            return {"loss":loss,
+                    "loss_crosentropy":part_loss,
+                    "contrast_loss":contrast_loss,
+                    "preds":part_logits,}
         else:
             return part_logits
 
