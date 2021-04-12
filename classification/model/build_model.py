@@ -1,9 +1,13 @@
 
-from config import CONFIG
 from typing import Union
+
+from classification.model.models_with_loss import (ModelWithOneLoss,
+                                                   ModelWithoutLoss,
+                                                   ModelWithTripletLoss)
 from classification.model.squeeze_net.torch_squeezeNet import get_squeezenet
 from classification.model.vision_transformers.torch_transFG import get_transFG
-from classification.model.models_with_loss import ModelWithOneLoss,ModelWithTripletLoss
+from config import CONFIG
+
 
 def build_model(architecture_name,use_defaultLoss:bool,
                 use_tripletLoss:bool,
@@ -13,6 +17,8 @@ def build_model(architecture_name,use_defaultLoss:bool,
         model=get_squeezenet(CONFIG.NUM_CLASSES).to(CONFIG.DEVICE)
         if use_defaultLoss:
             model=ModelWithOneLoss(model)
+        else: 
+            model=ModelWithoutLoss(model)
     elif architecture_name== CONFIG.ARCHITECTURES_AVAILABLE.torch_transFG:
         
         model=get_transFG(NUM_CLASS=CONFIG.NUM_CLASSES,
