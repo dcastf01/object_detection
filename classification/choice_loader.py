@@ -17,7 +17,7 @@ import logging
 
 def choice_loader_and_splits_dataset(name_dataset:str,
                                      BATCH_SIZE:int=16,
-                                     NUM_WORKERS:int=1,
+                                     NUM_WORKERS:int=0,
                                      use_tripletLoss:bool=False) -> dict:
     
     if name_dataset.lower()=="cars196":
@@ -54,18 +54,23 @@ def choice_loader_and_splits_dataset(name_dataset:str,
    
     else:
         raise NotImplementedError
- 
+    
+    import time
+  
+    
     train_dataset_loader = torch.utils.data.DataLoader(
                     train_dataset, batch_size=BATCH_SIZE,
-                    shuffle=True, num_workers=NUM_WORKERS,
-                    pin_memory=True
+                    shuffle=True, num_workers=16,
+                    pin_memory=True,
+                    drop_last=True,
                     # sampler=
                                                     )
 
     test_dataset_loader = torch.utils.data.DataLoader(
                     test_dataset, batch_size=BATCH_SIZE,
-                    shuffle=False, num_workers=NUM_WORKERS,
-                    pin_memory=True
+                    shuffle=False, num_workers=16,
+                    pin_memory=True,
+                    drop_last=True,
                 )
     dataloaders = {
         "train": train_dataset_loader,
@@ -78,6 +83,7 @@ def test_choice_loader():
     
     dataloaders=choice_loader_and_splits_dataset("compcars",
                                                 BATCH_SIZE=CONFIG.BATCH_SIZE,
-                                                NUM_WORKERS=CONFIG.NUM_WORKERS)
+                                                # NUM_WORKERS=CONFIG.NUM_WORKERS
+                                                )
     
 # test_choice_loader()
