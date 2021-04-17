@@ -5,11 +5,13 @@ import torch.nn as nn
 import torchmetrics
 from config import CONFIG
 
+from classification.metrics import get_metrics_collections_base,get_metric_AUROC
+
 
 class LitSystem(pl.LightningModule):
     def __init__(self,
                  model,
-                 metrics_collection:torchmetrics.MetricCollection,
+                 
                 #   loss_fn=nn.CrossEntropyLoss(),
                   lr=CONFIG.LEARNING_RATE):
         
@@ -17,8 +19,11 @@ class LitSystem(pl.LightningModule):
         #puede que loss_fn no vaya aquí y aquí solo vaya modelo
         self.model=model
         # self.loss_fn=loss_fn
-        self.train_metrics=metrics_collection.clone()
-        self.valid_metrics=metrics_collection.clone()
+        metrics_base=get_metrics_collections_base(NUM_CLASS=CONFIG.NUM_CLASSES)
+        self.train_metrics_base=metrics_base.clone()
+        # self.train_metric_auroc=get_metric_AUROC(NUM_CLASS=CONFIG.NUM_CLASSES)
+        self.valid_metrics_base=metrics_base.clone()
+        # self.valid_metric_auroc=get_metric_AUROC(NUM_CLASS=CONFIG.NUM_CLASSES)
         
         # log hyperparameters
         self.save_hyperparameters()
@@ -42,8 +47,12 @@ class LitSystem(pl.LightningModule):
         #lo ideal sería hacer algo tipo loss,preds=self.model(x) de esta manera al modelo se le 
         #incluiria el loss fn y así podremos hacer la tripleta
         # loss=self.loss_fn(preds,targets)
-        
-        metric_value=self.train_metrics(preds.softmax(dim=-1),targets)
+        preds_probability=nn.functional.softmax(preds,dim=1)
+        metric_value=self.train_metrics_base(preds_probability,targets)
+        data_dict.pop("preds")
+        data_dict={**data_dict,**metric_value}
+        # metric_value={**metric_value,
+        #               **self.train_metric_auroc(preds.softmax(dim=1),targets)}
         self.insert_each_metric_value_into_dict(data_dict,prefix="train")
         # self.log('train_loss',loss)
         # self.log('train_metrics',metric_value)
@@ -61,8 +70,11 @@ class LitSystem(pl.LightningModule):
         
         if isinstance(targets,list):
             targets=targets[0]
-
-        metric_value=self.valid_metrics(preds.softmax(dim=-1),targets)
+        preds_probability=nn.functional.softmax(preds,dim=1)
+        a=torch.sum(preds_probability,dim=1)
+        metric_value=self.valid_metrics_base(preds_probability,targets)
+        # metric_value={**metric_value,
+                    #   **self.valid_metric_auroc(preds.softmax(dim=0),targets)}
         data_dict.pop("preds")
         data_dict={**data_dict,**metric_value}
         #########CREAR UNA FUNCIÓN QUE COJA METRICA Y DATA DICT, Y SUELTE LA PREDICCION 
@@ -82,7 +94,18 @@ class LitSystem(pl.LightningModule):
         return optimizer
 
     
-    def insert_each_metric_value_into_dict(self,data_dict:dict,prefix=None):
+    def insert_each_metric_value_into_dict(self,data_dict:dict,prefix:str):
+ 
+       
+        on_step=False
+        on_epoch=True
+    
+            
         
         for metric,value in data_dict.items():
-            self.log("_".join([prefix,metric]),value)
+            if metric is not "preds":
+                self.log("_".join([prefix,metric]),value,
+                        on_step=on_step, 
+                        on_epoch=on_epoch, 
+                        sync_dist=True,
+                        logger=True)

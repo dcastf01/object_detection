@@ -38,20 +38,22 @@ class CONFIG:
     DEVICE: str = "cuda" if torch.cuda.is_available() else "cpu"
     # TRAIN_DIR = "data/train"
     # VAL_DIR = "data/val"
-    BATCH_SIZE:int = 4
+    BATCH_SIZE:int = 128
     NUM_CLASSES:int=4455
     LEARNING_RATE:float = 1e-5
     # LAMBDA_IDENTITY = 0.0
-    NUM_WORKERS:int = 0
+    NUM_WORKERS:int = 16
     SEED:int=1
     IMG_SIZE:int=224
-    NUM_EPOCHS :int= 10
+    NUM_EPOCHS :int= 50
     LOAD_MODEL :bool= True
     SAVE_MODEL :bool= True
     PATH_CHECKPOINT: str= os.path.join(ROOT_WORKSPACE,"classification/model/checkpoint")
     
     ARCHITECTURES_AVAILABLE:Enum=ArchitectureAvailable
-    
+    # def _get_json(self):
+    #     import json
+    #     return json.dumps(self.__dict__)
 class WrapperConfigModel(CONFIG):
     use_tripletLoss=False
     default_Loss=False

@@ -1,6 +1,10 @@
+#check this https://stackoverflow.com/questions/64607182/vs-code-remote-ssh-how-to-allow-processes-to-keep-running-to-completion-after-d
 import datetime
 import logging
-
+import os
+# os.environ["PYTHONPATH"] ='/home/dcast/object_detection_TFM'
+import sys
+sys.path.append("/home/dcast/object_detection_TFM")
 import pytorch_lightning as pl
 import torch
 import torch.nn as nn
@@ -9,6 +13,8 @@ import wandb
 from config import CONFIG
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 from pytorch_lightning.callbacks.model_checkpoint import ModelCheckpoint
+from pytorch_lightning.plugins import DDPPlugin
+
 from pytorch_lightning.loggers import WandbLogger
 from torch.utils.data import DataLoader
 from tqdm import tqdm
@@ -16,19 +22,29 @@ from utils import check_accuracy, load_checkpoint, save_checkpoint
 
 from classification.callback import ConfusionMatrix_Wandb
 from classification.choice_loader import choice_loader_and_splits_dataset
-from classification.metrics import get_metrics_collections
 from classification.model.build_model import build_model
 from classification.configs_experiments import get_config,ExperimentNames
 from classification.lit_system import LitSystem
-
+import json
 def main():
-    experiment=ExperimentNames.TorchSqueezeNetTripletLoss
-    config_experiment=get_config(experiment)
     
+   
+    experiment=ExperimentNames.TorchSqueezeNetDefaultLoss
+    config_experiment=get_config(experiment)
+
     wandb_logger = WandbLogger(project='TFM-classification',
                                entity='dcastf01',
-                               name=str(datetime.datetime.now()),
+                               name=experiment.name+" "+
+                                datetime.datetime.now().strftime("%Y-%m-%d %X"),
                             #    offline=True, #to debug
+                            config={
+                                "batch_size":CONFIG.BATCH_SIZE,
+                                "num_workers":CONFIG.NUM_WORKERS,
+                                "experimentName":experiment.name,
+                                "lr":CONFIG.LEARNING_RATE,
+                                "use_TripletLoss":config_experiment.use_tripletLoss,
+                                }
+                            
                                )
     
     dataloaders=choice_loader_and_splits_dataset("compcars",
@@ -44,7 +60,7 @@ def main():
     
     
     # loss_fn = nn.CrossEntropyLoss()
-    metric_collection=get_metrics_collections(CONFIG.NUM_CLASSES, CONFIG.DEVICE)
+    # metric_collection=get_metrics_collections(CONFIG.NUM_CLASSES,)# CONFIG.DEVICE)
     
     
     ##callbacks
@@ -65,7 +81,6 @@ def main():
                             use_tripletLoss=config_experiment.use_tripletLoss,
                         )
     model=LitSystem(backbone,
-                    metrics_collection=metric_collection,
                     # loss_fn=loss_fn,
                     lr=CONFIG.LEARNING_RATE,
                     )
@@ -73,10 +88,13 @@ def main():
                        gpus=-1,
                        max_epochs=CONFIG.NUM_EPOCHS,
                        precision=16,
-                       limit_train_batches=0.00005, #only to debug
-                       limit_val_batches=0.005, #only to debug
+                    #    limit_train_batches=0.1, #only to debug
+                    #    limit_val_batches=0.05, #only to debug
                     #    val_check_interval=1,
                        log_gpu_memory=True,
+                       distributed_backend='ddp',
+                       accelerator="dpp",
+                       plugins=DDPPlugin(find_unused_parameters=False),
                        callbacks=[
                             # early_stopping ,
                             # checkpoint_callback,
