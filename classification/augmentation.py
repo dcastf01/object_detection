@@ -7,8 +7,8 @@ from albumentations.pytorch import ToTensorV2
 def get_transform_from_aladdinpersson()->dict:
     train_transform = A.Compose(
         [
-            A.Resize(width=1920, height=1080),
-            A.RandomCrop(width=1280, height=720,p=0.5),
+            A.Resize(width=750, height=424), #proporcion 1,77
+            A.RandomCrop(width=500, height=283,p=0.5),#proporcion 1.98
             A.Rotate(limit=40, p=0.9, border_mode=cv2.BORDER_CONSTANT),
             A.HorizontalFlip(p=0.5),
             A.VerticalFlip(p=0.1),
@@ -17,7 +17,7 @@ def get_transform_from_aladdinpersson()->dict:
                 A.Blur(blur_limit=3, p=0.5),
                 A.ColorJitter(p=0.5),
             ], p=1.0),
-            A.Resize(227,227),
+            A.Resize(224,224),
             A.Normalize(
                 mean=[0, 0, 0],
                 std=[1, 1, 1],
@@ -28,7 +28,7 @@ def get_transform_from_aladdinpersson()->dict:
     )
     val_transform = A.Compose(
         [
-            A.Resize(227,227),
+            A.Resize(224,224),
             # A.CenterCrop(height=128, width=128),
             A.Normalize(
                 mean=[0, 0, 0],
