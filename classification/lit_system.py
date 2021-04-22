@@ -20,9 +20,9 @@ class LitSystem(pl.LightningModule):
         self.model=model
         # self.loss_fn=loss_fn
         metrics_base=get_metrics_collections_base(NUM_CLASS=CONFIG.NUM_CLASSES)
-        self.train_metrics_base=metrics_base.clone()
+        self.train_metrics_base=metrics_base.clone(prefix="train")
         # self.train_metric_auroc=get_metric_AUROC(NUM_CLASS=CONFIG.NUM_CLASSES)
-        self.valid_metrics_base=metrics_base.clone()
+        self.valid_metrics_base=metrics_base.clone(prefix="valid")
         # self.valid_metric_auroc=get_metric_AUROC(NUM_CLASS=CONFIG.NUM_CLASSES)
         
         # log hyperparameters
@@ -35,6 +35,9 @@ class LitSystem(pl.LightningModule):
         x=self.model(x)
         
         return x #quizá existe el problema de que la salida es un diccionario
+    
+    def on_epoch_start(self):
+        torch.cuda.empty_cache()
     
     def training_step(self,batch,batch_idx):
         x,targets=batch
@@ -53,7 +56,7 @@ class LitSystem(pl.LightningModule):
         data_dict={**data_dict,**metric_value}
         # metric_value={**metric_value,
         #               **self.train_metric_auroc(preds.softmax(dim=1),targets)}
-        self.insert_each_metric_value_into_dict(data_dict,prefix="train")
+        self.insert_each_metric_value_into_dict(data_dict,prefix="")
         # self.log('train_loss',loss)
         # self.log('train_metrics',metric_value)
         
@@ -66,6 +69,8 @@ class LitSystem(pl.LightningModule):
         
         data_dict=self.model(x,targets)
         loss=data_dict["loss"]
+        data_dict.pop("loss")
+        data_dict["val_loss"]=loss
         preds=data_dict["preds"]
         
         if isinstance(targets,list):
@@ -80,7 +85,7 @@ class LitSystem(pl.LightningModule):
         #########CREAR UNA FUNCIÓN QUE COJA METRICA Y DATA DICT, Y SUELTE LA PREDICCION 
         # ##################Y GENERE EL LOG CORRESPONDIENTE
         # Log validation loss (will be automatically averaged over an epoch)
-        self.insert_each_metric_value_into_dict(data_dict,prefix="valid")
+        self.insert_each_metric_value_into_dict(data_dict,prefix="")
         # self.log('val_loss', loss, on_step=False, on_epoch=True)
         # self.log('val_metrics',metric_value, on_step=False, on_epoch=True)
 
@@ -96,16 +101,20 @@ class LitSystem(pl.LightningModule):
     
     def insert_each_metric_value_into_dict(self,data_dict:dict,prefix:str):
  
-       
         on_step=False
-        on_epoch=True
-    
-            
+        on_epoch=True 
         
         for metric,value in data_dict.items():
-            if metric is not "preds":
-                self.log("_".join([prefix,metric]),value,
-                        on_step=on_step, 
-                        on_epoch=on_epoch, 
-                        sync_dist=True,
-                        logger=True)
+            if metric != "preds":
+                if metric=="loss":
+                    self.log(metric,value,
+                            on_step=on_step, 
+                            on_epoch=on_epoch, 
+                            sync_dist=True,
+                            logger=True)
+                else:
+                    self.log("_".join([prefix,metric]),value,
+                            on_step=on_step, 
+                            on_epoch=on_epoch, 
+                            logger=True
+                    )
