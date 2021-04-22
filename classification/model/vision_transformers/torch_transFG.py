@@ -378,12 +378,13 @@ def con_loss(features, labels):
     return loss
 
 
-def get_transFG(NUM_CLASS=10,img_size=CONFIG.IMG_SIZE):
+def get_transFG(NUM_CLASS=10,img_size=CONFIG.IMG_SIZE,run_loss_transFG:bool=False):
     
     config=CONFIGS['ViT-B_16']
     #imgsize en el paper era de 448
     model=VisionTransformer(config,img_size , zero_head=True,
-                            num_classes=NUM_CLASS,smoothing_value=0)
+                            num_classes=NUM_CLASS,smoothing_value=0,
+                            run_loss_transFG=run_loss_transFG)
 
     
     return model
