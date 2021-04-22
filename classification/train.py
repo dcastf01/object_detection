@@ -4,39 +4,43 @@ import logging
 import os
 # os.environ["PYTHONPATH"] ='/home/dcast/object_detection_TFM'
 import sys
+
 sys.path.append("/home/dcast/object_detection_TFM")
+import json
+
 import pytorch_lightning as pl
 import torch
 import torch.nn as nn
 import torch.optim as optim
 import wandb
 from config import CONFIG
+from pytorch_lightning.callbacks import LearningRateMonitor
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 from pytorch_lightning.callbacks.model_checkpoint import ModelCheckpoint
-from pytorch_lightning.plugins import DDPPlugin
-
 from pytorch_lightning.loggers import WandbLogger
+from pytorch_lightning.plugins import DDPPlugin
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 from utils import check_accuracy, load_checkpoint, save_checkpoint
 
 from classification.callback import ConfusionMatrix_Wandb
 from classification.choice_loader import choice_loader_and_splits_dataset
-from classification.model.build_model import build_model
-from classification.configs_experiments import get_config,ExperimentNames
+from classification.configs_experiments import ExperimentNames, get_config
 from classification.lit_system import LitSystem
-import json
+from classification.model.build_model import build_model
+
+
 def main():
     
    
-    experiment=ExperimentNames.TorchSqueezeNetDefaultLoss
+    experiment=ExperimentNames.TorchtransFGDefaultLoss
     config_experiment=get_config(experiment)
 
     wandb_logger = WandbLogger(project='TFM-classification',
                                entity='dcastf01',
                                name=experiment.name+" "+
-                                datetime.datetime.now().strftime("%Y-%m-%d %X"),
-                            #    offline=True, #to debug
+                                datetime.datetime.utcnow().strftime("%Y-%m-%d %X"),
+                               offline=True, #to debug
                             config={
                                 "batch_size":CONFIG.BATCH_SIZE,
                                 "num_workers":CONFIG.NUM_WORKERS,
@@ -68,11 +72,12 @@ def main():
     checkpoint_callback = ModelCheckpoint(
         monitor='val_loss',
         dirpath=CONFIG.PATH_CHECKPOINT,
-        filename='SQUEEZENET-{epoch:02d}-{val_loss:.2f}',
+        filename= '-{epoch:02d}-{val_loss:.6f}',
         mode="min",
         save_last=True,
         save_top_k=3,
                         )
+    learning_rate_monitor=LearningRateMonitor(logging_interval="epoch")
     
     # confusion_matrix_wandb=ConfusionMatrix_Wandb(list(range(CONFIG.NUM_CLASSES)))
         
@@ -84,21 +89,25 @@ def main():
                     # loss_fn=loss_fn,
                     lr=CONFIG.LEARNING_RATE,
                     )
-    trainer=pl.Trainer(logger=wandb_logger,
+    wandb_logger.watch(model.model)
+    trainer=pl.Trainer(
+                        logger=wandb_logger,
                        gpus=-1,
                        max_epochs=CONFIG.NUM_EPOCHS,
                        precision=16,
                     #    limit_train_batches=0.1, #only to debug
                     #    limit_val_batches=0.05, #only to debug
                     #    val_check_interval=1,
+                    
                        log_gpu_memory=True,
                        distributed_backend='ddp',
                        accelerator="dpp",
                        plugins=DDPPlugin(find_unused_parameters=False),
                        callbacks=[
-                            # early_stopping ,
-                            # checkpoint_callback,
-                            # confusion_matrix_wandb
+                            early_stopping ,
+                            checkpoint_callback,
+                            # confusion_matrix_wandb,
+                            learning_rate_monitor
                                   ]
                        )
     trainer.fit(model,train_loader,test_loader)
