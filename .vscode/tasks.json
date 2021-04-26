@@ -1,13 +1,21 @@
 {
     "version": "2.0.0",
-    "tasks": [{
-        "label": "launchenv",
-        "type": "shell",
-        "windows": {
-            "command": "C:\\Users\\dcast\\anaconda3\\Scripts\\activate D:\\programacion\\Repositorios\\object_detection_TFM\\env"
-        },
-        // "command": "C:\\Users\\dcast\\anaconda3\\Scripts\\activate D:\\programacion\\Repositorios\\object_detection_TFM\\env",
-                // "args": ["C:\\Users\\dcast\\anaconda3\\Scripts\\activate D:\\programacion\\Repositorios\\object_detection_TFM\\env"],
+    "tasks": [
         
-    }]
+        
+        {
+        "label": "prepare persistent terminal",
+        // "command": "/home/dcast/anaconda3/envs/deep_learning_torch/bin/tmux",
+        "type": "shell",
+        "linux": {
+            "command": "/home/dcast/anaconda3/envs/deep_learning_torch/bin/tmux",
+            "args": [ "new",
+                // "-A",
+                // "-s",
+                // "vscode-${workspaceFolderBasename}"
+                    ],
+                },
+
+        }
+]
 }

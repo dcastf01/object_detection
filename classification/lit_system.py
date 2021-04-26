@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 import torchmetrics
 from config import CONFIG
-
+import logging
 from classification.metrics import get_metrics_collections_base,get_metric_AUROC
 
 
@@ -45,6 +45,14 @@ class LitSystem(pl.LightningModule):
         data_dict=self.model(x,targets)
         loss=data_dict["loss"]
         preds=data_dict["preds"]
+        if torch.any(torch.isnan(preds)):
+            nan_mask=torch.any(torch.isnan(preds))
+            logging.error((preds))
+            print("tiene nan, averiguar")
+            print( "resultado de softmax", nn.functional.softmax(preds,dim=1))
+            logging.error(nn.functional.softmax(preds,dim=1))
+            raise RuntimeError(f"Found NAN in output {i} at indices: ", nan_mask.nonzero(), "where:", out[nan_mask.nonzero()[:, 0].unique(sorted=True)])
+
         if isinstance(targets,list):
             targets=targets[0]
         #lo ideal sería hacer algo tipo loss,preds=self.model(x) de esta manera al modelo se le 
@@ -95,8 +103,11 @@ class LitSystem(pl.LightningModule):
             
     def configure_optimizers(self):
         
-        optimizer= torch.optim.Adam(self.parameters(), lr=self.lr)
-        return optimizer
+        optimizer= torch.optim.SGD(self.parameters(), lr=self.lr)
+            
+
+        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, CONFIG.NUM_EPOCHS)
+        return [optimizer], [scheduler]
 
     
     def insert_each_metric_value_into_dict(self,data_dict:dict,prefix:str):

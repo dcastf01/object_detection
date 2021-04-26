@@ -106,12 +106,12 @@ class CompcarLoaderTripletLoss(CompcarLoaderBasic):
 
 def test_CompcarLoader():
     
-    compcar_analisis=CompcarAnalisis(path_csv=config.PATH_COMPCAR_CSV)
+    compcar_analisis=CompcarAnalisis(path_csv=CONFIG.DATASET.COMPCAR.PATH_CSV)
     # compcar_analisis.filter_dataset('viewpoint=="4" or viewpoint=="1"')
     print(compcar_analisis.data.head())
     transform_train=get_transform_from_aladdinpersson()["train"]
     loader=CompcarLoader(compcar_analisis.data,
-                         root_dir_images=config.PATH_COMPCAR_IMAGES,
+                         root_dir_images=CONFIG.DATASET.COMPCAR.PATH_IMAGES,
                          transform=transform_train,
                          condition_filter=compcar_analisis.filter)
     images=[]

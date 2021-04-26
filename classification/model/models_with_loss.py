@@ -16,7 +16,7 @@ class ModelWithoutLoss(nn.Module):
                     "preds":preds}
         else:
  
-            return {"preds":anchor_preds}
+            return {"preds":preds}
     
 class ModelWithOneLoss(nn.Module):
     
@@ -37,7 +37,7 @@ class ModelWithOneLoss(nn.Module):
                     "preds":preds}
         else:
  
-            return {"preds":anchor_preds}
+            return {"preds":preds}
         
         
 class ModelWithTripletLoss(nn.Module):
@@ -91,7 +91,7 @@ class ModelWithTripletLoss(nn.Module):
             #         "loss_original_from_models":loss_original_from_models}
             return results
         else:
-            anchor_preds=self.model(anchor)
+            anchor_preds=self.model(anchor_imgs)
             results["preds"]=anchor_preds
             return results
         

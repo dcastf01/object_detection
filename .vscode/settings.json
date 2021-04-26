@@ -13,6 +13,16 @@
 //     "python.venvPath": "~/env",
 //      "code-runner"
         "python.jediEnabled": false,
-        "python.languageServer": "Pylance"
+        "python.languageServer": "Pylance",
+        "files.watcherExclude": {
+                "**/.git/objects/**": true,
+                "**/.git/subtree-cache/**": true,
+                "**/node_modules/*/**": true,
+                "**/.hg/store/**": true,
+                "**data/**":true
+        },
+                
+
+
 }
 

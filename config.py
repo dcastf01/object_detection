@@ -7,40 +7,19 @@ from typing import Union
 from dataclasses import dataclass
 
 import ml_collections
-
+ROOT_WORKSPACE: str=r"D:\programacion\Repositorios\object_detection_TFM"
+ROOT_WORKSPACE: str=""
 @dataclass
 class CONFIG:
     
-    ROOT_WORKSPACE: str=r"D:\programacion\Repositorios\object_detection_TFM"
-    ROOT_WORKSPACE: str=""
-    
-    #dataset compcar
-    PASSWORD_COMPCAR: str="d89551fd190e38"
-    PATH_ROOT_COMPCAR: str=os.path.join(ROOT_WORKSPACE,"data","compcars")
-    PATH_COMPCAR_CSV: str=os.path.join(PATH_ROOT_COMPCAR,"all_information_compcars.csv")
-    PATH_COMPCAR_IMAGES: str=os.path.join(PATH_ROOT_COMPCAR,"image")
-    PATH_COMPCAR_LABELS: str=os.path.join(PATH_ROOT_COMPCAR,"label")
-    PATH_COMPCAR_TRAIN_REVISITED: str=os.path.join(PATH_ROOT_COMPCAR,"CompCars_revisited_v1.0","bbs_train.txt")
-    PATH_COMPCAR_TEST_REVISITED: str=os.path.join(PATH_ROOT_COMPCAR,"CompCars_revisited_v1.0","bbs_test.txt")
-    PATH_COMPCAR_MAKE_MODEL_NAME: str=os.path.join(PATH_ROOT_COMPCAR,"misc","make_model_name.mat")
-    PATH_COMPCAR_MAKE_MODEL_NAME_CLS: str=os.path.join(PATH_ROOT_COMPCAR,"misc","make_model_names_cls.mat")
-    COMPCAR_CONDITION_FILTER: str='viewpoint=="4" or viewpoint=="1"'
-
-    #dataset cars196
-    PATH_CARS196_CSV: str=os.path.join(ROOT_WORKSPACE,r"dataset\cars196\all_information_cars196.csv")
-    # PATH_CARS196_IMAGES=r"dataset\compcars\all_information_compcars.csv"
-    # PATH_CARS196_LABELS=r"dataset\compcars\all_information_compcars.csv"
-
-    #output plots
-    PATH_OUTPUT_PLOTS: str=os.path.join(ROOT_WORKSPACE,r"dataset\results")
     
     #torch config
     DEVICE: str = "cuda" if torch.cuda.is_available() else "cpu"
     # TRAIN_DIR = "data/train"
     # VAL_DIR = "data/val"
-    BATCH_SIZE:int = 1
+    BATCH_SIZE:int = 128
     NUM_CLASSES:int=4455
-    LEARNING_RATE:float = 1e-5
+    LEARNING_RATE:float = 1e-3
     # LAMBDA_IDENTITY = 0.0
     NUM_WORKERS:int = 4
     SEED:int=1
@@ -54,6 +33,35 @@ class CONFIG:
     # def _get_json(self):
     #     import json
     #     return json.dumps(self.__dict__)
+    class DATASET:
+        
+        
+        class COMPCAR:
+            
+            #dataset compcar
+            PASSWORD_ZIP: str="d89551fd190e38"
+            PATH_ROOT: str=os.path.join(ROOT_WORKSPACE,"data","compcars")
+            PATH_CSV: str=os.path.join(PATH_ROOT,"all_information_compcars.csv")
+            PATH_IMAGES: str=os.path.join(PATH_ROOT,"image")
+            PATH_LABELS: str=os.path.join(PATH_ROOT,"label")
+            PATH_TRAIN_REVISITED: str=os.path.join(PATH_ROOT,"CompCars_revisited_v1.0","bbs_train.txt")
+            PATH_TEST_REVISITED: str=os.path.join(PATH_ROOT,"CompCars_revisited_v1.0","bbs_test.txt")
+            PATH_MAKE_MODEL_NAME: str=os.path.join(PATH_ROOT,"misc","make_model_name.mat")
+            PATH_MAKE_MODEL_NAME_CLS: str=os.path.join(PATH_ROOT,"misc","make_model_names_cls.mat")
+            COMPCAR_CONDITION_FILTER: str='viewpoint=="4" or viewpoint=="1"'
+        class CARS196:
+            #dataset cars196
+            PATH_ROOT:str= os.path.join(ROOT_WORKSPACE,"data","cars196")
+            PATH_CARS196_CSV: str=r"dataset\cars196\all_information_cars196.csv"
+            PATH_IMAGES:str=os.path.join(PATH_ROOT,)
+            PATH_LABELS:str=os.path.join(PATH_ROOT,)
+            # PATH_CARS196_IMAGES=r"dataset\compcars\all_information_compcars.csv"
+            # PATH_CARS196_LABELS=r"dataset\compcars\all_information_compcars.csv"
+
+        #output plots
+        PATH_OUTPUT_PLOTS: str=os.path.join("dataset","results")
+    
+
 class WrapperConfigModel(CONFIG):
     use_tripletLoss=False
     default_Loss=False
@@ -75,7 +83,7 @@ class ConfigArchitecture(WrapperConfigModel):
         else:
             print( "you should pick a available model, here you have a list")
             print(self.ARCHITECTURES_AVAILABLE.__members__.keys())
-            raise
+            raise "you should pick a available model, here you have a list"
 
 
 class ConfigModelDefaultLoss(WrapperConfigModel):

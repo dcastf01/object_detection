@@ -27,10 +27,10 @@ def choice_loader_and_splits_dataset(name_dataset:str,
             df[["make_id","model_id","released_year","filename"]]=df["Filepath"].str.split("/",expand=True)
             return df
               
-        train_ds = pd.read_csv(CONFIG.PATH_COMPCAR_TRAIN_REVISITED)
+        train_ds = pd.read_csv(CONFIG.DATASET.COMPCAR.PATH_TRAIN_REVISITED)
         train_ds=expand_information_useful_on_txt(train_ds)
 
-        test_ds=pd.read_csv(CONFIG.PATH_COMPCAR_TEST_REVISITED,)
+        test_ds=pd.read_csv(CONFIG.DATASET.COMPCAR.PATH_TEST_REVISITED,)
         test_ds=expand_information_useful_on_txt(test_ds)
 
         transforms=get_transform_from_aladdinpersson()
@@ -43,12 +43,12 @@ def choice_loader_and_splits_dataset(name_dataset:str,
         else:
             loader=CompcarLoader
         train_dataset=loader(train_ds,
-                        root_dir_images=CONFIG.PATH_COMPCAR_IMAGES,
+                        root_dir_images=CONFIG.DATASET.COMPCAR.PATH_IMAGES,
                         transform=train_transform,
                         )
         
         test_dataset=loader(test_ds,
-                        root_dir_images=CONFIG.PATH_COMPCAR_IMAGES,
+                        root_dir_images=CONFIG.DATASET.COMPCAR.PATH_IMAGES,
                         transform=test_transform,                        
                         )
    

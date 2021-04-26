@@ -31,23 +31,26 @@ from classification.model.build_model import build_model
 
 
 def main():
-    
-   
-    experiment=ExperimentNames.TorchtransFGDefaultLoss
+    print("empezando experimento")
+    torch.backends.cudnn.benchmark = True
+    experiment=ExperimentNames.TorchSqueezeNetDefaultLoss
     config_experiment=get_config(experiment)
 
     wandb_logger = WandbLogger(project='TFM-classification',
-                               entity='dcastf01',
-                               name=experiment.name+" "+
+                                entity='dcastf01',
+                                name=experiment.name+" "+
                                 datetime.datetime.utcnow().strftime("%Y-%m-%d %X"),
-                               offline=True, #to debug
-                            config={
-                                "batch_size":CONFIG.BATCH_SIZE,
-                                "num_workers":CONFIG.NUM_WORKERS,
-                                "experimentName":experiment.name,
-                                "lr":CONFIG.LEARNING_RATE,
-                                "use_TripletLoss":config_experiment.use_tripletLoss,
-                                }
+                            #    offline=True, #to debug
+                                config={
+                                    "batch_size":CONFIG.BATCH_SIZE,
+                                    "num_workers":CONFIG.NUM_WORKERS,
+                                    "experimentName":experiment.name,
+                                    "lr":CONFIG.LEARNING_RATE,
+                                    "use_TripletLoss":config_experiment.use_tripletLoss,
+                                    "dataset":"compcars",
+                                    "backen cudnn benchmark":torch.backends.cudnn.benchmark,
+                                    "pretrained_model":config_experiment.pretrained,
+                                    }
                             
                                )
     
@@ -61,16 +64,13 @@ def main():
     train_loader=dataloaders["train"]
     test_loader=dataloaders["test"]
     
-    
-    
     # loss_fn = nn.CrossEntropyLoss()
     # metric_collection=get_metrics_collections(CONFIG.NUM_CLASSES,)# CONFIG.DEVICE)
-    
-    
+
     ##callbacks
-    early_stopping=EarlyStopping(monitor='val_loss')
+    early_stopping=EarlyStopping(monitor='_val_loss',verbose=True)
     checkpoint_callback = ModelCheckpoint(
-        monitor='val_loss',
+        monitor='_val_loss',
         dirpath=CONFIG.PATH_CHECKPOINT,
         filename= '-{epoch:02d}-{val_loss:.6f}',
         mode="min",
@@ -104,12 +104,14 @@ def main():
                        accelerator="dpp",
                        plugins=DDPPlugin(find_unused_parameters=False),
                        callbacks=[
-                            early_stopping ,
+                            # early_stopping ,
                             checkpoint_callback,
                             # confusion_matrix_wandb,
-                            learning_rate_monitor
-                                  ]
+                            learning_rate_monitor 
+                                  ],
+                       progress_bar_refresh_rate=50,
                        )
+    logging.info("empezando el entrenamiento")
     trainer.fit(model,train_loader,test_loader)
          
 
