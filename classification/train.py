@@ -40,7 +40,7 @@ def main():
                                 entity='dcastf01',
                                 name=experiment.name+" "+
                                 datetime.datetime.utcnow().strftime("%Y-%m-%d %X"),
-                            #    offline=True, #to debug
+                               offline=True, #to debug
                                 config={
                                     "batch_size":CONFIG.BATCH_SIZE,
                                     "num_workers":CONFIG.NUM_WORKERS,

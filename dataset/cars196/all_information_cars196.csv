@@ -1,4 +1,4 @@
-,index,image_name,extension,labels,make_ids,model_ids,released_years,ymins,xmins,ymaxs,xmaxs,viewpoints,nBoundingBoxs,bboxs,split
+,index,filename,extension,label,make_id,model_id,released_year,ymin,xmin,ymax,xmax,viewpoint,nBoundingBox,bbox,split
 0,0,00001,jpg,Audi TTS Coupe 2012,Audi,TTS Coupe,2012,116.0,39.0,375.0,569.0,nan,1,39 116 569 375,train
 1,1,00002,jpg,Acura TL Sedan 2012,Acura,TL Sedan,2012,116.0,36.0,587.0,868.0,nan,1,36 116 868 587,train
 2,2,00003,jpg,Dodge Dakota Club Cab 2007,Dodge,Dakota Club Cab,2007,109.0,85.0,381.0,601.0,nan,1,85 109 601 381,train

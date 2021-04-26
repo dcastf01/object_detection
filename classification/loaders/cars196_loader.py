@@ -15,15 +15,25 @@ from utils_visualize import plot_examples
 class Cars196LoaderBasic(Loader):
     def __init__(self, df:pd.DataFrame,root_dir_images:str,
                   transform=None,condition_filter:str=None):
+        
         df=self.generate_label_id_on_df(df)
+        df=self.expand_information_useful_on_txt(df)
         super().__init__(df=df,root_dir_images=root_dir_images,
                          transform=transform,condition_filter=condition_filter,
                          )
-        
+    def expand_information_useful_on_txt(self,df:pd.DataFrame)->pd.DataFrame:
+        import os
+        sep=os.path.sep
+        df["Filepath"]=df["make_id"].astype(str)+sep+df["model_id"].astype(str)+sep\
+                        +df["released_year"].astype(str)+ \
+                        sep+df["filename"].astype(str)+"."+df["extension"].astype(str)
+        return df
+    
     def generate_label_id_on_df(self,df:pd.DataFrame)->dict:
-            df['id'] = df.groupby(["make_id",'model_id','released_year']).ngroup()
-        
-            return df
+    
+        df['id'] = df.groupby(["make_id",'model_id','released_year']).ngroup()
+    
+        return df
     def _get_image_and_label(self,index):    
     
         def get_relative_path_img(index):
@@ -112,7 +122,8 @@ def test_Cars196Loader():
     loader=Cars196Loader(cars196_analisis,
                          root_dir_images=CONFIG.DATASET.CARS196.PATH_IMAGES,
                          transform=transform_train,
-                         condition_filter=cars196_analisis.filter)
+                        #  condition_filter=cars196_analisis.filter
+                         )
     images=[]
     for i in range(15):
         image,label=loader[0]

@@ -41,7 +41,7 @@ class CONFIG:
             #dataset compcar
             PASSWORD_ZIP: str="d89551fd190e38"
             PATH_ROOT: str=os.path.join(ROOT_WORKSPACE,"data","compcars")
-            PATH_CSV: str=os.path.join(PATH_ROOT,"all_information_compcars.csv")
+            PATH_CSV: str=os.path.join("dataset","compcars","all_information_compcars.csv")
             PATH_IMAGES: str=os.path.join(PATH_ROOT,"image")
             PATH_LABELS: str=os.path.join(PATH_ROOT,"label")
             PATH_TRAIN_REVISITED: str=os.path.join(PATH_ROOT,"CompCars_revisited_v1.0","bbs_train.txt")
