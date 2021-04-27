@@ -76,9 +76,9 @@ class LitSystem(pl.LightningModule):
         x, targets = batch
         
         data_dict=self.model(x,targets)
-        loss=data_dict["loss"]
-        data_dict.pop("loss")
-        data_dict["val_loss"]=loss
+        # loss=data_dict["loss"]
+        # data_dict.pop("loss")
+        # data_dict["val_loss"]=loss
         preds=data_dict["preds"]
         
         if isinstance(targets,list):
@@ -117,8 +117,8 @@ class LitSystem(pl.LightningModule):
         
         for metric,value in data_dict.items():
             if metric != "preds":
-                if metric=="loss":
-                    self.log(metric,value,
+                if "loss" in metric.split("_"):
+                    self.log("_".join([prefix,metric]),value,
                             on_step=on_step, 
                             on_epoch=on_epoch, 
                             sync_dist=True,

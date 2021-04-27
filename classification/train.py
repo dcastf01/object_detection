@@ -1,17 +1,13 @@
 #check this https://stackoverflow.com/questions/64607182/vs-code-remote-ssh-how-to-allow-processes-to-keep-running-to-completion-after-d
 import datetime
 import logging
-import os
 # os.environ["PYTHONPATH"] ='/home/dcast/object_detection_TFM'
 import sys
 
 sys.path.append("/home/dcast/object_detection_TFM")
-import json
 
 import pytorch_lightning as pl
 import torch
-import torch.nn as nn
-import torch.optim as optim
 import wandb
 from config import CONFIG
 from pytorch_lightning.callbacks import LearningRateMonitor
@@ -19,23 +15,19 @@ from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 from pytorch_lightning.callbacks.model_checkpoint import ModelCheckpoint
 from pytorch_lightning.loggers import WandbLogger
 from pytorch_lightning.plugins import DDPPlugin
-from torch.utils.data import DataLoader
-from tqdm import tqdm
-from utils import check_accuracy, load_checkpoint, save_checkpoint
 
 from classification.callback import ConfusionMatrix_Wandb
-from classification.choice_loader import choice_loader_and_splits_dataset
+from classification.choice_loader import choice_loader_and_splits_dataset,Dataset
 from classification.configs_experiments import ExperimentNames, get_config
 from classification.lit_system import LitSystem
 from classification.model.build_model import build_model
 
-
 def main():
     print("empezando experimento")
     torch.backends.cudnn.benchmark = True
-    experiment=ExperimentNames.TorchtransFGDefaultLoss
+    experiment=ExperimentNames.TorchSqueezeNetTripletLoss
     config_experiment=get_config(experiment)
-
+    dataset=Dataset.cars196
     wandb_logger = WandbLogger(project='TFM-classification',
                                 entity='dcastf01',
                                 name=experiment.name+" "+
@@ -47,14 +39,14 @@ def main():
                                     "experimentName":experiment.name,
                                     "lr":CONFIG.LEARNING_RATE,
                                     "use_TripletLoss":config_experiment.use_tripletLoss,
-                                    "dataset":"compcars",
+                                    "dataset":dataset.name,
                                     "backen cudnn benchmark":torch.backends.cudnn.benchmark,
                                     "pretrained_model":config_experiment.pretrained,
                                     }
                             
                                )
     
-    dataloaders=choice_loader_and_splits_dataset("compcars",
+    dataloaders=choice_loader_and_splits_dataset(dataset,
                                                 BATCH_SIZE=CONFIG.BATCH_SIZE,
                                                 NUM_WORKERS=CONFIG.NUM_WORKERS,
                                                 use_tripletLoss=config_experiment.use_tripletLoss
@@ -100,9 +92,9 @@ def main():
                     #    val_check_interval=1,
                     
                        log_gpu_memory=True,
-                       distributed_backend='ddp',
-                       accelerator="dpp",
-                       plugins=DDPPlugin(find_unused_parameters=False),
+                    #    distributed_backend='ddp',
+                    #    accelerator="dpp",
+                    #    plugins=DDPPlugin(find_unused_parameters=False),
                        callbacks=[
                             # early_stopping ,
                             checkpoint_callback,

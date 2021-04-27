@@ -1,23 +1,20 @@
 
-import os
-import numpy as np
 import pandas as pd
 import torch
-import torch.nn as nn
-import torchvision
-import torchvision.transforms as transforms
 from config import CONFIG
-from dataset.compcars.compcar_analisis import CompcarAnalisis
 
-from PIL import Image
-# from skimage.viewer import ImageViewer
 from torch.utils.data import DataLoader
 from classification.augmentation import get_transform_from_aladdinpersson
 from classification.loaders.compcars_loader import CompcarLoader,CompcarLoaderTripletLoss
 from classification.loaders.cars196_loader import Cars196Loader,Cars196LoaderTripletLoss
 import logging
+from enum import Enum
 
-def choice_loader_and_splits_dataset(name_dataset:str,
+class Dataset (Enum):
+    compcars=1
+    cars196=2
+
+def choice_loader_and_splits_dataset(name_dataset:Enum,
                                      BATCH_SIZE:int=16,
                                      NUM_WORKERS:int=0,
                                      use_tripletLoss:bool=False) -> dict:
@@ -27,7 +24,7 @@ def choice_loader_and_splits_dataset(name_dataset:str,
     val_transform=transforms["val"]
     test_transform=transforms["test"]
         
-    if name_dataset.lower()=="cars196":
+    if name_dataset==Dataset.cars196:
         all_ds=pd.read_csv(CONFIG.DATASET.CARS196.PATH_CSV)
         train_ds=all_ds[all_ds["split"]=="train"]
         test_ds=all_ds[all_ds["split"]=="test"]
@@ -47,7 +44,7 @@ def choice_loader_and_splits_dataset(name_dataset:str,
                         root_dir_images=CONFIG.DATASET.CARS196.PATH_IMAGES,
                         transform=test_transform,                        
                         )
-    elif name_dataset.lower() =="compcars":
+    elif name_dataset ==Dataset.compcars:
         def expand_information_useful_on_txt(df:pd.DataFrame)->pd.DataFrame:
             df[["make_id","model_id","released_year","filename"]]=df["Filepath"].str.split("/",expand=True)
             return df
