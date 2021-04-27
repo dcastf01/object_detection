@@ -60,7 +60,7 @@ def choice_loader_and_splits_dataset(name_dataset:Enum,
         if use_tripletLoss:
             logging.info("loading compcar triplet loss")
             loader=CompcarLoaderTripletLoss
-            BATCH_SIZE=BATCH_SIZE//3
+            BATCH_SIZE=BATCH_SIZE//2
         else:
             loader=CompcarLoader
         train_dataset=loader(train_ds,

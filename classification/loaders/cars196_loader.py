@@ -106,8 +106,13 @@ class Cars196LoaderTripletLoss(Cars196LoaderBasic):
 
         positive_index=index
         while positive_index == index:
+            
             # positive_list=self.index[self.index!=index][self.labels[self.index!=index]==anchor_label]
             positive_index = np.random.choice(self.label_to_indices[anchor_label.item()])
+            i+=1
+            if i>4:
+                positive_index=index
+                break
         
         negative_label=np.random.choice(list(self.labels_set-set([anchor_label.item()])))
         negative_index=np.random.choice(self.label_to_indices[negative_label])            
