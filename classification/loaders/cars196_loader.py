@@ -105,6 +105,7 @@ class Cars196LoaderTripletLoss(Cars196LoaderBasic):
         
 
         positive_index=index
+        i=0
         while positive_index == index:
             
             # positive_list=self.index[self.index!=index][self.labels[self.index!=index]==anchor_label]
