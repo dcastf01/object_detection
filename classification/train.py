@@ -3,9 +3,7 @@ import datetime
 import logging
 # os.environ["PYTHONPATH"] ='/home/dcast/object_detection_TFM'
 import sys
-
 sys.path.append("/home/dcast/object_detection_TFM")
-
 import pytorch_lightning as pl
 import torch
 import wandb
@@ -26,13 +24,13 @@ def main():
     print("empezando experimento")
     torch.backends.cudnn.benchmark = True
     experiment=ExperimentNames.TorchSqueezeNetTripletLoss
-    config_experiment=get_config(experiment)
-    dataset=Dataset.cars196
+    config_experiment=get_config(experiment,model_pretrained=False)
+    dataset=Dataset.compcars
     wandb_logger = WandbLogger(project='TFM-classification',
                                 entity='dcastf01',
                                 name=experiment.name+" "+
                                 datetime.datetime.utcnow().strftime("%Y-%m-%d %X"),
-                               offline=True, #to debug
+                            #    offline=True, #to debug
                                 config={
                                     "batch_size":CONFIG.BATCH_SIZE,
                                     "num_workers":CONFIG.NUM_WORKERS,
@@ -92,9 +90,9 @@ def main():
                     #    val_check_interval=1,
                     
                        log_gpu_memory=True,
-                    #    distributed_backend='ddp',
-                    #    accelerator="dpp",
-                    #    plugins=DDPPlugin(find_unused_parameters=False),
+                       distributed_backend='ddp',
+                       accelerator="dpp",
+                       plugins=DDPPlugin(find_unused_parameters=False),
                        callbacks=[
                             # early_stopping ,
                             checkpoint_callback,
