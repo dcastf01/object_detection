@@ -45,6 +45,8 @@ class LitSystem(pl.LightningModule):
         data_dict=self.model(x,targets)
         loss=data_dict["loss"]
         preds=data_dict["preds"]
+        data_dict.pop("preds")
+
         if torch.any(torch.isnan(preds)):
             nan_mask=torch.any(torch.isnan(preds))
             logging.error((preds))
@@ -60,7 +62,6 @@ class LitSystem(pl.LightningModule):
         # loss=self.loss_fn(preds,targets)
         preds_probability=nn.functional.softmax(preds,dim=1)
         metric_value=self.train_metrics_base(preds_probability,targets)
-        data_dict.pop("preds")
         data_dict={**data_dict,**metric_value}
         # metric_value={**metric_value,
         #               **self.train_metric_auroc(preds.softmax(dim=1),targets)}
@@ -76,10 +77,13 @@ class LitSystem(pl.LightningModule):
         x, targets = batch
         
         data_dict=self.model(x,targets)
+        preds=data_dict["preds"]
+        data_dict.pop("preds")
+        data_dict=self.add_prefix_into_dict_only_loss(data_dict,"valid")
         # loss=data_dict["loss"]
         # data_dict.pop("loss")
         # data_dict["val_loss"]=loss
-        preds=data_dict["preds"]
+        
         
         if isinstance(targets,list):
             targets=targets[0]
@@ -88,7 +92,7 @@ class LitSystem(pl.LightningModule):
         metric_value=self.valid_metrics_base(preds_probability,targets)
         # metric_value={**metric_value,
                     #   **self.valid_metric_auroc(preds.softmax(dim=0),targets)}
-        data_dict.pop("preds")
+        
         data_dict={**data_dict,**metric_value}
         #########CREAR UNA FUNCIÓN QUE COJA METRICA Y DATA DICT, Y SUELTE LA PREDICCION 
         # ##################Y GENERE EL LOG CORRESPONDIENTE
@@ -129,3 +133,9 @@ class LitSystem(pl.LightningModule):
                             on_epoch=on_epoch, 
                             logger=True
                     )
+    def add_prefix_into_dict_only_loss(self,data_dict:dict,prefix:str=""):
+        data_dict_aux={}
+        for k,v in data_dict.items():            
+            data_dict_aux["_".join([prefix,k])]=v
+            
+        return data_dict_aux

@@ -17,7 +17,7 @@ class CONFIG:
     DEVICE: str = "cuda" if torch.cuda.is_available() else "cpu"
     # TRAIN_DIR = "data/train"
     # VAL_DIR = "data/val"
-    BATCH_SIZE:int = 8
+    BATCH_SIZE:int = 128
     NUM_CLASSES:int=4455
     LEARNING_RATE:float = 1e-3
     # LAMBDA_IDENTITY = 0.0

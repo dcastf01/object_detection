@@ -44,6 +44,8 @@ def choice_loader_and_splits_dataset(name_dataset:Enum,
                         root_dir_images=CONFIG.DATASET.CARS196.PATH_IMAGES,
                         transform=test_transform,                        
                         )
+        
+        
     elif name_dataset ==Dataset.compcars:
         def expand_information_useful_on_txt(df:pd.DataFrame)->pd.DataFrame:
             df[["make_id","model_id","released_year","filename"]]=df["Filepath"].str.split("/",expand=True)
@@ -58,6 +60,7 @@ def choice_loader_and_splits_dataset(name_dataset:Enum,
         if use_tripletLoss:
             logging.info("loading compcar triplet loss")
             loader=CompcarLoaderTripletLoss
+            BATCH_SIZE=BATCH_SIZE//3
         else:
             loader=CompcarLoader
         train_dataset=loader(train_ds,
