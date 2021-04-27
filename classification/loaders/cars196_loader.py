@@ -24,9 +24,8 @@ class Cars196LoaderBasic(Loader):
     def expand_information_useful_on_txt(self,df:pd.DataFrame)->pd.DataFrame:
         import os
         sep=os.path.sep
-        df["Filepath"]=df["make_id"].astype(str)+sep+df["model_id"].astype(str)+sep\
-                        +df["released_year"].astype(str)+ \
-                        sep+df["filename"].astype(str)+"."+df["extension"].astype(str)
+        
+        df["Filepath"]=df["filename"].astype(str).str.zfill(5)+"."+df["extension"].astype(str)
         return df
     
     def generate_label_id_on_df(self,df:pd.DataFrame)->dict:
@@ -37,14 +36,22 @@ class Cars196LoaderBasic(Loader):
     def _get_image_and_label(self,index):    
     
         def get_relative_path_img(index):
-
-            return self.data.iloc[index]["Filepath"]
+            split=self.data.iloc[index]["split"]
+            if split=="train":
+                folder="cars_train"
+            elif split=="test":
+                folder="cars_test"
+            
+            filepath=os.path.join(folder, self.data.iloc[index]["Filepath"], )
+                
+            return filepath
+        
         def cut_car(image,index):
-            X=self.data.iloc[index]["X"]
-            Y=self.data.iloc[index]["Y"]
+            X=self.data.iloc[index]["xmin"]
+            Y=self.data.iloc[index]["ymin"]
 
-            w=self.data.iloc[index]["Width"]
-            h=self.data.iloc[index]["Height"]
+            w=self.data.iloc[index]["xmax"]-self.data.iloc[index]["xmin"]
+            h=self.data.iloc[index]["ymax"]-self.data.iloc[index]["ymin"]
             
             return transforms.functional.crop(image,Y,X,h,w)
     
@@ -131,4 +138,4 @@ def test_Cars196Loader():
     
     plot_examples(images)
     
-test_Cars196Loader()
+#test_Cars196Loader()

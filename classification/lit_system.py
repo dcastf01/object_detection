@@ -106,7 +106,7 @@ class LitSystem(pl.LightningModule):
         optimizer= torch.optim.SGD(self.parameters(), lr=self.lr)
             
 
-        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, CONFIG.NUM_EPOCHS)
+        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, CONFIG.NUM_EPOCHS, eta_min=5)
         return [optimizer], [scheduler]
 
     

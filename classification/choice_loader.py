@@ -8,11 +8,13 @@ import torchvision
 import torchvision.transforms as transforms
 from config import CONFIG
 from dataset.compcars.compcar_analisis import CompcarAnalisis
+
 from PIL import Image
 # from skimage.viewer import ImageViewer
 from torch.utils.data import DataLoader
 from classification.augmentation import get_transform_from_aladdinpersson
 from classification.loaders.compcars_loader import CompcarLoader,CompcarLoaderTripletLoss
+from classification.loaders.cars196_loader import Cars196Loader,Cars196LoaderTripletLoss
 import logging
 
 def choice_loader_and_splits_dataset(name_dataset:str,
@@ -20,8 +22,31 @@ def choice_loader_and_splits_dataset(name_dataset:str,
                                      NUM_WORKERS:int=0,
                                      use_tripletLoss:bool=False) -> dict:
     
+    transforms=get_transform_from_aladdinpersson()
+    train_transform=transforms["train"]
+    val_transform=transforms["val"]
+    test_transform=transforms["test"]
+        
     if name_dataset.lower()=="cars196":
-        raise NotImplementedError
+        all_ds=pd.read_csv(CONFIG.DATASET.CARS196.PATH_CSV)
+        train_ds=all_ds[all_ds["split"]=="train"]
+        test_ds=all_ds[all_ds["split"]=="test"]
+        
+        if use_tripletLoss:
+            logging.info("loading cars196 triplet loss")
+            loader=Cars196LoaderTripletLoss
+        else:
+            loader=Cars196Loader
+        
+        train_dataset=loader(train_ds,
+                        root_dir_images=CONFIG.DATASET.CARS196.PATH_IMAGES,
+                        transform=train_transform,
+                        )
+        
+        test_dataset=loader(test_ds,
+                        root_dir_images=CONFIG.DATASET.CARS196.PATH_IMAGES,
+                        transform=test_transform,                        
+                        )
     elif name_dataset.lower() =="compcars":
         def expand_information_useful_on_txt(df:pd.DataFrame)->pd.DataFrame:
             df[["make_id","model_id","released_year","filename"]]=df["Filepath"].str.split("/",expand=True)
@@ -33,10 +58,6 @@ def choice_loader_and_splits_dataset(name_dataset:str,
         test_ds=pd.read_csv(CONFIG.DATASET.COMPCAR.PATH_TEST_REVISITED,)
         test_ds=expand_information_useful_on_txt(test_ds)
 
-        transforms=get_transform_from_aladdinpersson()
-        train_transform=transforms["train"]
-        val_transform=transforms["val"]
-        test_transform=transforms["test"]
         if use_tripletLoss:
             logging.info("loading compcar triplet loss")
             loader=CompcarLoaderTripletLoss
@@ -54,9 +75,7 @@ def choice_loader_and_splits_dataset(name_dataset:str,
    
     else:
         raise NotImplementedError
-    
-    import time
-  
+      
     
     train_dataset_loader = torch.utils.data.DataLoader(
                     train_dataset, batch_size=BATCH_SIZE,

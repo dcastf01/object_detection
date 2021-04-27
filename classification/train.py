@@ -33,7 +33,7 @@ from classification.model.build_model import build_model
 def main():
     print("empezando experimento")
     torch.backends.cudnn.benchmark = True
-    experiment=ExperimentNames.TorchSqueezeNetDefaultLoss
+    experiment=ExperimentNames.TorchtransFGDefaultLoss
     config_experiment=get_config(experiment)
 
     wandb_logger = WandbLogger(project='TFM-classification',
