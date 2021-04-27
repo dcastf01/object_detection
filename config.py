@@ -52,7 +52,7 @@ class CONFIG:
         class CARS196:
             #dataset cars196
             PATH_ROOT:str= os.path.join(ROOT_WORKSPACE,"data","cars196")
-            PATH_CSV: str=r"dataset\cars196\all_information_cars196.csv"
+            PATH_CSV: str=os.path.join("dataset","cars196","all_information_cars196.csv")
             PATH_IMAGES:str=os.path.join(PATH_ROOT,)
             PATH_LABELS:str=os.path.join(PATH_ROOT,)
             PATH_TRAIN:str=os.path.join(PATH_ROOT,)
