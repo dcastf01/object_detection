@@ -110,7 +110,7 @@ class LitSystem(pl.LightningModule):
         optimizer= torch.optim.SGD(self.parameters(), lr=self.lr)
             
 
-        scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestone=[10,20,30,40],gamma=0.01)
+        scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[10,20,30,40],gamma=0.01)
         return [optimizer], [scheduler]
 
     
