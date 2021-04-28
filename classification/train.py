@@ -23,9 +23,9 @@ from classification.model.build_model import build_model
 def main():
     print("empezando experimento")
     torch.backends.cudnn.benchmark = True
-    experiment=ExperimentNames.TorchSqueezeNetTripletLoss
+    experiment=ExperimentNames.TorchSqueezeNetDefaultLoss
     config_experiment=get_config(experiment,model_pretrained=False)
-    dataset=Dataset.compcars
+    dataset=Dataset.cars196
     wandb_logger = WandbLogger(project='TFM-classification',
                                 entity='dcastf01',
                                 name=experiment.name+" "+

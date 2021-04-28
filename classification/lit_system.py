@@ -53,7 +53,7 @@ class LitSystem(pl.LightningModule):
             print("tiene nan, averiguar")
             print( "resultado de softmax", nn.functional.softmax(preds,dim=1))
             logging.error(nn.functional.softmax(preds,dim=1))
-            raise RuntimeError(f"Found NAN in output {i} at indices: ", nan_mask.nonzero(), "where:", out[nan_mask.nonzero()[:, 0].unique(sorted=True)])
+            raise RuntimeError(f"Found NAN in output {batch_idx} at indices: ", nan_mask.nonzero(), "where:", x[nan_mask.nonzero()[:, 0].unique(sorted=True)])
 
         if isinstance(targets,list):
             targets=targets[0]
@@ -79,7 +79,7 @@ class LitSystem(pl.LightningModule):
         data_dict=self.model(x,targets)
         preds=data_dict["preds"]
         data_dict.pop("preds")
-        data_dict=self.add_prefix_into_dict_only_loss(data_dict,"valid")
+        data_dict=self.add_prefix_into_dict_only_loss(data_dict,"val")
         # loss=data_dict["loss"]
         # data_dict.pop("loss")
         # data_dict["val_loss"]=loss
