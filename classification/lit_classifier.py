@@ -1,14 +1,15 @@
 
-import pytorch_lightning as pl
+
 import torch
 import torch.nn as nn
-import torchmetrics
 from config import CONFIG
+from torch.nn import functional as F
+
 import logging
 from classification.metrics import get_metrics_collections_base,get_metric_AUROC
+from classification.lit_system import LitSystem
 
-
-class LitSystem(pl.LightningModule):
+class LitClassifier(LitSystem):
     def __init__(self,
                  model,
                  NUM_CLASSES,
@@ -17,18 +18,10 @@ class LitSystem(pl.LightningModule):
                   
                   ):
         
-        super().__init__()
+        super().__init__( NUM_CLASSES,lr)
         #puede que loss_fn no vaya aquí y aquí solo vaya modelo
         self.model=model
-        # self.loss_fn=loss_fn
-        metrics_base=get_metrics_collections_base(NUM_CLASS=NUM_CLASSES)
-        self.train_metrics_base=metrics_base.clone(prefix="train")
-        self.valid_metrics_base=metrics_base.clone(prefix="valid")
-        
-        # log hyperparameters
-        self.save_hyperparameters()
-        
-        self.lr=lr
+        self.criterion=F.cross_entropy
             
     def forward(self,x):
         
@@ -41,11 +34,8 @@ class LitSystem(pl.LightningModule):
     
     def training_step(self,batch,batch_idx):
         x,targets=batch
-        
-        data_dict=self.model(x,targets)
-        loss=data_dict["loss"]
-        preds=data_dict["preds"]
-        data_dict.pop("preds")
+        preds=self.model(x)
+        loss=self.criterion(preds,targets)
 
         if torch.any(torch.isnan(preds)):
             nan_mask=torch.any(torch.isnan(preds))
@@ -62,9 +52,8 @@ class LitSystem(pl.LightningModule):
         # loss=self.loss_fn(preds,targets)
         preds_probability=nn.functional.softmax(preds,dim=1)
         metric_value=self.train_metrics_base(preds_probability,targets)
-        data_dict={**data_dict,**metric_value}
-        # metric_value={**metric_value,
-        #               **self.train_metric_auroc(preds.softmax(dim=1),targets)}
+        data_dict={"loss":loss,**metric_value}
+
         self.insert_each_metric_value_into_dict(data_dict,prefix="")
         # self.log('train_loss',loss)
         # self.log('train_metrics',metric_value)
@@ -76,24 +65,17 @@ class LitSystem(pl.LightningModule):
         '''used for logging metrics'''
         x, targets = batch
         
-        data_dict=self.model(x,targets)
-        preds=data_dict["preds"]
-        data_dict.pop("preds")
-        data_dict=self.add_prefix_into_dict_only_loss(data_dict,"val")
-        # loss=data_dict["loss"]
-        # data_dict.pop("loss")
-        # data_dict["val_loss"]=loss
-        
-        
+        preds=self.model(x)
+        loss=self.criterion(preds,targets)
+   
         if isinstance(targets,list):
             targets=targets[0]
         preds_probability=nn.functional.softmax(preds,dim=1)
-        a=torch.sum(preds_probability,dim=1)
         metric_value=self.valid_metrics_base(preds_probability,targets)
         # metric_value={**metric_value,
                     #   **self.valid_metric_auroc(preds.softmax(dim=0),targets)}
         
-        data_dict={**data_dict,**metric_value}
+        data_dict={"val_loss":loss,**metric_value}
         #########CREAR UNA FUNCIÓN QUE COJA METRICA Y DATA DICT, Y SUELTE LA PREDICCION 
         # ##################Y GENERE EL LOG CORRESPONDIENTE
         # Log validation loss (will be automatically averaged over an epoch)
@@ -103,39 +85,3 @@ class LitSystem(pl.LightningModule):
 
         # Log metrics
         #self.log('valid_acc', self.accuracy(logits, y))
-   
-            
-    def configure_optimizers(self):
-        
-        optimizer= torch.optim.SGD(self.parameters(), lr=self.lr)
-            
-
-        scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestone=[10,20,30,40],gamma=0.01)
-        return [optimizer], [scheduler]
-
-    
-    def insert_each_metric_value_into_dict(self,data_dict:dict,prefix:str):
- 
-        on_step=False
-        on_epoch=True 
-        
-        for metric,value in data_dict.items():
-            if metric != "preds":
-                if "loss" in metric.split("_"):
-                    self.log("_".join([prefix,metric]),value,
-                            on_step=on_step, 
-                            on_epoch=on_epoch, 
-                            sync_dist=True,
-                            logger=True)
-                else:
-                    self.log("_".join([prefix,metric]),value,
-                            on_step=on_step, 
-                            on_epoch=on_epoch, 
-                            logger=True
-                    )
-    def add_prefix_into_dict_only_loss(self,data_dict:dict,prefix:str=""):
-        data_dict_aux={}
-        for k,v in data_dict.items():            
-            data_dict_aux["_".join([prefix,k])]=v
-            
-        return data_dict_aux

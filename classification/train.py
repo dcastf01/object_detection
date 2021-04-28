@@ -16,15 +16,18 @@ from pytorch_lightning.plugins import DDPPlugin
 
 from classification.callback import ConfusionMatrix_Wandb
 from classification.choice_loader import choice_loader_and_splits_dataset,Dataset
-from classification.configs_experiments import ExperimentNames, get_config
-from classification.lit_system import LitSystem
+from classification.configs_experiments import ExperimentNames, ExperimentConfig
+from classification.lit_classifier import LitClassifier
 from classification.model.build_model import build_model
 
 def main():
     print("empezando experimento")
     torch.backends.cudnn.benchmark = True
-    experiment=ExperimentNames.TorchSqueezeNetDefaultLoss
-    config_experiment=get_config(experiment,model_pretrained=False)
+    experiment=ExperimentNames.TimmVIT
+    
+    # config_experiment=get_config(experiment,model_pretrained=True)
+    # config_experiment=experiment
+    # config_experiment.pretrained=True
     dataset=Dataset.cars196
     wandb_logger = WandbLogger(project='TFM-classification',
                                 entity='dcastf01',
@@ -36,10 +39,10 @@ def main():
                                     "num_workers":CONFIG.NUM_WORKERS,
                                     "experimentName":experiment.name,
                                     "lr":CONFIG.LEARNING_RATE,
-                                    "use_TripletLoss":config_experiment.use_tripletLoss,
+                                    "use_TripletLoss":False,#config_experiment.use_tripletLoss,
                                     "dataset":dataset.name,
                                     "backen cudnn benchmark":torch.backends.cudnn.benchmark,
-                                    "pretrained_model":config_experiment.pretrained,
+                                    "pretrained_model":True,#config_experiment.pretrained,
                                     }
                             
                                )
@@ -47,7 +50,7 @@ def main():
     dataloaders,NUM_CLASSES=choice_loader_and_splits_dataset(dataset,
                                                 BATCH_SIZE=CONFIG.BATCH_SIZE,
                                                 NUM_WORKERS=CONFIG.NUM_WORKERS,
-                                                use_tripletLoss=config_experiment.use_tripletLoss
+                                                use_tripletLoss=False,#config_experiment.use_tripletLoss
                                                 )
     
     logging.info("DEVICE",CONFIG.DEVICE)
@@ -70,13 +73,14 @@ def main():
     
     # confusion_matrix_wandb=ConfusionMatrix_Wandb(list(range(CONFIG.NUM_CLASSES)))
         
-    backbone=build_model(   architecture_name=config_experiment.architecture_name,
-                            use_defaultLoss=config_experiment.use_defaultLoss,
-                            use_tripletLoss=config_experiment.use_tripletLoss,
-                            NUM_CLASSES=NUM_CLASSES
+    backbone=build_model(   
+                        #  architecture_name=config_experiment.architecture_name,
+                        # loss=config_experiment.use_defaultLoss,
+                        NUM_CLASSES=NUM_CLASSES,
+                        pretrained=True
                             
                         )
-    model=LitSystem(backbone,
+    model=LitClassifier(backbone,
                     # loss_fn=loss_fn,
                     lr=CONFIG.LEARNING_RATE,
                     NUM_CLASSES=NUM_CLASSES
@@ -92,9 +96,9 @@ def main():
                     #    val_check_interval=1,
                     
                        log_gpu_memory=True,
-                       distributed_backend='ddp',
-                       accelerator="dpp",
-                       plugins=DDPPlugin(find_unused_parameters=False),
+                    #    distributed_backend='ddp',
+                    #    accelerator="dpp",
+                    #    plugins=DDPPlugin(find_unused_parameters=False),
                        callbacks=[
                             # early_stopping ,
                             checkpoint_callback,
