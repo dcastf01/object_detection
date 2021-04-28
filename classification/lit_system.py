@@ -11,19 +11,19 @@ from classification.metrics import get_metrics_collections_base,get_metric_AUROC
 class LitSystem(pl.LightningModule):
     def __init__(self,
                  model,
-                 
+                 NUM_CLASSES,
                 #   loss_fn=nn.CrossEntropyLoss(),
-                  lr=CONFIG.LEARNING_RATE):
+                  lr=CONFIG.LEARNING_RATE,
+                  
+                  ):
         
         super().__init__()
         #puede que loss_fn no vaya aquí y aquí solo vaya modelo
         self.model=model
         # self.loss_fn=loss_fn
-        metrics_base=get_metrics_collections_base(NUM_CLASS=CONFIG.NUM_CLASSES)
+        metrics_base=get_metrics_collections_base(NUM_CLASS=NUM_CLASSES)
         self.train_metrics_base=metrics_base.clone(prefix="train")
-        # self.train_metric_auroc=get_metric_AUROC(NUM_CLASS=CONFIG.NUM_CLASSES)
         self.valid_metrics_base=metrics_base.clone(prefix="valid")
-        # self.valid_metric_auroc=get_metric_AUROC(NUM_CLASS=CONFIG.NUM_CLASSES)
         
         # log hyperparameters
         self.save_hyperparameters()
@@ -110,7 +110,7 @@ class LitSystem(pl.LightningModule):
         optimizer= torch.optim.SGD(self.parameters(), lr=self.lr)
             
 
-        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, CONFIG.NUM_EPOCHS, eta_min=5)
+        scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestone=[10,20,30,40],gamma=0.01)
         return [optimizer], [scheduler]
 
     

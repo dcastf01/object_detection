@@ -18,7 +18,7 @@ class CONFIG:
     # TRAIN_DIR = "data/train"
     # VAL_DIR = "data/val"
     BATCH_SIZE:int = 128
-    NUM_CLASSES:int=4455
+    
     LEARNING_RATE:float = 1e-3
     # LAMBDA_IDENTITY = 0.0
     NUM_WORKERS:int = 4
@@ -39,6 +39,7 @@ class CONFIG:
         class COMPCAR:
             
             #dataset compcar
+            NUM_CLASSES:int=4455
             PASSWORD_ZIP: str="d89551fd190e38"
             PATH_ROOT: str=os.path.join(ROOT_WORKSPACE,"data","compcars")
             PATH_CSV: str=os.path.join("dataset","compcars","all_information_compcars.csv")
@@ -51,6 +52,7 @@ class CONFIG:
             COMPCAR_CONDITION_FILTER: str='viewpoint=="4" or viewpoint=="1"'
         class CARS196:
             #dataset cars196
+            NUM_CLASSES:int=196
             PATH_ROOT:str= os.path.join(ROOT_WORKSPACE,"data","cars196")
             PATH_CSV: str=os.path.join("dataset","cars196","all_information_cars196.csv")
             PATH_IMAGES:str=os.path.join(PATH_ROOT,)

@@ -25,6 +25,7 @@ def choice_loader_and_splits_dataset(name_dataset:Enum,
     test_transform=transforms["test"]
         
     if name_dataset==Dataset.cars196:
+        NUM_CLASSES=CONFIG.DATASET.CARS196.NUM_CLASSES
         all_ds=pd.read_csv(CONFIG.DATASET.CARS196.PATH_CSV)
         train_ds=all_ds[all_ds["split"]=="train"]
         test_ds=all_ds[all_ds["split"]=="test"]
@@ -52,6 +53,7 @@ def choice_loader_and_splits_dataset(name_dataset:Enum,
             df[["make_id","model_id","released_year","filename"]]=df["Filepath"].str.split("/",expand=True)
             return df
               
+        NUM_CLASSES=CONFIG.DATASET.COMPCAR.NUM_CLASSES
         train_ds = pd.read_csv(CONFIG.DATASET.COMPCAR.PATH_TRAIN_REVISITED)
         train_ds=expand_information_useful_on_txt(train_ds)
 
@@ -96,7 +98,7 @@ def choice_loader_and_splits_dataset(name_dataset:Enum,
         "train": train_dataset_loader,
         "test": test_dataset_loader,
     }
-    return dataloaders
+    return dataloaders,NUM_CLASSES
 
 
 def test_choice_loader():

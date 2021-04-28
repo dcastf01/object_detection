@@ -60,7 +60,6 @@ class Cars196LoaderBasic(Loader):
         image=np.array(cut_car(image_global,index))
     
         label=torch.tensor(int(self.data.iloc[index]["id"]))
-        # label= torch.nn.functional.one_hot(label,num_classes=config.NUM_CLASSES)
         
         if self.transform:
             augmentations = self.transform(image=image)

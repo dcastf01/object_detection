@@ -44,7 +44,7 @@ def main():
                             
                                )
     
-    dataloaders=choice_loader_and_splits_dataset(dataset,
+    dataloaders,NUM_CLASSES=choice_loader_and_splits_dataset(dataset,
                                                 BATCH_SIZE=CONFIG.BATCH_SIZE,
                                                 NUM_WORKERS=CONFIG.NUM_WORKERS,
                                                 use_tripletLoss=config_experiment.use_tripletLoss
@@ -55,7 +55,6 @@ def main():
     test_loader=dataloaders["test"]
     
     # loss_fn = nn.CrossEntropyLoss()
-    # metric_collection=get_metrics_collections(CONFIG.NUM_CLASSES,)# CONFIG.DEVICE)
 
     ##callbacks
     early_stopping=EarlyStopping(monitor='_val_loss',verbose=True)
@@ -74,10 +73,13 @@ def main():
     backbone=build_model(   architecture_name=config_experiment.architecture_name,
                             use_defaultLoss=config_experiment.use_defaultLoss,
                             use_tripletLoss=config_experiment.use_tripletLoss,
+                            NUM_CLASSES=NUM_CLASSES
+                            
                         )
     model=LitSystem(backbone,
                     # loss_fn=loss_fn,
                     lr=CONFIG.LEARNING_RATE,
+                    NUM_CLASSES=NUM_CLASSES
                     )
     wandb_logger.watch(model.model)
     trainer=pl.Trainer(
