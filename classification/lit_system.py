@@ -2,9 +2,7 @@
 import pytorch_lightning as pl
 import torch
 import torch.nn as nn
-import torchmetrics
 from config import CONFIG
-import logging
 from classification.metrics import get_metrics_collections_base,get_metric_AUROC
 
 

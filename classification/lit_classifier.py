@@ -11,7 +11,7 @@ from classification.lit_system import LitSystem
 
 class LitClassifier(LitSystem):
     def __init__(self,
-                 model,
+                 model:nn.Module,
                  NUM_CLASSES,
                 #   loss_fn=nn.CrossEntropyLoss(),
                   lr=CONFIG.LEARNING_RATE,
@@ -19,15 +19,21 @@ class LitClassifier(LitSystem):
                   ):
         
         super().__init__( NUM_CLASSES,lr)
+        
         #puede que loss_fn no vaya aquí y aquí solo vaya modelo
         self.model=model
+        for name,param in self.model.named_parameters():
+            if param.requires_grad:
+                print(name)
+                
+                
         self.criterion=F.cross_entropy
-            
+                
+        a=self.parameters()
     def forward(self,x):
-        
         x=self.model(x)
         
-        return x #quizá existe el problema de que la salida es un diccionario
+        return x 
     
     def on_epoch_start(self):
         torch.cuda.empty_cache()
