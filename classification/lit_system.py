@@ -30,7 +30,7 @@ class LitSystem(pl.LightningModule):
     def configure_optimizers(self):
         
         optimizer= torch.optim.SGD(self.parameters(), lr=self.lr)
-        scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=range(0,50,5),gamma=0.8)
+        scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=range(5,50,5),gamma=0.8)
         return [optimizer], [scheduler]
 
     def insert_each_metric_value_into_dict(self,data_dict:dict,prefix:str):
