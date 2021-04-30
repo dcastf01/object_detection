@@ -6,7 +6,7 @@ from classification.model.models_with_loss import (ModelWithOneLoss,
                                                    ModelWithTripletLoss)
 from classification.model.squeeze_net.torch_squeezeNet import get_squeezenet
 from classification.model.vision_transformers.torch_transFG import get_transFG
-from classification.model.vision_transformers.timm_vit import ViTBase16
+from classification.model.timms_models import ViTBase16,ResNet50
 from config import CONFIG
 
 
@@ -25,8 +25,8 @@ def build_model(
     #     model=get_transFG(NUM_CLASS=NUM_CLASSES,
     #                       run_loss_transFG=use_defaultLoss)
         
-    model=ViTBase16(NUM_CLASSES,pretrained=pretrained,transfer_learning=True)
-    
+    #model=ViTBase16(NUM_CLASSES,pretrained=pretrained,transfer_learning=True)
+    model=ResNet50(NUM_CLASSES,pretrained=pretrained,transfer_learning=True)
     
 
     return model

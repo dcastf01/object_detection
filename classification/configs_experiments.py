@@ -8,6 +8,7 @@ from classification.model.architecture_available import ArchitectureAvailable
 class ExperimentNames(Enum):
     SqueezeNet="torch_SqueezeNet_DefaultLoss"
     TimmVIT="tim_vit"
+    TimmResNet50="tim_resnet50"
     
 class LossNames(Enum):
     Crossentropy="crossentropy"

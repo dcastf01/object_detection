@@ -29,7 +29,7 @@ def crop_and_save_compcarimages():
     
     def get_img_path_crop_and_save(df:pd.DataFrame,DATA_ROOT):
         
-        for i,row in tqdm(df.iterrows()):
+        for i,row in tqdm(df.iterrows(),total=df.shape[0],miniters=100):
             
             img_path=row["Filepath"]
             x1=row["X"]
