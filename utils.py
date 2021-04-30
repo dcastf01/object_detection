@@ -45,7 +45,7 @@ def crop_and_save_compcarimages():
 
     test_ds=pd.read_csv(CONFIG.DATASET.COMPCAR.PATH_TEST_REVISITED,)
     test_ds=expand_information_useful_on_txt(test_ds)
-    # get_img_path_crop_and_save(train_ds,CONFIG.DATASET.COMPCAR.PATH_ROOT)
+    get_img_path_crop_and_save(train_ds,CONFIG.DATASET.COMPCAR.PATH_ROOT)
     get_img_path_crop_and_save(test_ds,CONFIG.DATASET.COMPCAR.PATH_ROOT)
     
     
