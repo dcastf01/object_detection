@@ -18,17 +18,18 @@ from classification.callback import ConfusionMatrix_Wandb
 from classification.choice_loader import choice_loader_and_splits_dataset,Dataset
 from classification.configs_experiments import ExperimentNames, ExperimentConfig
 from classification.lit_classifier import LitClassifier
-from classification.model.build_model import build_model
-
+from classification.model.build_model import build_model,Models_available
+from classification.autotune import autotune_lr
 def main():
     print("empezando experimento")
     torch.backends.cudnn.benchmark = True
-    experiment=ExperimentNames.TimmVIT
+    experiment=Models_available.ResNet50
     
     # config_experiment=get_config(experiment,model_pretrained=True)
     # config_experiment=experiment
     # config_experiment.pretrained=True
     dataset=Dataset.cars196
+    
     wandb_logger = WandbLogger(project='TFM-classification',
                                 entity='dcastf01',
                                 name=experiment.name+" "+
@@ -38,11 +39,14 @@ def main():
                                     "batch_size":CONFIG.BATCH_SIZE,
                                     "num_workers":CONFIG.NUM_WORKERS,
                                     "experimentName":experiment.name,
+                                    "Auto_lr":CONFIG.AUTO_LR,
                                     "lr":CONFIG.LEARNING_RATE,
                                     "use_TripletLoss":False,#config_experiment.use_tripletLoss,
                                     "dataset":dataset.name,
-                                    "backen cudnn benchmark":torch.backends.cudnn.benchmark,
+                                    "backend_cudnn_benchmark":torch.backends.cudnn.benchmark,
                                     "pretrained_model":True,#config_experiment.pretrained,
+                                    "net":experiment.value
+                                    
                                     }
                             
                                )
@@ -73,7 +77,7 @@ def main():
     
     # confusion_matrix_wandb=ConfusionMatrix_Wandb(list(range(CONFIG.NUM_CLASSES)))
         
-    backbone=build_model(   
+    backbone=build_model(   experiment,
                         #  architecture_name=config_experiment.architecture_name,
                         # loss=config_experiment.use_defaultLoss,
                         NUM_CLASSES=NUM_CLASSES,
@@ -94,7 +98,8 @@ def main():
                     #    limit_train_batches=0.1, #only to debug
                     #    limit_val_batches=0.05, #only to debug
                     #    val_check_interval=1,
-                    
+                        auto_lr_find=True,
+
                        log_gpu_memory=True,
                     #    distributed_backend='ddp',
                     #    accelerator="dpp",
@@ -107,6 +112,8 @@ def main():
                                   ],
                        progress_bar_refresh_rate=50,
                        )
+    
+    autotune_lr(trainer,model,train_loader,get_auto_lr=True)
     logging.info("empezando el entrenamiento")
     trainer.fit(model,train_loader,test_loader)
          

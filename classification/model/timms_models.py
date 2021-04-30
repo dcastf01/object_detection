@@ -25,9 +25,7 @@ class TimmModel(nn.Module):
         x = self.model(x)
         return x
     
-class Models_available(Enum):
-    ViTBase16="vit_base_patch16_224_in21k"
-    ResNet50="resnet50"
+
     
 class ViTBase16(TimmModel):
     def __init__(self, num_classes, pretrained=False,transfer_learning=True):
