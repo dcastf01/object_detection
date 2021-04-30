@@ -39,7 +39,7 @@ def main():
                                     "batch_size":CONFIG.BATCH_SIZE,
                                     "num_workers":CONFIG.NUM_WORKERS,
                                     "experimentName":experiment.name,
-                                    "Auto_lr":CONFIG.AUTO_LR
+                                    "Auto_lr":CONFIG.AUTO_LR,
                                     "lr":CONFIG.LEARNING_RATE,
                                     "use_TripletLoss":False,#config_experiment.use_tripletLoss,
                                     "dataset":dataset.name,

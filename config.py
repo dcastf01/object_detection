@@ -21,7 +21,7 @@ class CONFIG:
     
     
     LEARNING_RATE:float = 1e-3
-    AUTO_LR:bool=True
+    AUTO_LR :bool= True
     # LAMBDA_IDENTITY = 0.0
     NUM_WORKERS:int = 4
     SEED:int=1
