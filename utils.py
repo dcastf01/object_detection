@@ -1,37 +1,53 @@
-import torch
+import cv2
+import pandas as pd
+import os
+from config import CONFIG
+from tqdm import tqdm
 
-
-def check_accuracy(loader, model, device="cuda"):
+def crop_and_save_images(DATA_ROOT,img_path,x1,x2,y1,y2):
+    def crop_image(img,x1,x2,y1,y2):
+        cropped_im=img[y1:y2, x1:x2, :]
+        return cropped_im
     
-    num_correct = 0
-    num_samples = 0
-    model.eval()
+    img=cv2.imread(os.path.join(DATA_ROOT, 'image', img_path))
+    cropped_img=crop_image(img,x1,x2,y1,y2)
+    
+    make, model, year, filename = img_path.replace('jpg', 'txt').split('/')
+    if not os.path.exists(os.path.join(DATA_ROOT, 'cropped_image', make, model, year)):
+        try:
+            os.makedirs(os.path.join(DATA_ROOT, 'cropped_image', make, model, year))
+        except:
+            pass
+    
+    cv2.imwrite(os.path.join(os.path.join(DATA_ROOT, 'cropped_image', img_path)), cropped_img)
+    
+def crop_and_save_compcarimages():
 
-    with torch.no_grad():
-        for x, y in loader:
-            x = x.to(device=device)
-            y = y.to(device=device)
-
-            # scores = torch.sigmoid()
-            predictions = torch.log_softmax(model(x),dim=1)
-            _, predictions = torch.max(predictions, dim = 1) 
+    def expand_information_useful_on_txt(df:pd.DataFrame)->pd.DataFrame:
+                df[["make_id","model_id","released_year","filename"]]=df["Filepath"].str.split("/",expand=True)
+                return df  
+    
+    def get_img_path_crop_and_save(df:pd.DataFrame,DATA_ROOT):
+        
+        for i,row in tqdm(df.iterrows()):
             
-            num_correct += (predictions == y).sum()
-            num_samples += predictions.shape[0]
+            img_path=row["Filepath"]
+            x1=row["X"]
+            y1=row["Y"]
+            
+            x2=row["X"]+row["Width"]
+            y2=row["Y"]+row["Height"]
+            crop_and_save_images(DATA_ROOT,img_path,x1,x2,y1,y2)
+            
+    
+    train_ds = pd.read_csv(CONFIG.DATASET.COMPCAR.PATH_TRAIN_REVISITED)
+    train_ds=expand_information_useful_on_txt(train_ds)
 
-        print(f'Got {num_correct} / {num_samples} with accuracy {float(num_correct) / float(num_samples) * 100:.2f} %')
-
-    model.train()
+    test_ds=pd.read_csv(CONFIG.DATASET.COMPCAR.PATH_TEST_REVISITED,)
+    test_ds=expand_information_useful_on_txt(test_ds)
+    # get_img_path_crop_and_save(train_ds,CONFIG.DATASET.COMPCAR.PATH_ROOT)
+    get_img_path_crop_and_save(test_ds,CONFIG.DATASET.COMPCAR.PATH_ROOT)
     
     
-def save_checkpoint(state, filename="my_checkpoint.pth.tar"):
-    print("=> Saving checkpoint")
-    torch.save(state, filename)
 
-
-def load_checkpoint(checkpoint, model, optimizer):
-    print("=> Loading checkpoint")
-    model.load_state_dict(checkpoint['state_dict'])
-    optimizer.load_state_dict(checkpoint['optimizer'])
-    
-    
+crop_and_save_compcarimages()
