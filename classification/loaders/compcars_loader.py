@@ -41,8 +41,11 @@ class CompcarLoaderBasic(Loader):
     
         img_path=os.path.join(self.root_dir_images,get_relative_path_img(index))
         image_global=Image.open(img_path).convert("RGB")
-        image=np.array(cut_car(image_global,index))
-    
+        if self.need_crop:
+            image_cut=(cut_car(image_global,index))
+        else:
+            image_cut=image_global
+        image=np.array(image_cut)
         label=torch.tensor(int(self.data.iloc[index]["id"]))
         
         if self.transform:
