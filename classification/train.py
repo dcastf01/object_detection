@@ -64,7 +64,7 @@ def main():
     config =wandb.config
     dataloaders,NUM_CLASSES=choice_loader_and_splits_dataset(
                                                 config.dataset_name,
-                                                BATCH_SIZE=config.BATCH_SIZE,
+                                                BATCH_SIZE=config.batch_size,
                                                 NUM_WORKERS=config.NUM_WORKERS,
                                                 use_tripletLoss=config.USE_TRIPLETLOSS,#config_experiment.use_tripletLoss
                                                 )

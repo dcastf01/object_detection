@@ -1,13 +1,14 @@
 program: classification/train.py
+name: compcarsfalco
 method: bayes
 metric:
   goal: minimize
   name: _val_loss
 parameters:
   batch_size:
-    values: [32,64,128,256,512,1024,5]
+    values: [5,32,64,128,256,512,1024,]
   lr:
-    values: [1,0.1,0.01,0.001,0.0001]
+    values: [0.0001,0.001,0.01,0.1,1,]
   transfer_learning:
     values: [True,False]
   optimizer:
