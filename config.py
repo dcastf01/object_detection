@@ -37,7 +37,7 @@ class CONFIG(object):
     dataset_name:str=dataset.name
     
     optim=Optim.SGD
-    optim_name=optim.name
+    optim_name:str=optim.name
     LEARNING_RATE:float = 1e-3
     AUTO_LR :bool= True
     # LAMBDA_IDENTITY = 0.0

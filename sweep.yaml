@@ -1,4 +1,4 @@
-program: train.py
+program: classification/train.py
 method: bayes
 metric:
   goal: minimize
@@ -8,7 +8,8 @@ parameters:
     values: [32,64,128,256,512,1024,5]
   lr:
     values: [2,1,0.1,0.01,0.001]
-  
+  transfer_learning:
+    values: [True,False]
 
 early_terminate:
   type: hyperband

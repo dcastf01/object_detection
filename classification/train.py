@@ -22,10 +22,17 @@ from classification.autotune import autotune_lr
 
     
 def main():
-    print("empezando experimento")
+    print("empezando setup del experimento")
     torch.backends.cudnn.benchmark = True
     config=CONFIG()
-    config =wand.init(create_config_dict(config))
+    config_dict=create_config_dict(config)
+    wandb.init(
+        project='TFM-classification',
+                entity='dcastf01',
+                name=config.experiment_name+" "+
+                    datetime.datetime.utcnow().strftime("%Y-%m-%d %X"),
+                config=config_dict)
+    
     # experiment=Models_available.ResNet50
     
     # config_experiment=get_config(experiment,model_pretrained=True)
@@ -33,27 +40,28 @@ def main():
     # config_experiment.pretrained=True
     # dataset=Dataset.compcars
     
-    wandb_logger = WandbLogger(project='TFM-classification',
-                                entity='dcastf01',
-                                name=config.experiment_name+" "+
-                                datetime.datetime.utcnow().strftime("%Y-%m-%d %X"),
-                                offline=True, #to debug
-                                config=create_config_dict(config)
-                                # {
-                                    # "batch_size":CONFIG.BATCH_SIZE,
-                                    # "num_workers":CONFIG.NUM_WORKERS,
-                                    # "experimentName":experiment.name,
-                                    # "Auto_lr":CONFIG.AUTO_LR,
-                                    # "lr":CONFIG.LEARNING_RATE,
-                                    # "use_TripletLoss":False,#config_experiment.use_tripletLoss,
-                                    # "dataset":dataset.name,
-                                    # "backend_cudnn_benchmark":torch.backends.cudnn.benchmark,
-                                    # "pretrained_model":True,#config_experiment.pretrained,
-                                    # "net":experiment.value,
-                                    # "unfreeze_layers":False,
-                                    # }
-                               )
-    
+    wandb_logger = WandbLogger()
+        # project='TFM-classification',
+        #                         entity='dcastf01',
+        #                         name=config.experiment_name+" "+
+        #                         datetime.datetime.utcnow().strftime("%Y-%m-%d %X"),
+        #                         # offline=True, #to debug
+        #                         config=config_dict,
+        #                         # {
+        #                             # "batch_size":CONFIG.BATCH_SIZE,
+        #                             # "num_workers":CONFIG.NUM_WORKERS,
+        #                             # "experimentName":experiment.name,
+        #                             # "Auto_lr":CONFIG.AUTO_LR,
+        #                             # "lr":CONFIG.LEARNING_RATE,
+        #                             # "use_TripletLoss":False,#config_experiment.use_tripletLoss,
+        #                             # "dataset":dataset.name,
+        #                             # "backend_cudnn_benchmark":torch.backends.cudnn.benchmark,
+        #                             # "pretrained_model":True,#config_experiment.pretrained,
+        #                             # "net":experiment.value,
+        #                             # "unfreeze_layers":False,
+        #                             # }
+        #                        )
+    config =wandb.config
     dataloaders,NUM_CLASSES=choice_loader_and_splits_dataset(
                                                 config.dataset_name,
                                                 BATCH_SIZE=config.BATCH_SIZE,
@@ -92,7 +100,7 @@ def main():
                     # loss_fn=loss_fn,
                     lr=config.LEARNING_RATE,
                     NUM_CLASSES=NUM_CLASSES,
-                    optim=config.optim
+                    optim=config.optim_name
                     )
     # model=model.model.load_from_checkpoint("/home/dcast/object_detection_TFM/classification/model/checkpoint/last.ckpt")
     wandb_logger.watch(model.model)
@@ -107,9 +115,9 @@ def main():
                         auto_lr_find=True,
 
                        log_gpu_memory=True,
-                       distributed_backend='ddp',
-                       accelerator="dpp",
-                       plugins=DDPPlugin(find_unused_parameters=False),
+                    #    distributed_backend='ddp',
+                    #    accelerator="dpp",
+                    #    plugins=DDPPlugin(find_unused_parameters=False),
                        callbacks=[
                             # early_stopping ,
                             checkpoint_callback,
@@ -119,11 +127,11 @@ def main():
                        progress_bar_refresh_rate=5,
                        )
     
-    model=autotune_lr(trainer,model,train_loader,get_auto_lr=False)
+    model=autotune_lr(trainer,model,train_loader,get_auto_lr=config.AUTO_LR)
     logging.info("empezando el entrenamiento")
     trainer.fit(model,train_loader,test_loader)
          
 
 if __name__ == "__main__":
-
+    
     main()
