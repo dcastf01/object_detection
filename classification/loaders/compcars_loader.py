@@ -64,6 +64,7 @@ class CompcarLoader(CompcarLoaderBasic):
         super(CompcarLoader,self).__init__(df,root_dir_images,
                                             transform,condition_filter,
                                           )
+        self.need_crop=False #esto es solo para debuguear, no olvidar quitar
     
     def __getitem__ (self,index):
         image,label=self._get_image_and_label(index)
