@@ -19,6 +19,7 @@ class Optim(Enum):
     adam=1
     SGD=2
 
+
 @dataclass
 class CONFIG(object):
     

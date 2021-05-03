@@ -22,7 +22,9 @@ class LitSystem(pl.LightningModule):
         # log hyperparameters
         self.save_hyperparameters()    
         self.lr=lr
-        self.optim=optim
+        if isinstance(optim,str):
+            self.optim=Optim[optim]
+           
     
     def on_epoch_start(self):
         torch.cuda.empty_cache()

@@ -20,10 +20,12 @@ from classification.lit_classifier import LitClassifier
 from classification.model.build_model import build_model
 from classification.autotune import autotune_lr
 
+    
 def main():
     print("empezando experimento")
     torch.backends.cudnn.benchmark = True
     config=CONFIG()
+    config =wand.init(create_config_dict(config))
     # experiment=Models_available.ResNet50
     
     # config_experiment=get_config(experiment,model_pretrained=True)
@@ -35,7 +37,7 @@ def main():
                                 entity='dcastf01',
                                 name=config.experiment_name+" "+
                                 datetime.datetime.utcnow().strftime("%Y-%m-%d %X"),
-                               offline=True, #to debug
+                                offline=True, #to debug
                                 config=create_config_dict(config)
                                 # {
                                     # "batch_size":CONFIG.BATCH_SIZE,
@@ -53,7 +55,7 @@ def main():
                                )
     
     dataloaders,NUM_CLASSES=choice_loader_and_splits_dataset(
-                                                config.dataset,
+                                                config.dataset_name,
                                                 BATCH_SIZE=config.BATCH_SIZE,
                                                 NUM_WORKERS=config.NUM_WORKERS,
                                                 use_tripletLoss=config.USE_TRIPLETLOSS,#config_experiment.use_tripletLoss
@@ -79,7 +81,7 @@ def main():
     
     # confusion_matrix_wandb=ConfusionMatrix_Wandb(list(range(CONFIG.NUM_CLASSES)))
         
-    backbone=build_model(   config.experiment,
+    backbone=build_model(   config.experiment_name,
                         #  architecture_name=config_experiment.architecture_name,
                         # loss=config_experiment.use_defaultLoss,
                         NUM_CLASSES=NUM_CLASSES,

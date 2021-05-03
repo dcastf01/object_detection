@@ -12,7 +12,9 @@ def build_model(
                 transfer_learning:bool=True
                 
                 ):
-    
+    if isinstance(model_selected,str):
+        model_selected=ModelsAvailable[model_selected]
+        
 
 
     if model_selected==ModelsAvailable.ResNet50:

@@ -12,11 +12,12 @@ from config import Dataset
 from enum import Enum
 
 
-def choice_loader_and_splits_dataset(name_dataset:Enum,
+def choice_loader_and_splits_dataset(name_dataset,
                                      BATCH_SIZE:int=16,
                                      NUM_WORKERS:int=0,
                                      use_tripletLoss:bool=False) -> dict:
-    
+    if isinstance(name_dataset,str):
+        name_dataset=Dataset[name_dataset]
     transforms=get_transform_from_aladdinpersson()
     train_transform=transforms["train"]
     val_transform=transforms["val"]
