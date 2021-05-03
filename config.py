@@ -38,7 +38,7 @@ class CONFIG(object):
     
     optim=Optim.sgd
     optim_name:str=optim.name
-    LEARNING_RATE:float = 1e-3
+    lr:float = 1e-3
     AUTO_LR :bool= False
     # LAMBDA_IDENTITY = 0.0
     NUM_WORKERS:int = 4

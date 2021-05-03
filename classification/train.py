@@ -100,7 +100,7 @@ def main():
                         )
     model=LitClassifier(backbone,
                     # loss_fn=loss_fn,
-                    lr=config.LEARNING_RATE,
+                    lr=config.lr,
                     NUM_CLASSES=NUM_CLASSES,
                     optim=config.optim_name
                     )
