@@ -28,7 +28,7 @@ def main():
     # config_experiment=get_config(experiment,model_pretrained=True)
     # config_experiment=experiment
     # config_experiment.pretrained=True
-    dataset=Dataset.cars196
+    dataset=Dataset.compcars
     
     wandb_logger = WandbLogger(project='TFM-classification',
                                 entity='dcastf01',
@@ -45,10 +45,9 @@ def main():
                                     "dataset":dataset.name,
                                     "backend_cudnn_benchmark":torch.backends.cudnn.benchmark,
                                     "pretrained_model":True,#config_experiment.pretrained,
-                                    "net":experiment.value
-                                    
+                                    "net":experiment.value,
+                                    "unfreeze_layers":False,
                                     }
-                            
                                )
     
     dataloaders,NUM_CLASSES=choice_loader_and_splits_dataset(dataset,
@@ -89,6 +88,7 @@ def main():
                     lr=CONFIG.LEARNING_RATE,
                     NUM_CLASSES=NUM_CLASSES
                     )
+    # model=model.model.load_from_checkpoint("/home/dcast/object_detection_TFM/classification/model/checkpoint/last.ckpt")
     wandb_logger.watch(model.model)
     trainer=pl.Trainer(
                         logger=wandb_logger,
@@ -101,19 +101,19 @@ def main():
                         auto_lr_find=True,
 
                        log_gpu_memory=True,
-                    #    distributed_backend='ddp',
-                    #    accelerator="dpp",
-                    #    plugins=DDPPlugin(find_unused_parameters=False),
+                       distributed_backend='ddp',
+                       accelerator="dpp",
+                       plugins=DDPPlugin(find_unused_parameters=False),
                        callbacks=[
                             # early_stopping ,
                             checkpoint_callback,
                             # confusion_matrix_wandb,
                             learning_rate_monitor 
                                   ],
-                       progress_bar_refresh_rate=50,
+                       progress_bar_refresh_rate=5,
                        )
     
-    autotune_lr(trainer,model,train_loader,get_auto_lr=True)
+    model=autotune_lr(trainer,model,train_loader,get_auto_lr=False)
     logging.info("empezando el entrenamiento")
     trainer.fit(model,train_loader,test_loader)
          
