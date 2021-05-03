@@ -3,7 +3,7 @@ from typing import Union
 
 # from config import CONFIG
 
-from classification.model.architecture_available import ArchitectureAvailable
+from classification.model.architecture_available import 
 
 class ExperimentNames(Enum):
     SqueezeNet="torch_SqueezeNet_DefaultLoss"

@@ -1,27 +1,45 @@
 import torch
 import os
 from enum import Enum
-from classification.model.architecture_available import  ArchitectureAvailable
 from typing import Union
 
-from dataclasses import dataclass
+from dataclasses import dataclass,asdict
 
-import ml_collections
 ROOT_WORKSPACE: str=r"D:\programacion\Repositorios\object_detection_TFM"
 ROOT_WORKSPACE: str=""
+
+class ModelsAvailable(Enum):
+    ViTBase16="vit_base_patch16_224_in21k"
+    ResNet50="resnet50"
+    
+class Dataset (Enum):
+    compcars=1
+    cars196=2
+class Optim(Enum):
+    adam=1
+    sgd=2
+
+
 @dataclass
-class CONFIG:
+class CONFIG(object):
     
-    
+    experiment=ModelsAvailable.ResNet50
+    experiment_name:str=experiment.name
+    experiment_net:str=experiment.value
+    PRETRAINED_MODEL:bool=True
+    transfer_learning:bool=True #solo se entrena el head
     #torch config
     DEVICE: str = "cuda" if torch.cuda.is_available() else "cpu"
     # TRAIN_DIR = "data/train"
     # VAL_DIR = "data/val"
     BATCH_SIZE:int = 128
+    dataset=Dataset.compcars
+    dataset_name:str=dataset.name
     
-    
+    optim=Optim.sgd
+    optim_name:str=optim.name
     LEARNING_RATE:float = 1e-3
-    AUTO_LR :bool= True
+    AUTO_LR :bool= False
     # LAMBDA_IDENTITY = 0.0
     NUM_WORKERS:int = 4
     SEED:int=1
@@ -30,11 +48,9 @@ class CONFIG:
     LOAD_MODEL :bool= True
     SAVE_MODEL :bool= True
     PATH_CHECKPOINT: str= os.path.join(ROOT_WORKSPACE,"classification/model/checkpoint")
+    USE_TRIPLETLOSS:bool=False
     
-    ARCHITECTURES_AVAILABLE:Enum=ArchitectureAvailable
-    # def _get_json(self):
-    #     import json
-    #     return json.dumps(self.__dict__)
+
     class DATASET:
         
         
@@ -68,87 +84,6 @@ class CONFIG:
         PATH_OUTPUT_PLOTS: str=os.path.join("dataset","results")
     
 
-class WrapperConfigModel(CONFIG):
-    use_tripletLoss=False
-    default_Loss=False
-    architecture_name=None
-
-class ConfigArchitecture(WrapperConfigModel):
-    
-    def __init__(self,architecture_name:Union[str,Enum]):
-        # super(ConfigArchitecture,self).__init__()
-        self.architecture_name=self.check_architecture_name_on_list_and_return_architecture_name(architecture_name)
-            
-    def check_architecture_name_on_list_and_return_architecture_name(self,architecture_name):
-        if architecture_name in self.ARCHITECTURES_AVAILABLE.__members__:
-            architecture_name=self.ARCHITECTURES_AVAILABLE[architecture_name]
-            return architecture_name
-        elif  architecture_name in self.ARCHITECTURES_AVAILABLE:
-            
-            return architecture_name      
-        else:
-            print( "you should pick a available model, here you have a list")
-            print(self.ARCHITECTURES_AVAILABLE.__members__.keys())
-            raise "you should pick a available model, here you have a list"
-
-
-class ConfigModelDefaultLoss(WrapperConfigModel):
-    
-    def __init__(self):
-        self.default_Loss=True
-        # ConfigModel.__init__(self,architecture_name=architecture_name,)
-                                                    # default_Loss=default_Loss)
-                                                    
-class ConfigModelTripletLoss(WrapperConfigModel):
-    
-    def __init__(self):
-        self.use_tripletLoss=True
-        
-    
-class ConfigModelDefaultLossAndTripletLoss(ConfigModelTripletLoss,ConfigModelDefaultLoss):
-    def __init__(self):
-        ConfigModelTripletLoss.__init__(self)
-        ConfigModelDefaultLoss.__init__(self)
-        # super(ConfigModelTripletAndDefaultLoss,self).__init__(architecture_name=architecture_name)
-    
-class TorchSqueezenet(ConfigArchitecture ):
-    def __init__(self):
-        architecture_name=ArchitectureAvailable.torch_squeezenet
-        ConfigArchitecture.__init__(self,architecture_name)
-        
-class TorchtransFG(ConfigArchitecture ):
-    def __init__(self):
-        architecture_name=ArchitectureAvailable.torch_transFG
-        ConfigArchitecture.__init__(self,architecture_name)
-
-class TorchSqueeNetDefaultLossLoss(TorchSqueezenet,ConfigModelDefaultLoss):
-    def __init__(self):
-        TorchSqueezenet.__init__(self)
-        ConfigModelDefaultLoss.__init__(self)
-
-class TorchSqueeNetTripletLoss(TorchSqueezenet,ConfigModelTripletLoss):
-    def __init__(self):
-        TorchSqueezenet.__init__(self)
-        ConfigModelTripletLoss.__init__(self)
-        
-class TorchSqueeNetDefaultLossAndTripletLoss(TorchSqueezenet,ConfigModelDefaultLossAndTripletLoss):
-    def __init__(self):
-        TorchSqueezenet.__init__(self)
-        ConfigModelDefaultLossAndTripletLoss.__init__(self)
-
-class TorchtransFGDefaultLossLoss(TorchtransFG,ConfigModelDefaultLoss):
-    def __init__(self):
-        TorchtransFG.__init__(self)
-        ConfigModelDefaultLoss.__init__(self)
-
-class TorchtransFGTripletLoss(TorchtransFG,ConfigModelTripletLoss):
-    def __init__(self):
-        TorchtransFG.__init__(self)
-        ConfigModelTripletLoss.__init__(self)
-        
-class TorchtransFGDefaultLossAndTripletLoss(TorchtransFG,ConfigModelDefaultLossAndTripletLoss):
-    def __init__(self):
-        TorchtransFG.__init__(self)
-        ConfigModelDefaultLossAndTripletLoss.__init__(self)
-        
+def create_config_dict(instance:CONFIG):
+    return asdict(instance)
 

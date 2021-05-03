@@ -1,0 +1,20 @@
+program: classification/train.py
+method: bayes
+metric:
+  goal: minimize
+  name: _val_loss
+parameters:
+  batch_size:
+    values: [32,64,128,256,512,1024,5]
+  lr:
+    values: [1,0.1,0.01,0.001,0.0001]
+  transfer_learning:
+    values: [True,False]
+  optimizer:
+    values : [adam,SGD]
+
+early_terminate:
+  type: hyperband
+  s: 2
+  eta: 3
+  max_iter: 27

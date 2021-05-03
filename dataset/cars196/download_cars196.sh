@@ -1,3 +1,5 @@
+mkdir data
+mkdir data/cars196
 cd data/cars196
 wget http://ai.stanford.edu/~jkrause/car196/cars_train.tgz
 

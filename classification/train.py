@@ -7,7 +7,7 @@ sys.path.append("/home/dcast/object_detection_TFM")
 import pytorch_lightning as pl
 import torch
 import wandb
-from config import CONFIG
+from config import CONFIG,create_config_dict
 from pytorch_lightning.callbacks import LearningRateMonitor
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 from pytorch_lightning.callbacks.model_checkpoint import ModelCheckpoint
@@ -16,47 +16,60 @@ from pytorch_lightning.plugins import DDPPlugin
 
 from classification.callback import ConfusionMatrix_Wandb
 from classification.choice_loader import choice_loader_and_splits_dataset,Dataset
-from classification.configs_experiments import ExperimentNames, ExperimentConfig
 from classification.lit_classifier import LitClassifier
-from classification.model.build_model import build_model,Models_available
+from classification.model.build_model import build_model
 from classification.autotune import autotune_lr
+
+    
 def main():
-    print("empezando experimento")
+    print("empezando setup del experimento")
     torch.backends.cudnn.benchmark = True
-    experiment=Models_available.ResNet50
+    config=CONFIG()
+    config_dict=create_config_dict(config)
+    wandb.init(
+        project='TFM-classification',
+                entity='dcastf01',
+                name=config.experiment_name+" "+
+                    datetime.datetime.utcnow().strftime("%Y-%m-%d %X"),
+                config=config_dict)
+    
+    # experiment=Models_available.ResNet50
     
     # config_experiment=get_config(experiment,model_pretrained=True)
     # config_experiment=experiment
     # config_experiment.pretrained=True
-    dataset=Dataset.compcars
+    # dataset=Dataset.compcars
     
-    wandb_logger = WandbLogger(project='TFM-classification',
-                                entity='dcastf01',
-                                name=experiment.name+" "+
-                                datetime.datetime.utcnow().strftime("%Y-%m-%d %X"),
-                            #    offline=True, #to debug
-                                config={
-                                    "batch_size":CONFIG.BATCH_SIZE,
-                                    "num_workers":CONFIG.NUM_WORKERS,
-                                    "experimentName":experiment.name,
-                                    "Auto_lr":CONFIG.AUTO_LR,
-                                    "lr":CONFIG.LEARNING_RATE,
-                                    "use_TripletLoss":False,#config_experiment.use_tripletLoss,
-                                    "dataset":dataset.name,
-                                    "backend_cudnn_benchmark":torch.backends.cudnn.benchmark,
-                                    "pretrained_model":True,#config_experiment.pretrained,
-                                    "net":experiment.value,
-                                    "unfreeze_layers":False,
-                                    }
-                               )
-    
-    dataloaders,NUM_CLASSES=choice_loader_and_splits_dataset(dataset,
-                                                BATCH_SIZE=CONFIG.BATCH_SIZE,
-                                                NUM_WORKERS=CONFIG.NUM_WORKERS,
-                                                use_tripletLoss=False,#config_experiment.use_tripletLoss
+    wandb_logger = WandbLogger()
+        # project='TFM-classification',
+        #                         entity='dcastf01',
+        #                         name=config.experiment_name+" "+
+        #                         datetime.datetime.utcnow().strftime("%Y-%m-%d %X"),
+        #                         # offline=True, #to debug
+        #                         config=config_dict,
+        #                         # {
+        #                             # "batch_size":CONFIG.BATCH_SIZE,
+        #                             # "num_workers":CONFIG.NUM_WORKERS,
+        #                             # "experimentName":experiment.name,
+        #                             # "Auto_lr":CONFIG.AUTO_LR,
+        #                             # "lr":CONFIG.LEARNING_RATE,
+        #                             # "use_TripletLoss":False,#config_experiment.use_tripletLoss,
+        #                             # "dataset":dataset.name,
+        #                             # "backend_cudnn_benchmark":torch.backends.cudnn.benchmark,
+        #                             # "pretrained_model":True,#config_experiment.pretrained,
+        #                             # "net":experiment.value,
+        #                             # "unfreeze_layers":False,
+        #                             # }
+        #                        )
+    config =wandb.config
+    dataloaders,NUM_CLASSES=choice_loader_and_splits_dataset(
+                                                config.dataset_name,
+                                                BATCH_SIZE=config.BATCH_SIZE,
+                                                NUM_WORKERS=config.NUM_WORKERS,
+                                                use_tripletLoss=config.USE_TRIPLETLOSS,#config_experiment.use_tripletLoss
                                                 )
     
-    logging.info("DEVICE",CONFIG.DEVICE)
+    logging.info("DEVICE",config.DEVICE)
     train_loader=dataloaders["train"]
     test_loader=dataloaders["test"]
     
@@ -66,7 +79,7 @@ def main():
     early_stopping=EarlyStopping(monitor='_val_loss',verbose=True)
     checkpoint_callback = ModelCheckpoint(
         monitor='_val_loss',
-        dirpath=CONFIG.PATH_CHECKPOINT,
+        dirpath=config.PATH_CHECKPOINT,
         filename= '-{epoch:02d}-{val_loss:.6f}',
         mode="min",
         save_last=True,
@@ -76,24 +89,27 @@ def main():
     
     # confusion_matrix_wandb=ConfusionMatrix_Wandb(list(range(CONFIG.NUM_CLASSES)))
         
-    backbone=build_model(   experiment,
+    backbone=build_model(   config.experiment_name,
                         #  architecture_name=config_experiment.architecture_name,
                         # loss=config_experiment.use_defaultLoss,
                         NUM_CLASSES=NUM_CLASSES,
-                        pretrained=True
+                        pretrained=config.PRETRAINED_MODEL,
+                        transfer_learning=config.transfer_learning,
+
                             
                         )
     model=LitClassifier(backbone,
                     # loss_fn=loss_fn,
-                    lr=CONFIG.LEARNING_RATE,
-                    NUM_CLASSES=NUM_CLASSES
+                    lr=config.LEARNING_RATE,
+                    NUM_CLASSES=NUM_CLASSES,
+                    optim=config.optim_name
                     )
     # model=model.model.load_from_checkpoint("/home/dcast/object_detection_TFM/classification/model/checkpoint/last.ckpt")
     wandb_logger.watch(model.model)
     trainer=pl.Trainer(
                         logger=wandb_logger,
                        gpus=-1,
-                       max_epochs=CONFIG.NUM_EPOCHS,
+                       max_epochs=config.NUM_EPOCHS,
                        precision=16,
                     #    limit_train_batches=0.1, #only to debug
                     #    limit_val_batches=0.05, #only to debug
@@ -101,9 +117,9 @@ def main():
                         auto_lr_find=True,
 
                        log_gpu_memory=True,
-                       distributed_backend='ddp',
-                       accelerator="dpp",
-                       plugins=DDPPlugin(find_unused_parameters=False),
+                    #    distributed_backend='ddp',
+                    #    accelerator="dpp",
+                    #    plugins=DDPPlugin(find_unused_parameters=False),
                        callbacks=[
                             # early_stopping ,
                             checkpoint_callback,
@@ -113,11 +129,11 @@ def main():
                        progress_bar_refresh_rate=5,
                        )
     
-    model=autotune_lr(trainer,model,train_loader,get_auto_lr=False)
+    model=autotune_lr(trainer,model,train_loader,get_auto_lr=config.AUTO_LR)
     logging.info("empezando el entrenamiento")
     trainer.fit(model,train_loader,test_loader)
          
 
 if __name__ == "__main__":
-
+    
     main()
