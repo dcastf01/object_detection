@@ -1,0 +1,18 @@
+program: train.py
+method: bayes
+metric:
+  goal: minimize
+  name: _val_loss
+parameters:
+  batch_size:
+    values: [32,64,128,256,512,1024,5]
+  lr:
+    values: [2,1,0.1,0.01,0.001]
+    distribution: uniform
+
+
+early_terminate:
+  type: hyperband
+  s: 2
+  eta: 3
+  max_iter: 27

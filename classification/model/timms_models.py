@@ -40,6 +40,7 @@ class ViTBase16(TimmModel):
         
         self.model.head = nn.Linear(self.model.head.in_features, num_classes)
         
+  
 class ResNet50(TimmModel):
     def __init__(self, num_classes, pretrained=False,transfer_learning=True):
 

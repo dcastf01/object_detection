@@ -8,11 +8,9 @@ from classification.augmentation import get_transform_from_aladdinpersson
 from classification.loaders.compcars_loader import CompcarLoader,CompcarLoaderTripletLoss
 from classification.loaders.cars196_loader import Cars196Loader,Cars196LoaderTripletLoss
 import logging
+from config import Dataset
 from enum import Enum
 
-class Dataset (Enum):
-    compcars=1
-    cars196=2
 
 def choice_loader_and_splits_dataset(name_dataset:Enum,
                                      BATCH_SIZE:int=16,
@@ -82,9 +80,9 @@ def choice_loader_and_splits_dataset(name_dataset:Enum,
     
     train_dataset_loader = torch.utils.data.DataLoader(
                     train_dataset, batch_size=BATCH_SIZE,
-                    shuffle=True, num_workers=CONFIG.NUM_WORKERS,
+                    shuffle=False, num_workers=CONFIG.NUM_WORKERS,
                     pin_memory=True,
-                    drop_last=True,
+                    drop_last=False,
                     # sampler=
                                                     )
 
@@ -92,7 +90,7 @@ def choice_loader_and_splits_dataset(name_dataset:Enum,
                     test_dataset, batch_size=BATCH_SIZE,
                     shuffle=False, num_workers=CONFIG.NUM_WORKERS,
                     pin_memory=True,
-                    drop_last=True,
+                    drop_last=False,
                 )
     dataloaders = {
         "train": train_dataset_loader,

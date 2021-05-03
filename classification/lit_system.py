@@ -2,7 +2,7 @@
 import pytorch_lightning as pl
 import torch
 import torch.nn as nn
-from config import CONFIG
+from config import CONFIG,Optim
 from classification.metrics import get_metrics_collections_base,get_metric_AUROC
 
 
@@ -10,6 +10,7 @@ class LitSystem(pl.LightningModule):
     def __init__(self,
                  NUM_CLASSES,
                   lr=CONFIG.LEARNING_RATE,
+                  optim:str="SGD",
                   ):
         
         super().__init__()
@@ -21,13 +22,16 @@ class LitSystem(pl.LightningModule):
         # log hyperparameters
         self.save_hyperparameters()    
         self.lr=lr
+        self.optim=optim
     
     def on_epoch_start(self):
         torch.cuda.empty_cache()
             
     def configure_optimizers(self):
-        
-        optimizer= torch.optim.SGD(self.parameters(), lr=self.lr)
+        if self.optim==Optim.adam:
+            optimizer= torch.optim.Adam(self.parameters(), lr=self.lr)
+        elif self.optim==Optim.SGD:
+            optimizer= torch.optim.SGD(self.parameters(), lr=self.lr)
         scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=range(5,50,5),gamma=0.8)
         return [optimizer], [scheduler]
 
