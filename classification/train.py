@@ -93,7 +93,9 @@ def main():
                         #  architecture_name=config_experiment.architecture_name,
                         # loss=config_experiment.use_defaultLoss,
                         NUM_CLASSES=NUM_CLASSES,
-                        pretrained=config.PRETRAINED_MODEL
+                        pretrained=config.PRETRAINED_MODEL,
+                        transfer_learning=config.transfer_learning,
+
                             
                         )
     model=LitClassifier(backbone,
