@@ -17,7 +17,7 @@ class Dataset (Enum):
     cars196=2
 class Optim(Enum):
     adam=1
-    SGD=2
+    sgd=2
 
 
 @dataclass
@@ -36,7 +36,7 @@ class CONFIG(object):
     dataset=Dataset.compcars
     dataset_name:str=dataset.name
     
-    optim=Optim.SGD
+    optim=Optim.sgd
     optim_name:str=optim.name
     LEARNING_RATE:float = 1e-3
     AUTO_LR :bool= False

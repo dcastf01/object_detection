@@ -23,7 +23,7 @@ class LitSystem(pl.LightningModule):
         self.save_hyperparameters()    
         self.lr=lr
         if isinstance(optim,str):
-            self.optim=Optim[optim]
+            self.optim=Optim[optim.lower()]
            
     
     def on_epoch_start(self):
@@ -32,7 +32,7 @@ class LitSystem(pl.LightningModule):
     def configure_optimizers(self):
         if self.optim==Optim.adam:
             optimizer= torch.optim.Adam(self.parameters(), lr=self.lr)
-        elif self.optim==Optim.SGD:
+        elif self.optim==Optim.sgd:
             optimizer= torch.optim.SGD(self.parameters(), lr=self.lr)
         scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=range(100,500,100),gamma=0.9)
         return [optimizer], [scheduler]
