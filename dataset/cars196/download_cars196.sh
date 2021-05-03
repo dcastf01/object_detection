@@ -1,5 +1,5 @@
+mkdir data
 mkdir data/cars196
-
 cd data/cars196
 
 
