@@ -9,7 +9,7 @@ from classification.metrics import get_metrics_collections_base,get_metric_AUROC
 class LitSystem(pl.LightningModule):
     def __init__(self,
                  NUM_CLASSES,
-                  lr=CONFIG.LEARNING_RATE,
+                  lr,
                   optim:str="SGD",
                   ):
         

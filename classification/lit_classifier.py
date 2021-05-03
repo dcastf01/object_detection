@@ -14,7 +14,7 @@ class LitClassifier(LitSystem):
                  model:nn.Module,
                  NUM_CLASSES,
                 #   loss_fn=nn.CrossEntropyLoss(),
-                  lr=CONFIG.lr,
+                  lr,
                   optim:str="SGD"
                   
                   ):
