@@ -13,7 +13,7 @@ from enum import Enum
 
 
 def choice_loader_and_splits_dataset(name_dataset,
-                                     BATCH_SIZE:int=16,
+                                     batch_size:int=16,
                                      NUM_WORKERS:int=0,
                                      use_tripletLoss:bool=False) -> dict:
     if isinstance(name_dataset,str):
@@ -32,7 +32,7 @@ def choice_loader_and_splits_dataset(name_dataset,
         if use_tripletLoss:
             logging.info("loading cars196 triplet loss")
             loader=Cars196LoaderTripletLoss
-            BATCH_SIZE=BATCH_SIZE//2
+            batch_size=batch_size//2
         else:
             loader=Cars196Loader
         
@@ -62,7 +62,7 @@ def choice_loader_and_splits_dataset(name_dataset,
         if use_tripletLoss:
             logging.info("loading compcar triplet loss")
             loader=CompcarLoaderTripletLoss
-            BATCH_SIZE=BATCH_SIZE//2
+            batch_size=batch_size//2
         else:
             loader=CompcarLoader
         train_dataset=loader(train_ds,
@@ -80,7 +80,7 @@ def choice_loader_and_splits_dataset(name_dataset,
       
     
     train_dataset_loader = torch.utils.data.DataLoader(
-                    train_dataset, batch_size=BATCH_SIZE,
+                    train_dataset, batch_size=batch_size,
                     shuffle=False, num_workers=CONFIG.NUM_WORKERS,
                     pin_memory=True,
                     drop_last=False,
@@ -88,7 +88,7 @@ def choice_loader_and_splits_dataset(name_dataset,
                                                     )
 
     test_dataset_loader = torch.utils.data.DataLoader(
-                    test_dataset, batch_size=BATCH_SIZE,
+                    test_dataset, batch_size=batch_size,
                     shuffle=False, num_workers=CONFIG.NUM_WORKERS,
                     pin_memory=True,
                     drop_last=False,
@@ -103,7 +103,7 @@ def choice_loader_and_splits_dataset(name_dataset,
 def test_choice_loader():
     
     dataloaders=choice_loader_and_splits_dataset("compcars",
-                                                BATCH_SIZE=CONFIG.BATCH_SIZE,
+                                                batch_size=CONFIG.batch_size,
                                                 # NUM_WORKERS=CONFIG.NUM_WORKERS
                                                 )
     

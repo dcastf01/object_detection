@@ -31,6 +31,7 @@ def main():
                 entity='dcastf01',
                 name=config.experiment_name+" "+
                     datetime.datetime.utcnow().strftime("%Y-%m-%d %X"),
+                    
                 config=config_dict)
     
     # experiment=Models_available.ResNet50
@@ -40,7 +41,7 @@ def main():
     # config_experiment.pretrained=True
     # dataset=Dataset.compcars
     
-    wandb_logger = WandbLogger()
+    wandb_logger = WandbLogger(offline=True,)
         # project='TFM-classification',
         #                         entity='dcastf01',
         #                         name=config.experiment_name+" "+
@@ -48,7 +49,7 @@ def main():
         #                         # offline=True, #to debug
         #                         config=config_dict,
         #                         # {
-        #                             # "batch_size":CONFIG.BATCH_SIZE,
+        #                             # "batch_size":CONFIG.batch_size,
         #                             # "num_workers":CONFIG.NUM_WORKERS,
         #                             # "experimentName":experiment.name,
         #                             # "Auto_lr":CONFIG.AUTO_LR,
@@ -64,7 +65,7 @@ def main():
     config =wandb.config
     dataloaders,NUM_CLASSES=choice_loader_and_splits_dataset(
                                                 config.dataset_name,
-                                                BATCH_SIZE=config.batch_size,
+                                                batch_size=config.batch_size,
                                                 NUM_WORKERS=config.NUM_WORKERS,
                                                 use_tripletLoss=config.USE_TRIPLETLOSS,#config_experiment.use_tripletLoss
                                                 )
@@ -129,7 +130,7 @@ def main():
                        progress_bar_refresh_rate=5,
                        )
     
-    model=autotune_lr(trainer,model,train_loader,get_auto_lr=config.AUTO_LR)
+    model=autotune_lr(trainer,model,test_loader,get_auto_lr=config.AUTO_LR)
     logging.info("empezando el entrenamiento")
     trainer.fit(model,train_loader,test_loader)
          

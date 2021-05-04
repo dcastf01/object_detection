@@ -1,12 +1,12 @@
 import tensorflow as tf
 class augmentation:
     
-    def __init__(self,PROBABLITY_THRESHOLD,PERCENT_INCREMENTED_IN_JITTER,AUGMENTED,BATCH_SIZE,SIZE):
+    def __init__(self,PROBABLITY_THRESHOLD,PERCENT_INCREMENTED_IN_JITTER,AUGMENTED,batch_size,SIZE):
         PROBABLITY_THRESHOLD = 0.4 #@param {type:"slider", min:0, max:1, step:0.1}
         #PERCENT_INCREMENTED_IN_JITTER value recomended 0.11
         PERCENT_INCREMENTED_IN_JITTER= 0.11 #@param {type:"slider", min:0, max:0.25, step:0.01}
         AUGMENTED = True #@param {type:"boolean"}
-        BATCH_SIZE = 32 #normalmente en 32 
+        batch_size = 32 #normalmente en 32 
         SIZE=224#@param {type:"integer"}
         IMAGE_SIZE=[SIZE,SIZE]
         IMG_HEIGHT = SIZE 

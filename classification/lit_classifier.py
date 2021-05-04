@@ -1,5 +1,4 @@
 
-
 import torch
 import torch.nn as nn
 from config import CONFIG
@@ -40,11 +39,21 @@ class LitClassifier(LitSystem):
         torch.cuda.empty_cache()
     
     def training_step(self,batch,batch_idx):
-        x,targets=batch
+        x,targets,filenames=batch
         preds=self.model(x)
         loss=self.criterion(preds,targets)
-
-        if torch.any(torch.isnan(preds)):
+        preds_probability=nn.functional.softmax(preds,dim=1)
+                    
+        if torch.any(torch.isnan(preds)):         
+            with open("error.txt","w") as f:
+                i=0
+                sum_prediction=torch.sum(preds_probability,dim=1)
+                for filename in filenames:
+                    
+                    sum_prediction=sum_prediction[i].item()
+                    f.write(filename +" "+str(sum_prediction)+ "\n")
+                    i+=1
+            
             nan_mask=torch.any(torch.isnan(preds))
             logging.error((preds))
             print("tiene nan, averiguar")
@@ -52,28 +61,38 @@ class LitClassifier(LitSystem):
             logging.error(nn.functional.softmax(preds,dim=1))
             raise RuntimeError(f"Found NAN in output {batch_idx} at indices: ", nan_mask.nonzero(), "where:", x[nan_mask.nonzero()[:, 0].unique(sorted=True)])
 
-        if isinstance(targets,list):
-            targets=targets[0]
-        
-        #lo ideal sería hacer algo tipo loss,preds=self.model(x) de esta manera al modelo se le 
-        #incluiria el loss fn y así podremos hacer la tripleta
         preds_probability=nn.functional.softmax(preds,dim=1)
         metric_value=self.train_metrics_base(preds_probability,targets)
         data_dict={"loss":loss,**metric_value}
 
         self.insert_each_metric_value_into_dict(data_dict,prefix="")
 
-        
         return loss
     
     def validation_step(self, batch, batch_idx):
-        x, targets = batch
+        x, targets,filenames = batch
         preds=self.model(x)
         loss=self.criterion(preds,targets)
-   
-        if isinstance(targets,list):
-            targets=targets[0]
         preds_probability=nn.functional.softmax(preds,dim=1)
+        if torch.any(torch.isnan(preds)):
+
+            with open("error.txt","w") as f:
+                i=0
+                sum_prediction=torch.sum(preds_probability,dim=1)
+                for filename in filenames:
+                    
+                    sum_prediction=sum_prediction[i].item()
+                    f.write(filename +" "+str(sum_prediction)+ "\n")
+                    i+=1
+            
+            nan_mask=torch.any(torch.isnan(preds))
+            logging.error((preds))
+            print("tiene nan, averiguar")
+            print( "resultado de softmax", nn.functional.softmax(preds,dim=1))
+            logging.error(nn.functional.softmax(preds,dim=1))
+            raise RuntimeError(f"Found NAN in output {batch_idx} at indices: ", nan_mask.nonzero(), "where:", x[nan_mask.nonzero()[:, 0].unique(sorted=True)])
+
+
         metric_value=self.valid_metrics_base(preds_probability,targets)
         data_dict={"val_loss":loss,**metric_value}
   
