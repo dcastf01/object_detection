@@ -40,6 +40,8 @@ class CompcarLoaderBasic(Loader):
             return transforms.functional.crop(image,Y,X,h,w)
     
         img_path=os.path.join(self.root_dir_images,get_relative_path_img(index))
+        filename=img_path.split("/")[-1]
+   
         image_global=Image.open(img_path).convert("RGB")
         if self.need_crop:
             image_cut=(cut_car(image_global,index))
@@ -52,7 +54,7 @@ class CompcarLoaderBasic(Loader):
             augmentations = self.transform(image=image)
             image = augmentations["image"]
 
-        return image,label
+        return image,label,filename
 
     def __getitem__ (self,index):
         NotImplementedError
@@ -67,8 +69,8 @@ class CompcarLoader(CompcarLoaderBasic):
         self.need_crop=False #esto es solo para debuguear, no olvidar quitar
     
     def __getitem__ (self,index):
-        image,label=self._get_image_and_label(index)
-        return image,label
+        image,label,filename=self._get_image_and_label(index)
+        return image,label,filename
     
 class CompcarLoaderTripletLoss(CompcarLoaderBasic):
     def __init__(self, df:pd.DataFrame,root_dir_images:str,
