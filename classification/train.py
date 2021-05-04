@@ -113,16 +113,16 @@ def main():
                         logger=wandb_logger,
                        gpus=-1,
                        max_epochs=config.NUM_EPOCHS,
-                       precision=16,
+                       precision=config.precision_compute,
                     #    limit_train_batches=0.1, #only to debug
                     #    limit_val_batches=0.05, #only to debug
                     #    val_check_interval=1,
                         auto_lr_find=True,
 
                        log_gpu_memory=True,
-                    #    distributed_backend='ddp',
-                    #    accelerator="dpp",
-                    #    plugins=DDPPlugin(find_unused_parameters=False),
+                       distributed_backend='ddp',
+                       accelerator="dpp",
+                       plugins=DDPPlugin(find_unused_parameters=False),
                        callbacks=[
                             # early_stopping ,
                             checkpoint_callback,

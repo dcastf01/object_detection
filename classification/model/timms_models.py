@@ -7,7 +7,7 @@ from enum import Enum
 import logging
 class TimmModel(nn.Module):
 
-    def __init__(self,model_name, num_classes, pretrained=False,transfer_learning=True):
+    def __init__(self,model_name, pretrained=False,transfer_learning=True):
 
         super(TimmModel, self).__init__()
         logging.info(f"creating the model {model_name} ")
@@ -34,7 +34,6 @@ class ViTBase16(TimmModel):
         
         
         super(ViTBase16, self).__init__(model_name,
-                                        num_classes,
                                         pretrained,
                                         transfer_learning)
         
@@ -47,7 +46,6 @@ class ResNet50(TimmModel):
         model_name="resnet50"
         
         super(ResNet50, self).__init__(model_name,
-                                        num_classes,
                                         pretrained,
                                         transfer_learning)
         self.model.fc = nn.Linear(self.model.fc.in_features, num_classes)

@@ -35,7 +35,7 @@ class CONFIG(object):
     batch_size:int = 5
     dataset=Dataset.compcars
     dataset_name:str=dataset.name
-    
+    precision_compute:int=32
     optim=Optim.sgd
     optim_name:str=optim.name
     lr:float = 1e-3
@@ -44,7 +44,7 @@ class CONFIG(object):
     NUM_WORKERS:int = 4
     SEED:int=1
     IMG_SIZE:int=224
-    NUM_EPOCHS :int= 50
+    NUM_EPOCHS :int= 100
     LOAD_MODEL :bool= True
     SAVE_MODEL :bool= True
     PATH_CHECKPOINT: str= os.path.join(ROOT_WORKSPACE,"classification/model/checkpoint")
