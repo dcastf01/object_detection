@@ -41,7 +41,9 @@ def main():
     # config_experiment.pretrained=True
     # dataset=Dataset.compcars
     
-    wandb_logger = WandbLogger(offline=True,)
+    wandb_logger = WandbLogger(
+                    # offline=True,
+                    )
         # project='TFM-classification',
         #                         entity='dcastf01',
         #                         name=config.experiment_name+" "+
