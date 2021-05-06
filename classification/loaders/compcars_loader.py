@@ -47,12 +47,14 @@ class CompcarLoaderBasic(Loader):
             image_cut=(cut_car(image_global,index))
         else:
             image_cut=image_global
-        image=np.array(image_cut)
+        # image=np.array(image_cut)
+        image=image_cut
         label=torch.tensor(int(self.data.iloc[index]["id"]))
         
         if self.transform:
-            augmentations = self.transform(image=image)
-            image = augmentations["image"]
+            image=self.transform(image)
+            # augmentations = self.transform(image=image)
+            # image = augmentations["image"]
 
         return image,label,filename
 

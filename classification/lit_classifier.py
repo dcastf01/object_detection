@@ -40,6 +40,7 @@ class LitClassifier(LitSystem):
     
     def training_step(self,batch,batch_idx):
         x,targets,filenames=batch
+    
         preds=self.model(x)
         loss=self.criterion(preds,targets)
         preds_probability=preds.softmax(dim=1)

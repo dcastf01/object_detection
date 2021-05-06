@@ -140,3 +140,5 @@ classification/model/checkpoint/
 lightning_logs/
 conf.py
 *.ckpt
+
+error.txt

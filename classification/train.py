@@ -34,36 +34,10 @@ def main():
                     
                 config=config_dict)
     
-    # experiment=Models_available.ResNet50
-    
-    # config_experiment=get_config(experiment,model_pretrained=True)
-    # config_experiment=experiment
-    # config_experiment.pretrained=True
-    # dataset=Dataset.compcars
-    
     wandb_logger = WandbLogger(
                     # offline=True,
                     )
-        # project='TFM-classification',
-        #                         entity='dcastf01',
-        #                         name=config.experiment_name+" "+
-        #                         datetime.datetime.utcnow().strftime("%Y-%m-%d %X"),
-        #                         # offline=True, #to debug
-        #                         config=config_dict,
-        #                         # {
-        #                             # "batch_size":CONFIG.batch_size,
-        #                             # "num_workers":CONFIG.NUM_WORKERS,
-        #                             # "experimentName":experiment.name,
-        #                             # "Auto_lr":CONFIG.AUTO_LR,
-        #                             # "lr":CONFIG.LEARNING_RATE,
-        #                             # "use_TripletLoss":False,#config_experiment.use_tripletLoss,
-        #                             # "dataset":dataset.name,
-        #                             # "backend_cudnn_benchmark":torch.backends.cudnn.benchmark,
-        #                             # "pretrained_model":True,#config_experiment.pretrained,
-        #                             # "net":experiment.value,
-        #                             # "unfreeze_layers":False,
-        #                             # }
-        #                        )
+
     config =wandb.config
     dataloaders,NUM_CLASSES=choice_loader_and_splits_dataset(
                                                 config.dataset_name,
@@ -76,7 +50,6 @@ def main():
     train_loader=dataloaders["train"]
     test_loader=dataloaders["test"]
     
-    # loss_fn = nn.CrossEntropyLoss()
 
     ##callbacks
     early_stopping=EarlyStopping(monitor='_val_loss',verbose=True)
@@ -90,11 +63,8 @@ def main():
     #                     )
     learning_rate_monitor=LearningRateMonitor(logging_interval="epoch")
     
-    # confusion_matrix_wandb=ConfusionMatrix_Wandb(list(range(CONFIG.NUM_CLASSES)))
         
     backbone=build_model(   config.experiment_name,
-                        #  architecture_name=config_experiment.architecture_name,
-                        # loss=config_experiment.use_defaultLoss,
                         NUM_CLASSES=NUM_CLASSES,
                         pretrained=config.PRETRAINED_MODEL,
                         transfer_learning=config.transfer_learning,
@@ -120,9 +90,9 @@ def main():
                         auto_lr_find=config.AUTO_LR,
 
                        log_gpu_memory=True,
-                       distributed_backend='ddp',
-                       accelerator="dpp",
-                       plugins=DDPPlugin(find_unused_parameters=False),
+                    #    distributed_backend='ddp',
+                    #    accelerator="dpp",
+                    #    plugins=DDPPlugin(find_unused_parameters=False),
                        callbacks=[
                             # early_stopping ,
                             # checkpoint_callback,

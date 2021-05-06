@@ -1,5 +1,6 @@
 
 import pandas as pd
+from timm.data.transforms_factory import transforms_noaug_train
 import torch
 from config import CONFIG
 
@@ -38,12 +39,14 @@ def choice_loader_and_splits_dataset(name_dataset,
         
         train_dataset=loader(train_ds,
                         root_dir_images=CONFIG.DATASET.CARS196.PATH_IMAGES,
-                        transform=train_transform,
+                        # transform=train_transform,
+                        transform=transforms_noaug_train(CONFIG.IMG_SIZE)
                         )
         
         test_dataset=loader(test_ds,
                         root_dir_images=CONFIG.DATASET.CARS196.PATH_IMAGES,
-                        transform=test_transform,                        
+                        # transform=test_transform,                        
+                        transform=transforms_noaug_train(CONFIG.IMG_SIZE)
                         )
         
         
@@ -67,12 +70,14 @@ def choice_loader_and_splits_dataset(name_dataset,
             loader=CompcarLoader
         train_dataset=loader(train_ds,
                         root_dir_images=CONFIG.DATASET.COMPCAR.PATH_IMAGES,
-                        transform=train_transform,
+                        # transform=train_transform,
+                        transform=transforms_noaug_train(CONFIG.IMG_SIZE)
                         )
         
         test_dataset=loader(test_ds,
                         root_dir_images=CONFIG.DATASET.COMPCAR.PATH_IMAGES,
-                        transform=test_transform,                        
+                        # transform=train_transform,
+                        transform=transforms_noaug_train (CONFIG.IMG_SIZE)                 
                         )
    
     else:
