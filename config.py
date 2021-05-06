@@ -27,23 +27,23 @@ class CONFIG(object):
     experiment_name:str=experiment.name
     experiment_net:str=experiment.value
     PRETRAINED_MODEL:bool=True
-    transfer_learning:bool=True #solo se entrena el head
+    transfer_learning:bool=False #solo se entrena el head
     #torch config
     DEVICE: str = "cuda" if torch.cuda.is_available() else "cpu"
     # TRAIN_DIR = "data/train"
     # VAL_DIR = "data/val"
-    batch_size:int = 5
+    batch_size:int = 16
     dataset=Dataset.compcars
     dataset_name:str=dataset.name
     precision_compute:int=32
     optim=Optim.sgd
     optim_name:str=optim.name
-    lr:float = 1e-3
+    lr:float = 3e-3
     AUTO_LR :bool= False
     # LAMBDA_IDENTITY = 0.0
     NUM_WORKERS:int = 4
     SEED:int=1
-    IMG_SIZE:int=224
+    IMG_SIZE:int=600
     NUM_EPOCHS :int= 100
     LOAD_MODEL :bool= True
     SAVE_MODEL :bool= True

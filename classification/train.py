@@ -80,14 +80,14 @@ def main():
 
     ##callbacks
     early_stopping=EarlyStopping(monitor='_val_loss',verbose=True)
-    checkpoint_callback = ModelCheckpoint(
-        monitor='_val_loss',
-        dirpath=config.PATH_CHECKPOINT,
-        filename= '-{epoch:02d}-{val_loss:.6f}',
-        mode="min",
-        save_last=True,
-        save_top_k=3,
-                        )
+    # checkpoint_callback = ModelCheckpoint(
+    #     monitor='_val_loss',
+    #     dirpath=config.PATH_CHECKPOINT,
+    #     filename= '-{epoch:02d}-{val_loss:.6f}',
+    #     mode="min",
+    #     save_last=True,
+    #     save_top_k=3,
+    #                     )
     learning_rate_monitor=LearningRateMonitor(logging_interval="epoch")
     
     # confusion_matrix_wandb=ConfusionMatrix_Wandb(list(range(CONFIG.NUM_CLASSES)))
@@ -117,7 +117,7 @@ def main():
                     #    limit_train_batches=0.1, #only to debug
                     #    limit_val_batches=0.05, #only to debug
                     #    val_check_interval=1,
-                        auto_lr_find=True,
+                        auto_lr_find=config.AUTO_LR,
 
                        log_gpu_memory=True,
                        distributed_backend='ddp',
@@ -125,7 +125,7 @@ def main():
                        plugins=DDPPlugin(find_unused_parameters=False),
                        callbacks=[
                             # early_stopping ,
-                            checkpoint_callback,
+                            # checkpoint_callback,
                             # confusion_matrix_wandb,
                             learning_rate_monitor 
                                   ],

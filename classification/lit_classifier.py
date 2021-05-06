@@ -42,7 +42,7 @@ class LitClassifier(LitSystem):
         x,targets,filenames=batch
         preds=self.model(x)
         loss=self.criterion(preds,targets)
-        preds_probability=nn.functional.softmax(preds,dim=1)
+        preds_probability=preds.softmax(dim=1)
                     
         if torch.any(torch.isnan(preds)):         
             with open("error.txt","w") as f:
@@ -50,7 +50,7 @@ class LitClassifier(LitSystem):
                 sum_prediction=torch.sum(preds_probability,dim=1)
                 for filename in filenames:
                     
-                    sum_prediction=sum_prediction[i].item()
+                    # sum_prediction=sum_prediction[i].item()
                     f.write(filename +" "+str(sum_prediction)+ "\n")
                     i+=1
             
@@ -61,7 +61,6 @@ class LitClassifier(LitSystem):
             logging.error(nn.functional.softmax(preds,dim=1))
             raise RuntimeError(f"Found NAN in output {batch_idx} at indices: ", nan_mask.nonzero(), "where:", x[nan_mask.nonzero()[:, 0].unique(sorted=True)])
 
-        preds_probability=nn.functional.softmax(preds,dim=1)
         metric_value=self.train_metrics_base(preds_probability,targets)
         data_dict={"loss":loss,**metric_value}
 
@@ -73,7 +72,8 @@ class LitClassifier(LitSystem):
         x, targets,filenames = batch
         preds=self.model(x)
         loss=self.criterion(preds,targets)
-        preds_probability=nn.functional.softmax(preds,dim=1)
+   
+        preds_probability=preds.softmax(dim=1)
         if torch.any(torch.isnan(preds)):
 
             with open("error.txt","w") as f:
@@ -81,7 +81,6 @@ class LitClassifier(LitSystem):
                 sum_prediction=torch.sum(preds_probability,dim=1)
                 for filename in filenames:
                     
-                    sum_prediction=sum_prediction[i].item()
                     f.write(filename +" "+str(sum_prediction)+ "\n")
                     i+=1
             

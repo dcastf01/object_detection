@@ -1,3 +1,5 @@
+from timm.models import resnet
+from timm.models.helpers import build_model_with_cfg
 import torch.nn as nn
 import timm
 from config import CONFIG
@@ -11,7 +13,10 @@ class TimmModel(nn.Module):
 
         super(TimmModel, self).__init__()
         logging.info(f"creating the model {model_name} ")
-        self.model = timm.create_model(model_name, pretrained=pretrained,
+
+        self.model = timm.create_model( 
+                                       model_name,
+                                       pretrained=pretrained,
                                       
                                        )
 
@@ -44,8 +49,20 @@ class ResNet50(TimmModel):
     def __init__(self, num_classes, pretrained=False,transfer_learning=True):
 
         model_name="resnet50"
-        
+        # cfg_modified=timm.models.resnet.default_cfgs[model_name]
+        # cfg_modified["input_size"]=(3,600,600)
+        # model_args = dict(block=timm.models.resnet.Bottleneck, layers=[3, 4, 6, 3])
+        # model=build_model_with_cfg(resnet.ResNet,
+        #                      model_name,
+        #                      pretrained=pretrained,
+        #                      default_cfg=cfg_modified,
+        #                      **model_args
+        #                      )
         super(ResNet50, self).__init__(model_name,
-                                        pretrained,
-                                        transfer_learning)
+                                            pretrained,
+                                            transfer_learning)   
         self.model.fc = nn.Linear(self.model.fc.in_features, num_classes)
+        
+    # def forward(self, x):
+    #     x = self.model(x)
+    #     return x
